@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hethongchamcong_mobile/screen/account_screen.dart';
 import '../constant.dart';
 import 'package:hethongchamcong_mobile/screen/login_screen.dart';
-import 'package:hethongchamcong_mobile/screen/home_screen.dart';
+import 'package:hethongchamcong_mobile/screen/main_screen.dart';
 
 class SlideCustomRoute<T> extends MaterialPageRoute<T> {
   final String routeName;
@@ -40,9 +40,9 @@ SlideCustomRoute initialSlideRoutes(RouteSettings settings) {
           builder: (_) => new LoginScreen(),
           settings: settings,
           routeName: Constants.login_screen);
-    case Constants.main_screen:
+    case Constants.home_screen:
       return new SlideCustomRoute(
-          builder: (_) => new HomeScreen(
+          builder: (_) => new MainScreen(
                 title: "Welcome to Flutter app",
               ),
           settings: settings,
@@ -52,6 +52,13 @@ SlideCustomRoute initialSlideRoutes(RouteSettings settings) {
           builder: (_) => new AccountScreen(),
           settings: settings,
           routeName: Constants.main_screen);
+
+    case Constants.check_in_screen:
+      return new SlideCustomRoute(
+          builder: (_) => new MainScreen(),
+          settings: settings,
+          routeName: Constants.check_in_screen);
+
   }
   return new SlideCustomRoute(
       builder: (_) => new LoginScreen(),

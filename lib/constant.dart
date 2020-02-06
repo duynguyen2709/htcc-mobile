@@ -5,9 +5,12 @@ class Constants {
   static const String main_screen = "/main";
   static const String register_screen = "/register";
   static const String account_screen = "/account";
+  static const String check_in_screen = "/checkin";
+  static const String home_screen = "/home";
 
   static String userName = "";
   static String password = "";
+  static String checkIn = "Điểm Danh";
   static String hintUserName = "Email or phone";
   static String hintPassword = "Password";
 

@@ -16,7 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   ProgressDialog pr;
 
   void _login() async {
-    Navigator.pushNamed(context, Constants.account_screen);
+    Navigator.pushReplacementNamed(context, Constants.home_screen);
 //    SharedPreferences prefs = await SharedPreferences.getInstance();
 //    await prefs.setString(Constants.isLogin, "true");
       _showLoadingDialog();
