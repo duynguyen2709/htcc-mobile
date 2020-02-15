@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:hethongchamcong_mobile/constant.dart';
+import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/presenter/base_presenter.dart';
 
 abstract class SplashContract extends BaseContract {

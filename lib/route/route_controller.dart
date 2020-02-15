@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hethongchamcong_mobile/screen/account_screen.dart';
-import '../constant.dart';
-import 'package:hethongchamcong_mobile/screen/login_screen.dart';
+import 'package:hethongchamcong_mobile/screen/account/account_screen.dart';
 import 'package:hethongchamcong_mobile/screen/home_screen.dart';
+import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
+
+import '../config/constant.dart';
 
 class SlideCustomRoute<T> extends MaterialPageRoute<T> {
   final String routeName;

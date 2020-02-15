@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:hethongchamcong_mobile/config/app_color.dart';
+import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/route/route_controller.dart';
-import 'package:hethongchamcong_mobile/screen/splash_screen.dart';
+import 'package:hethongchamcong_mobile/screen/account/account_screen.dart';
+import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent ,
-    statusBarBrightness: Brightness.light,
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  bool isLogin = sharedPreferences.getBool(Constants.IS_LOGIN);
+  if (isLogin == null) isLogin = false;
+  runApp(MyApp(
+    isLogin: isLogin,
   ));
-  runApp(MyApp());
-} 
+}
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  final bool isLogin;
+
+  MyApp({this.isLogin});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,9 +28,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       onGenerateRoute: initialSlideRoutes,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        backgroundColor: Colors.white,
+        accentColor: Color(AppColor.accentColor),
       ),
-      home: SplashScreen(),
+      home: isLogin ? AccountScreen() : LoginScreen(),
     );
   }
 }
