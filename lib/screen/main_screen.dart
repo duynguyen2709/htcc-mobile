@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hethongchamcong_mobile/model/account.dart';
 import 'package:hethongchamcong_mobile/screen/account_screen.dart';
+import 'package:hethongchamcong_mobile/screen/check_in_screen.dart';
 import 'package:hethongchamcong_mobile/screen/home_screen.dart';
 import 'package:hethongchamcong_mobile/widget/avatar_info_home.dart';
 import 'package:hethongchamcong_mobile/widget/custom_section_home.dart';
@@ -20,8 +21,9 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedPage = 0;
   AccountModel _accountModel;
+  final PageStorageBucket bucket = PageStorageBucket();
   final _pageOptions = [
-    HomeScreen(),
+    CheckInLocationPage(  key: PageStorageKey('CheckInScreen'),),
     Center( child: Text("Notification screen")),
     AccountScreen()
   ];
@@ -45,7 +47,10 @@ class _MainScreenState extends State<MainScreen> {
     // than having to individually change instances of widgets.
     return Scaffold(
       backgroundColor: Color(0xFFE0E0E0),
-      body: _pageOptions[_selectedPage],
+      body:  IndexedStack(
+        index: _selectedPage,
+        children: _pageOptions,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedPage,
         onTap: (int index) {
