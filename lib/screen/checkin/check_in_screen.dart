@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 
@@ -28,11 +29,6 @@ class CheckInLocationPage extends StatefulWidget {
 class _CheckInLocationPageState extends State<CheckInLocationPage> {
 
   Position _companyPosition = Position(latitude: 10.762622, longitude: 106.660172);
-
-//  Position(latitude: 37.4219983, longitude:  -122.084);
-
-  //    Position(latitude: 10.8347688, longitude: 106.6877281);
-  //Lat: 37.4219983, Long: -122.084
   Position _curPosition = Position();
   bool isInCompanyZone = false;
   Timer _timer;
@@ -171,16 +167,13 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                   AppBar(
                     backgroundColor: Color(0xEE65beac),
                     title: Text("Điểm Danh"),
-                    leading: IconButton(
-                        icon: Icon(Icons.arrow_back),
-                        onPressed: () {
-                          _timer.cancel();
-                          Navigator.pop(context);
-                        }),
                     actions: <Widget>[
                       IconButton(
                         icon: Icon(Icons.camera_alt),
                         disabledColor: Colors.white,
+                        onPressed: (){
+                          Navigator.pushNamed(context, Constants.check_in_camera_screen);
+                        },
                       )
                     ],
                     centerTitle: true,

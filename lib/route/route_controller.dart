@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hethongchamcong_mobile/screen/account_screen.dart';
-import '../constant.dart';
-import 'package:hethongchamcong_mobile/screen/login_screen.dart';
+import 'package:hethongchamcong_mobile/screen/cameracheckin/check_in_camera_screen.dart';
+import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen.dart';
 import 'package:hethongchamcong_mobile/screen/main_screen.dart';
+import 'package:hethongchamcong_mobile/screen/account/account_screen.dart';
+import 'package:hethongchamcong_mobile/screen/home_screen.dart';
+import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
+import '../config/constant.dart';
 
 class SlideCustomRoute<T> extends MaterialPageRoute<T> {
   final String routeName;
@@ -55,13 +58,17 @@ SlideCustomRoute initialSlideRoutes(RouteSettings settings) {
 
     case Constants.check_in_screen:
       return new SlideCustomRoute(
-          builder: (_) => new MainScreen(),
+          builder: (_) => new CheckInLocationPage(),
           settings: settings,
           routeName: Constants.check_in_screen);
-
+    case Constants.check_in_camera_screen:
+      return new SlideCustomRoute(
+          builder: (_) => new CheckInCameraPage(),
+          settings: settings,
+          routeName: Constants.check_in_camera_screen);
   }
   return new SlideCustomRoute(
-      builder: (_) => new LoginScreen(),
+      builder: (_) =>  LoginScreen(),
       settings: settings,
       routeName: Constants.login_screen);
 }

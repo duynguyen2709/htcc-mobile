@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/widget/avatar_info_home.dart';
 import 'package:hethongchamcong_mobile/widget/custom_section_home.dart';
-
-import '../constant.dart';
 
 class HomeScreen extends StatefulWidget{
   @override

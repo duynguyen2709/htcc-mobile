@@ -1,4 +1,5 @@
 class Constants {
+  //Route
   static const String ic_logo = "assets/logo.png";
   static const String isLogin = "";
   static const String login_screen = "/login";
@@ -6,29 +7,37 @@ class Constants {
   static const String register_screen = "/register";
   static const String account_screen = "/account";
   static const String check_in_screen = "/checkin";
+  static const String check_in_camera_screen = "/checkin/camera";
   static const String home_screen = "/home";
 
+  //Shared preference
+  static const String IS_LOGIN = "islogin";
+
+  //UI
   static String userName = "";
+
   static String password = "";
+
   static String checkIn = "Điểm Danh";
   static String hintUserName = "Email or phone";
+
   static String hintPassword = "Password";
 
   static String forgotPassword = "Forgot password";
 
-  static var code = "Code";
+  static String code = "Code";
 
   static String buttonLogin = "Login";
 
-  static var loading = "Please wait...";
+  static String loading = "Please wait...";
 
-  static var messageErrorDialog = "Email/phone or password is incorrected";
+  static String messageErrorDialog = "Email/phone or password is incorrected";
 
   static String buttonErrorDialog = "Ok";
 
   static String titleErrorDialog = "Error";
 
-  static var titleAppBarAccountScreen = "Personal details";
+  static String titleAppBarAccountScreen = "Personal details";
 
   static String phone = "phone: ";
 
@@ -36,4 +45,9 @@ class Constants {
 
   static String buttonSave = "Save";
 
+  static String titleErrorUserName = "Tên đăng nhập rỗng";
+
+  static String titleErrorPassword = "Mật khẩu rỗng";
+
+  static String titleErrorCode = "Code rỗng";
 }
