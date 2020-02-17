@@ -83,11 +83,4 @@ mixin _$AccountScreenStore on _AccountScreenStore, Store {
   Future getAccount() {
     return _$getAccountAsyncAction.run(() => super.getAccount());
   }
-
-  @override
-  String toString() {
-    final string =
-        'isLoading: ${isLoading.toString()},accountData: ${accountData.toString()},edit: ${edit.toString()},error: ${error.toString()}';
-    return '{$string}';
-  }
 }

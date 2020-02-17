@@ -49,11 +49,4 @@ mixin _$LoginScreenStore on _LoginScreenStore, Store {
   Future login() {
     return _$loginAsyncAction.run(() => super.login());
   }
-
-  @override
-  String toString() {
-    final string =
-        'isLoading: ${isLoading.toString()},checkLogin: ${checkLogin.toString()}';
-    return '{$string}';
-  }
 }

@@ -7,6 +7,9 @@ import 'package:hethongchamcong_mobile/screen/home_screen.dart';
 import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
 import 'package:hethongchamcong_mobile/screen/main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hethongchamcong_mobile/screen/account/account_screen.dart';
+import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +33,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       onGenerateRoute: initialSlideRoutes,
       theme: ThemeData(
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.white,
         accentColor: Color(AppColor.accentColor),
       ),
       home: isLogin ? MainScreen() : LoginScreen(),
