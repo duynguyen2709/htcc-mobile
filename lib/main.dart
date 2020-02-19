@@ -3,7 +3,7 @@ import 'package:hethongchamcong_mobile/config/app_color.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/route/route_controller.dart';
 import 'package:hethongchamcong_mobile/screen/account/account_screen.dart';
-import 'package:hethongchamcong_mobile/screen/home_screen.dart';
+import 'file:///E:/FinalProject/lib/screen/more/more_screen.dart';
 import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
 import 'package:hethongchamcong_mobile/screen/main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
