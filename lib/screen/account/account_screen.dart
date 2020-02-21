@@ -4,8 +4,11 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/remote/account/model/AccountResponse.dart';
 import 'package:hethongchamcong_mobile/screen/account/account_screen_store.dart';
+import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:wave/config.dart';
+import 'package:wave/wave.dart';
 
 class AccountScreen extends StatefulWidget {
   @override
@@ -84,19 +87,40 @@ class _AccountScreenState extends State<AccountScreen> {
                 color: Colors.blue,
                 height: MediaQuery.of(context).size.height / 2,
                 width: MediaQuery.of(context).size.width,
-                child: Image(
-                    fit: BoxFit.fill,
-                    image: AssetImage('assets/login_header.png')),
+                child: WaveWidget(
+                  config: CustomConfig(
+                    gradients: [
+                      [Colors.blueAccent, Colors.lightBlue],
+                      [Colors.lightBlueAccent, Colors.blue],
+                    ],
+                    durations: [8000, 5000],
+                    heightPercentages: [0.4, 0.42],
+                    gradientBegin: Alignment.topLeft,
+                    gradientEnd: Alignment.topRight,
+                  ),
+                  waveAmplitude: 10,
+                  backgroundColor: Colors.blue,
+                  size: Size(MediaQuery.of(context).size.width,
+                      MediaQuery.of(context).size.height),
+                ),
               )
             ],
           ),
           Observer(
             builder: (_) {
-              if (accountScreenStore.isLoading) {
+              if (accountScreenStore.isShimmering) {
                 return _buildLoading();
               } else {
                 return _buildSuccess(accountScreenStore.accountData);
               }
+            },
+          ),
+          Observer(
+            builder: (BuildContext context) {
+              if (accountScreenStore.isLoading) {
+                return LoadingScreen();
+              }
+              return Center();
             },
           ),
         ],
@@ -112,8 +136,7 @@ class _AccountScreenState extends State<AccountScreen> {
             AppBar(
               leading: IconButton(
                 icon: new Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () => Navigator.pushReplacementNamed(
-                    context, Constants.login_screen),
+                onPressed: () => Navigator.pop(context),
               ),
               backgroundColor: Colors.blue,
               title: Text(Constants.titleAppBarAccountScreen),
@@ -170,78 +193,49 @@ class _AccountScreenState extends State<AccountScreen> {
                 child: ListView(
                   children: <Widget>[
                     ListTile(
-                        title: Row(
-                      children: <Widget>[
-                        Container(
-                          width: 40,
-                        ),
-                        Icon(Icons.account_box),
-                        Container(
-                          width: 20,
-                        ),
-                        Expanded(child: Text("Gender")),
-                        Shimmer.fromColors(
-                            child: Container(
-                              color: Colors.red,
-                              width: 40,
-                              height: 15,
-                            ),
-                            baseColor: Colors.grey[300],
-                            highlightColor: Colors.white),
-                        Container(
-                          width: 40,
-                        ),
-                      ],
-                    )),
-                    ListTile(
-                      title: Row(
-                        children: <Widget>[
-                          Container(
-                            width: 40,
-                          ),
-                          Icon(Icons.account_box),
-                          Container(
-                            width: 20,
-                          ),
-                          Expanded(child: Text("Age")),
-                          Shimmer.fromColors(
-                              child: Container(
-                                color: Colors.red,
-                                width: 40,
-                                height: 15,
-                              ),
-                              baseColor: Colors.grey[300],
-                              highlightColor: Colors.white),
-                          Container(
-                            width: 40,
-                          ),
-                        ],
+                      leading: Icon(Icons.account_box),
+                      title: Text(
+                        "Gender",
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
+                      trailing: Shimmer.fromColors(
+                          child: Container(
+                            color: Colors.red,
+                            width: 100,
+                            height: 15,
+                          ),
+                          baseColor: Colors.grey[300],
+                          highlightColor: Colors.white),
                     ),
                     ListTile(
-                      title: Row(
-                        children: <Widget>[
-                          Container(
-                            width: 40,
-                          ),
-                          Icon(Icons.account_box),
-                          Container(
-                            width: 20,
-                          ),
-                          Expanded(child: Text("City")),
-                          Shimmer.fromColors(
-                              child: Container(
-                                color: Colors.red,
-                                width: 40,
-                                height: 15,
-                              ),
-                              baseColor: Colors.grey[300],
-                              highlightColor: Colors.white),
-                          Container(
-                            width: 40,
-                          ),
-                        ],
+                      leading: Icon(Icons.account_box),
+                      title: Text(
+                        "Gender",
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
+                      trailing: Shimmer.fromColors(
+                          child: Container(
+                            color: Colors.red,
+                            width: 100,
+                            height: 15,
+                          ),
+                          baseColor: Colors.grey[300],
+                          highlightColor: Colors.white),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.account_box),
+                      title: Text(
+                        "Gender",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      trailing: Shimmer.fromColors(
+                          child: Container(
+                            color: Colors.red,
+                            width: 100,
+                            height: 15,
+                          ),
+                          baseColor: Colors.grey[300],
+                          highlightColor: Colors.white),
                     ),
                   ],
                 ),
@@ -270,29 +264,20 @@ class _AccountScreenState extends State<AccountScreen> {
                 child: ListView(
                   children: <Widget>[
                     ListTile(
-                        title: Row(
-                      children: <Widget>[
-                        Container(
-                          width: 40,
-                        ),
-                        Icon(Icons.account_box),
-                        Container(
-                          width: 20,
-                        ),
-                        Expanded(child: Text("Note")),
-                        Shimmer.fromColors(
-                            child: Container(
-                              color: Colors.red,
-                              width: 40,
-                              height: 15,
-                            ),
-                            baseColor: Colors.grey[300],
-                            highlightColor: Colors.white),
-                        Container(
-                          width: 40,
-                        ),
-                      ],
-                    )),
+                      leading: Icon(Icons.account_box),
+                      title: Text(
+                        "Gender",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      trailing: Shimmer.fromColors(
+                          child: Container(
+                            color: Colors.red,
+                            width: 100,
+                            height: 15,
+                          ),
+                          baseColor: Colors.grey[300],
+                          highlightColor: Colors.white),
+                    ),
                   ],
                 ),
                 padding: EdgeInsets.all(10),
@@ -301,37 +286,6 @@ class _AccountScreenState extends State<AccountScreen> {
             Container(
               height: 40,
             ),
-//            Row(
-//              mainAxisAlignment: MainAxisAlignment.spaceAround,
-//              children: <Widget>[
-//                RaisedButton(
-//                  textColor: Color(AppColor.accentColor),
-//                  color: Colors.white,
-//                  child: Padding(
-//                    padding: const EdgeInsets.all(20),
-//                    child: Text(Constants.buttonCancel),
-//                  ),
-//                  onPressed: () {},
-//                  shape: RoundedRectangleBorder(
-//                      borderRadius: BorderRadius.circular(18.0),
-//                      side: BorderSide(
-//                          color: Color(AppColor.accentColor), width: 5)),
-//                ),
-//                RaisedButton(
-//                  textColor: Colors.white,
-//                  color: Color(AppColor.accentColor),
-//                  child: Padding(
-//                    padding: const EdgeInsets.all(20),
-//                    child: Text(Constants.buttonSave),
-//                  ),
-//                  onPressed: () {},
-//                  shape: RoundedRectangleBorder(
-//                      borderRadius: new BorderRadius.circular(18.0),
-//                      side: BorderSide(
-//                          color: Color(AppColor.accentColor), width: 5)),
-//                ),
-//              ],
-//            )
           ],
         ),
       ),
@@ -348,28 +302,11 @@ class _AccountScreenState extends State<AccountScreen> {
             children: <Widget>[
               AppBar(
                 leading: IconButton(
-                  icon: new Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () => Navigator.pop(context)
-                ),
+                    icon: new Icon(Icons.arrow_back, color: Colors.white),
+                    onPressed: () => Navigator.pop(context)),
                 backgroundColor: Colors.blue,
                 title: Text(Constants.titleAppBarAccountScreen),
                 centerTitle: true,
-                actions: <Widget>[
-                  Observer(
-                      builder: (BuildContext context) => (accountScreenStore
-                                  .edit ==
-                              false)
-                          ? IconButton(
-                              icon: new Icon(Icons.edit, color: Colors.white),
-                              onPressed: () {
-                                accountScreenStore.edit = true;
-                              },
-                            )
-                          : IconButton(
-                              icon: new Icon(Icons.check, color: Colors.white),
-                              onPressed: () {},
-                            ))
-                ],
               ),
               Container(
                 margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -399,6 +336,7 @@ class _AccountScreenState extends State<AccountScreen> {
               ),
               Container(
                 margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                 decoration: new BoxDecoration(
                     color: Colors.white, //n
                     boxShadow: [
@@ -417,75 +355,55 @@ class _AccountScreenState extends State<AccountScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     ListTile(
-                        title: Row(
-                      children: <Widget>[
-                        Container(
-                          width: 40,
-                        ),
-                        Icon(Icons.account_box),
-                        Container(
-                          width: 20,
-                        ),
-                        Expanded(child: Text("Gender")),
-                        Observer(
-                            builder: (BuildContext context) => Expanded(
-                                    child: TextField(
+                      leading: Icon(Icons.account_box),
+                      title: Text(
+                        "Gender",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      trailing: Observer(
+                          builder: (BuildContext context) => Container(
+                                width: MediaQuery.of(context).size.width / 3,
+                                height: 20,
+                                child: TextField(
                                   enabled: accountScreenStore.edit,
                                   controller: _controller1,
                                   textAlign: TextAlign.center,
-                                ))),
-                        Container(
-                          width: 40,
-                        ),
-                      ],
-                    )),
-                    ListTile(
-                      title: Row(
-                        children: <Widget>[
-                          Container(
-                            width: 40,
-                          ),
-                          Icon(Icons.account_box),
-                          Container(
-                            width: 20,
-                          ),
-                          Expanded(child: Text("Age")),
-                          Observer(
-                              builder: (BuildContext context) => Expanded(
-                                      child: TextField(
-                                    enabled: accountScreenStore.edit,
-                                    controller: _controller2,
-                                    textAlign: TextAlign.center,
-                                  ))),
-                          Container(
-                            width: 40,
-                          ),
-                        ],
-                      ),
+                                ),
+                              )),
                     ),
                     ListTile(
-                      title: Row(
-                        children: <Widget>[
-                          Container(
-                            width: 40,
-                          ),
-                          Icon(Icons.account_box),
-                          Container(
-                            width: 20,
-                          ),
-                          Expanded(child: Text("City")),
-                          Observer(
-                              builder: (BuildContext context) => Expanded(
-                                      child: TextField(
-                                    enabled: accountScreenStore.edit,
-                                    controller: _controller3,
-                                    textAlign: TextAlign.center,
-                                  ))),
-                          Container(
-                            width: 40,
-                          ),
-                        ],
+                      leading: Icon(Icons.account_box),
+                      title: Text(
+                        "Gender",
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
+                      trailing: Observer(
+                          builder: (BuildContext context) => Container(
+                                width: MediaQuery.of(context).size.width / 3,
+                                height: 20,
+                                child: TextField(
+                                  enabled: accountScreenStore.edit,
+                                  controller: _controller2,
+                                  textAlign: TextAlign.center,
+                                ),
+                              )),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.account_box),
+                      title: Text(
+                        "Gender",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      trailing: Observer(
+                          builder: (BuildContext context) => Container(
+                                width: MediaQuery.of(context).size.width / 3,
+                                height: 20,
+                                child: TextField(
+                                  enabled: accountScreenStore.edit,
+                                  controller: _controller3,
+                                  textAlign: TextAlign.center,
+                                ),
+                              )),
                     ),
                   ],
                 ),
@@ -494,6 +412,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 height: 40,
               ),
               Container(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                 decoration: new BoxDecoration(
                     color: Colors.white, //n
                     boxShadow: [
@@ -512,65 +431,46 @@ class _AccountScreenState extends State<AccountScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     ListTile(
-                        title: Row(
-                      children: <Widget>[
-                        Container(
-                          width: 40,
-                        ),
-                        Icon(Icons.account_box),
-                        Container(
-                          width: 20,
-                        ),
-                        Expanded(child: Text("Note")),
-                        Observer(
-                            builder: (BuildContext context) => Expanded(
-                                    child: TextField(
+                      leading: Icon(Icons.account_box),
+                      title: Text(
+                        "Gender",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      trailing: Observer(
+                          builder: (BuildContext context) => Container(
+                                width: MediaQuery.of(context).size.width / 3,
+                                height: 20,
+                                child: TextField(
                                   enabled: accountScreenStore.edit,
                                   controller: _controller4,
                                   textAlign: TextAlign.center,
-                                ))),
-                        Container(
-                          width: 40,
-                        ),
-                      ],
-                    )),
+                                ),
+                              )),
+                    ),
                   ],
                 ),
               ),
-              Container(
+              SizedBox(
+                height: 20,
+              ),
+              Observer(
+                  builder: (BuildContext context) =>
+                      (accountScreenStore.edit == false)
+                          ? RaisedButton(
+                              child: Text("Sửa thông tin"),
+                              onPressed: () {
+                                accountScreenStore.edit = true;
+                              },
+                            )
+                          : RaisedButton(
+                              child: Text("Cập nhật"),
+                              onPressed: () {
+                                accountScreenStore.getAccount();
+                              },
+                            )),
+              SizedBox(
                 height: 40,
               ),
-//              Row(
-//                mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                children: <Widget>[
-//                  RaisedButton(
-//                    textColor: Color(AppColor.accentColor),
-//                    color: Colors.white,
-//                    child: Padding(
-//                      padding: const EdgeInsets.all(20),
-//                      child: Text(Constants.buttonCancel),
-//                    ),
-//                    onPressed: () {},
-//                    shape: RoundedRectangleBorder(
-//                        borderRadius: BorderRadius.circular(18.0),
-//                        side: BorderSide(
-//                            color: Color(AppColor.accentColor), width: 5)),
-//                  ),
-//                  RaisedButton(
-//                    textColor: Colors.white,
-//                    color: Color(AppColor.accentColor),
-//                    child: Padding(
-//                      padding: const EdgeInsets.all(20),
-//                      child: Text(Constants.buttonSave),
-//                    ),
-//                    onPressed: () {},
-//                    shape: RoundedRectangleBorder(
-//                        borderRadius: new BorderRadius.circular(18.0),
-//                        side: BorderSide(
-//                            color: Color(AppColor.accentColor), width: 5)),
-//                  ),
-//                ],
-//              )
             ],
           ),
         ),
