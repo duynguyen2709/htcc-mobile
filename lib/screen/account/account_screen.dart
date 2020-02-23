@@ -349,8 +349,7 @@ class _AccountScreenState extends State<AccountScreen> {
               AppBar(
                 leading: IconButton(
                   icon: new Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () => Navigator.pushReplacementNamed(
-                      context, Constants.login_screen),
+                  onPressed: () => Navigator.pop(context)
                 ),
                 backgroundColor: Colors.blue,
                 title: Text(Constants.titleAppBarAccountScreen),

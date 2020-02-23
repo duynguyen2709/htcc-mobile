@@ -3,7 +3,6 @@ import 'package:hethongchamcong_mobile/screen/cameracheckin/check_in_camera_scre
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen.dart';
 import 'package:hethongchamcong_mobile/screen/main_screen.dart';
 import 'package:hethongchamcong_mobile/screen/account/account_screen.dart';
-import 'file:///E:/FinalProject/lib/screen/more/more_screen.dart';
 import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
 import '../config/constant.dart';
 
