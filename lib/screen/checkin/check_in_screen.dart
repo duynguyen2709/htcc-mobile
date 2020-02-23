@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
@@ -27,8 +28,8 @@ class CheckInLocationPage extends StatefulWidget {
 }
 
 class _CheckInLocationPageState extends State<CheckInLocationPage> {
-
-  Position _companyPosition = Position(latitude: 10.762622, longitude: 106.660172);
+  Position _companyPosition =
+      Position(latitude: 10.762622, longitude: 106.660172);
   Position _curPosition = Position();
   bool isInCompanyZone = false;
   Timer _timer;
@@ -61,14 +62,18 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
         _curPosition.longitude);
     if (this.mounted) {
       if (distance * 1000 <= 1000) {
-        setState(() {
-          isInCompanyZone = true;
-        });
+        if (mounted) {
+          setState(() {
+            isInCompanyZone = true;
+          });
+        }
       } else {
-        setState(() {
-          metersToCompanyZone = distance;
-          isInCompanyZone = false;
-        });
+        if (mounted) {
+          setState(() {
+            metersToCompanyZone = distance;
+            isInCompanyZone = false;
+          });
+        }
       }
     } else {
       _timer.cancel();
@@ -142,129 +147,78 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     // than having to individually change instances of widgets.
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
           child: Stack(
+        children: <Widget>[
+          WaveWidget(
+            config: CustomConfig(
+              gradients: [
+                [Colors.blueAccent, Colors.lightBlue],
+                [Colors.lightBlueAccent, Colors.blue],
+              ],
+              durations: [8000, 5000],
+              heightPercentages: [0.4, 0.42],
+              gradientBegin: Alignment.topLeft,
+              gradientEnd: Alignment.topRight,
+            ),
+            waveAmplitude: 10,
+            backgroundColor: Colors.blue,
+            size: Size(MediaQuery.of(context).size.width,
+                MediaQuery.of(context).size.height / 3.25),
+          ),
+          Column(
             children: <Widget>[
-              WaveWidget(
-                config: CustomConfig(
-                  gradients: [
-                    [Color(0xEE6eded0), Color(0xEE6eded0)],
-                    [Color(0xEE66d0bd), Color(0xEE66d0bd)],
-                  ],
-                  durations: [20000, 19440],
-                  heightPercentages: [0.5, 0.55],
-                  blur: MaskFilter.blur(BlurStyle.solid, 10),
-                  gradientBegin: Alignment.bottomLeft,
-                  gradientEnd: Alignment.topRight,
-                ),
-                waveAmplitude: 0,
-                backgroundColor: Color(0xEE65beac),
-                size: Size(MediaQuery.of(context).size.width,
-                    MediaQuery.of(context).size.height / 2.8),
-              ),
-              Column(
-                children: <Widget>[
-                  AppBar(
-                    backgroundColor: Color(0xEE65beac),
-                    title: Text("Điểm Danh"),
-                    actions: <Widget>[
-                      IconButton(
-                        icon: Icon(Icons.camera_alt),
-                        disabledColor: Colors.white,
-                        onPressed: (){
-                          Navigator.pushNamed(context, Constants.check_in_camera_screen);
-                        },
-                      )
-                    ],
-                    centerTitle: true,
-                  ),
-                  Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(now.replaceAll("AM", "").replaceAll("PM", ""),
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 40,
-                                fontWeight: FontWeight.bold)),
-                        Text(followingHours != -1 ? "AM" : "PM",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                    margin: EdgeInsets.fromLTRB(
-                        0, MediaQuery.of(context).size.height / 15, 0, 0),
-                  ),
-                  Container(
-                    child: Text(
-                        DayOfWeek[DateTime.now().weekday] +
-                            ", " +
-                            DateTime.now().day.toString() +
-                            "/" +
-                            DateTime.now().month.toString() +
-                            "/" +
-                            DateTime.now().year.toString(),
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(now.replaceAll("AM", "").replaceAll("PM", ""),
                         style: TextStyle(
                             color: Colors.black,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w500)),
-                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  ),
-                  Container(
-                    height: 100,
-                  ),
-                  Center(
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                                color:
-                                isInCompanyZone ? _checkInColor : _disableColor,
-                                width: 2)),
-                        child: Padding(
-                          padding: EdgeInsets.all(3),
-                          child: Stack(
-                            alignment: AlignmentDirectional.center,
-                            children: <Widget>[
-                              ClipOval(
-                                child: WaveWidget(
-                                  config: CustomConfig(
-                                    gradients: isInCompanyZone
-                                        ? _checkInGradient
-                                        : _disableGradient,
-                                    durations: [20000, 19440],
-                                    heightPercentages: [0.5, 0.55],
-                                    blur: MaskFilter.blur(BlurStyle.solid, 10),
-                                    gradientBegin: Alignment.bottomLeft,
-                                    gradientEnd: Alignment.topRight,
-                                  ),
-                                  waveAmplitude: 0,
-                                  backgroundColor: isInCompanyZone
-                                      ? _checkInColor
-                                      : _disableColor,
-                                  size: Size(
-                                      MediaQuery.of(context).size.width / 2.5,
-                                      MediaQuery.of(context).size.width / 2.5),
-                                ),
-                              ),
-                              Text("Điểm danh",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 25)),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (!isInCompanyZone)
-                    Column(
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold)),
+                    Text(followingHours != -1 ? "AM" : "PM",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                margin: EdgeInsets.fromLTRB(
+                    0, MediaQuery.of(context).size.height / 7, 0, 0),
+              ),
+              Container(
+                child: Text(
+                    DayOfWeek[DateTime.now().weekday] +
+                        ", " +
+                        DateTime.now().day.toString() +
+                        "/" +
+                        DateTime.now().month.toString() +
+                        "/" +
+                        DateTime.now().year.toString(),
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500)),
+                margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+              ),
+              Container(
+                height: 50,
+              ),
+              Container(
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16))),
+              ),
+              Center(
+                child: CheckInButton,
+              ),
+              (!isInCompanyZone && metersToCompanyZone != null)
+                  ? Column(
                       children: <Widget>[
                         Container(
                           height: 30,
@@ -272,49 +226,124 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                         Center(
                           child: Padding(
                             child: Text(
-                              "Khoảng cách đến vị trí điểm danh hợp lệ : " +
-                                  metersToCompanyZone.toString() +
-                                  " m",
-                              textAlign: TextAlign.center,
-                            ),
+                                "Khoảng cách đến vị trí điểm danh hợp lệ : " +
+                                    metersToCompanyZone.toStringAsFixed(2) +
+                                    " m",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 15)),
                             padding: EdgeInsets.fromLTRB(36, 0, 36, 0),
                           ),
                         )
                       ],
+                    )
+                  : Container(
+                      height: 0,
                     ),
-                  Container(height: 20),
-                  Container(
-                    child: Text(
+              Container(height: 40),
+              Container(
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      height: 10,
+                      width: 10,
+                      margin: EdgeInsets.fromLTRB(0, 0, 16, 0),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.blue),
+                    ),
+                    Text(
                       "Đã điểm danh đầu ca - 8h30",
                       textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 16),
                     ),
-                    margin: EdgeInsets.all(16),
-                    padding: EdgeInsets.only(bottom: 16),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        border: Border(
-                            bottom: BorderSide(
-                                color: Colors.grey.withAlpha(70), width: 1))),
-                  ),
-                  Container(
-                    child: Text(
-                      "Đã điểm danh đầu ca - 8h30",
-                      textAlign: TextAlign.start,
-                    ),
-                    margin: EdgeInsets.all(16),
-                    padding: EdgeInsets.only(bottom: 16),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        border: Border(
-                            bottom: BorderSide(
-                                color: Colors.grey.withAlpha(70), width: 1))),
-                  )
-                ],
+                  ],
+                ),
+                margin: EdgeInsets.all(16),
+                padding: EdgeInsets.only(bottom: 16),
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    border: Border(
+                        bottom: BorderSide(
+                            color: Colors.grey.withAlpha(70), width: 1))),
               ),
+              Container(
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      height: 10,
+                      width: 10,
+                      margin: EdgeInsets.fromLTRB(0, 0, 16, 0),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: Color(0xEEf3ba00)),
+                    ),
+                    Text(
+                      "Đã điểm danh cuối ca - 17h30",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+                margin: EdgeInsets.all(16),
+                padding: EdgeInsets.only(bottom: 16),
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    border: Border(
+                        bottom: BorderSide(
+                            color: Colors.grey.withAlpha(70), width: 1))),
+              ),
+              Container(
+                height: 50,
+              )
             ],
-          )),
+          ),
+        ],
+      )),
+    );
+  }
+
+  Widget get CheckInButton {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+                color: isInCompanyZone ? _checkInColor : _disableColor,
+                width: 2)),
+        child: Padding(
+          padding: EdgeInsets.all(3),
+          child: Stack(
+            alignment: AlignmentDirectional.center,
+            children: <Widget>[
+              ClipOval(
+                child: WaveWidget(
+                  config: CustomConfig(
+                    gradients:
+                        isInCompanyZone ? _checkInGradient : _disableGradient,
+                    durations: [20000, 19440],
+                    heightPercentages: [0.5, 0.55],
+                    blur: MaskFilter.blur(BlurStyle.solid, 10),
+                    gradientBegin: Alignment.bottomLeft,
+                    gradientEnd: Alignment.topRight,
+                  ),
+                  waveAmplitude: 0,
+                  backgroundColor:
+                      isInCompanyZone ? _checkInColor : _disableColor,
+                  size: Size(MediaQuery.of(context).size.width / 2.5,
+                      MediaQuery.of(context).size.width / 2.5),
+                ),
+              ),
+              Text("Điểm danh",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25)),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
