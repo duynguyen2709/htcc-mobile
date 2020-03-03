@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen.dart';
+import 'package:hethongchamcong_mobile/screen/leaving/leaving_screen.dart';
 import 'package:hethongchamcong_mobile/screen/more/more_screen.dart';
-
-import 'account/account_screen.dart';
 
 class MainScreen extends StatefulWidget {
   final String title;
@@ -21,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
     CheckInLocationPage(
       key: PageStorageKey('CheckInScreen'),
     ),
-    Center(child: Text("Leaving screen")),
+    Center(child: LeavingScreen()),
     Center(child: Text("Statistic screen")),
     Center(child: Text("Notification screen")),
     MoreScreen()
@@ -45,17 +44,12 @@ class _MainScreenState extends State<MainScreen> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+      bottomNavigationBar: bottomNavigationBar,
       body: Stack(
         children: <Widget>[
           IndexedStack(
             index: _selectedPage,
             children: _pageOptions,
-          ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: bottomNavigationBar,
           ),
         ],
       ),

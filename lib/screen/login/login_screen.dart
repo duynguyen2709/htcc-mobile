@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -282,7 +284,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 actions: [
                   FlatButton(
                     child: Text('Yes'),
-                    onPressed: () => Navigator.pop(c, true),
+                    onPressed: () => exit(0),
                   ),
                   FlatButton(
                     child: Text('No'),
