@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/leaving_screen.dart';
 import 'package:hethongchamcong_mobile/screen/more/more_screen.dart';
+import 'statistic/statisic_screen.dart';
 
 class MainScreen extends StatefulWidget {
   final String title;
@@ -21,7 +22,7 @@ class _MainScreenState extends State<MainScreen> {
       key: PageStorageKey('CheckInScreen'),
     ),
     Center(child: LeavingScreen()),
-    Center(child: Text("Statistic screen")),
+    StatisticScreen(),
     Center(child: Text("Notification screen")),
     MoreScreen()
   ];

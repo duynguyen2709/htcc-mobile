@@ -204,10 +204,10 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                 margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
               ),
               Container(
-                height: 50,
+                height: 30,
               ),
               Container(
-                height: 50,
+                height: 70,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(

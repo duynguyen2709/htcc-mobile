@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Section extends StatelessWidget {
-  final Icon leading;
+  final StatelessWidget leading;
   final String title;
   final bool following;
   final Function() onTap;
@@ -12,28 +12,15 @@ class Section extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      child: ListTile(
-          title: Row(
-        children: <Widget>[
-          Container(
-            width: 20,
-          ),
-          Icon(Icons.person),
-          Container(
-            width: 20,
-          ),
-          Expanded(
-              child: Text(
-            "Thông tin cá nhân",
-            style: TextStyle(fontSize: 18),
-          )),
-          Icon(Icons.arrow_forward_ios),
-          Container(
-            width: 20,
-          )
-        ],
-      )),
-      onTap: ()=> onTap(),
+      child: Container(
+        margin: EdgeInsets.fromLTRB(16, 4, 8, 2),
+        child: ListTile(
+          leading: leading,
+          title: Text(title),
+          trailing: following? Icon(Icons.arrow_forward_ios, color: Colors.black,) : null,
+        ),
+      ),
+      onTap: () => onTap(),
       splashColor: Colors.grey,
     );
   }
