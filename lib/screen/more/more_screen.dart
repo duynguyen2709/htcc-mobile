@@ -61,7 +61,10 @@ class _MoreScreenState extends State<MoreScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Section(
-                      leading: Icon(Icons.person),
+                      leading: Icon(
+                        Icons.person,
+                        color: Colors.black,
+                      ),
                       title: "Thông tin cá nhân",
                       following: true,
                       onTap: () => {
@@ -69,64 +72,37 @@ class _MoreScreenState extends State<MoreScreen> {
                                 context, Constants.account_screen)
                           }),
                   Section(
-                      leading: Icon(Icons.lock_outline),
+                      leading: Icon(Icons.lock_outline,color: Colors.black,),
                       title: "Đổi mật khẩu",
-                      following: true,
+                      following: false,
+                      onTap: () => {
+                            Navigator.pushNamed(
+                                context, Constants.password_screen)
+                          }),
+                  Section(
+                      leading: Icon(Icons.contacts,color: Colors.black,),
+                      title: "Danh bạ công ty",
+                      following: false,
                       onTap: () => {
                         Navigator.pushNamed(
-                            context, Constants.password_screen)
+                            context, Constants.account_screen)
                       }),
-                  ListTile(
-                      title: Row(
-                    children: <Widget>[
-                      Container(
-                        width: 20,
-                      ),
-                      Icon(Icons.contacts),
-                      Container(
-                        width: 20,
-                      ),
-                      Expanded(
-                          child: Text(
-                        "Danh bạ công ty",
-                        style: TextStyle(fontSize: 18),
-                      )),
-                    ],
-                  )),
-                  ListTile(
-                      title: Row(
-                    children: <Widget>[
-                      Container(
-                        width: 20,
-                      ),
-                      ImageIcon(AssetImage("./assets/payroll.png")),
-                      Container(
-                        width: 20,
-                      ),
-                      Expanded(
-                          child: Text(
-                        "Quản lý bảng lương",
-                        style: TextStyle(fontSize: 18),
-                      )),
-                    ],
-                  )),
-                  ListTile(
-                      title: Row(
-                    children: <Widget>[
-                      Container(
-                        width: 20,
-                      ),
-                      ImageIcon(AssetImage("./assets/complaint.png")),
-                      Container(
-                        width: 20,
-                      ),
-                      Expanded(
-                          child: Text(
-                        "Góp ý - Khiếu nại",
-                        style: TextStyle(fontSize: 18),
-                      )),
-                    ],
-                  )),
+                  Section(
+                      leading: ImageIcon(AssetImage("./assets/payroll.png"),color: Colors.black,),
+                      title: "Quản lý bảng lương",
+                      following: false,
+                      onTap: () => {
+                        Navigator.pushNamed(
+                            context, Constants.account_screen)
+                      }),
+                  Section(
+                      leading: ImageIcon(AssetImage("./assets/complaint.png"),color: Colors.black,),
+                      title: "Góp ý - Khiếu nại",
+                      following: false,
+                      onTap: () => {
+                        Navigator.pushNamed(
+                            context, Constants.account_screen)
+                      }),
                 ],
               ),
             ),
@@ -147,46 +123,22 @@ class _MoreScreenState extends State<MoreScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  ListTile(
-                      title: Row(
-                    children: <Widget>[
-                      Container(
-                        width: 20,
-                      ),
-                      Icon(Icons.info_outline),
-                      Container(
-                        width: 20,
-                      ),
-                      Expanded(
-                          child: Text(
-                        "Về ứng dụng",
-                        style: TextStyle(fontSize: 18),
-                      )),
-                    ],
-                  )),
-                  ListTile(
-                      title: Row(
-                    children: <Widget>[
-                      Container(
-                        width: 20,
-                      ),
-                      Icon(Icons.exit_to_app),
-                      Container(
-                        width: 20,
-                      ),
-                      Expanded(
-                          child: Text(
-                        "Đăng xuất",
-                        style: TextStyle(fontSize: 18),
-                      )),
-                    ],
-                  ),
-                  onTap: () {
-                    SharedPreferences.getInstance().then((pref){
-                      pref.setBool(Constants.IS_LOGIN, false);
-                      Navigator.pushReplacementNamed(context, Constants.login_screen);
-                    });
-                  },),
+                  Section(
+                      leading:  Icon(Icons.info_outline,color: Colors.black,),
+                      title: "Về ứng dụng",
+                      following: false,
+                      onTap: () => {
+                        Navigator.pushNamed(
+                            context, Constants.account_screen)
+                      }),
+                  Section(
+                      leading:  Icon(Icons.exit_to_app,color: Colors.black,),
+                      title: "Đăng xuất",
+                      following: false,
+                      onTap: () => {
+                        Navigator.pushNamed(
+                            context, Constants.account_screen)
+                      }),
                 ],
               ),
             ),
