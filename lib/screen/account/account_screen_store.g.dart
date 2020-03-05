@@ -26,6 +26,23 @@ mixin _$AccountScreenStore on _AccountScreenStore, Store {
     }, _$isLoadingAtom, name: '${_$isLoadingAtom.name}_set');
   }
 
+  final _$isShimmeringAtom = Atom(name: '_AccountScreenStore.isShimmering');
+
+  @override
+  bool get isShimmering {
+    _$isShimmeringAtom.context.enforceReadPolicy(_$isShimmeringAtom);
+    _$isShimmeringAtom.reportObserved();
+    return super.isShimmering;
+  }
+
+  @override
+  set isShimmering(bool value) {
+    _$isShimmeringAtom.context.conditionallyRunInAction(() {
+      super.isShimmering = value;
+      _$isShimmeringAtom.reportChanged();
+    }, _$isShimmeringAtom, name: '${_$isShimmeringAtom.name}_set');
+  }
+
   final _$accountDataAtom = Atom(name: '_AccountScreenStore.accountData');
 
   @override

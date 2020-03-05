@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widget/section.dart';
 import 'package:hethongchamcong_mobile/widget/avatar_info_home.dart';
 
@@ -73,7 +74,7 @@ class _MoreScreenState extends State<MoreScreen> {
                       following: true,
                       onTap: () => {
                         Navigator.pushNamed(
-                            context, Constants.account_screen)
+                            context, Constants.password_screen)
                       }),
                   ListTile(
                       title: Row(
@@ -179,7 +180,13 @@ class _MoreScreenState extends State<MoreScreen> {
                         style: TextStyle(fontSize: 18),
                       )),
                     ],
-                  )),
+                  ),
+                  onTap: () {
+                    SharedPreferences.getInstance().then((pref){
+                      pref.setBool(Constants.IS_LOGIN, false);
+                      Navigator.pushReplacementNamed(context, Constants.login_screen);
+                    });
+                  },),
                 ],
               ),
             ),

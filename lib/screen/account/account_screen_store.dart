@@ -14,6 +14,9 @@ abstract class _AccountScreenStore with Store {
   bool isLoading = false;
 
   @observable
+  bool isShimmering = true;
+
+  @observable
   AccountData accountData;
 
   @observable
@@ -25,6 +28,8 @@ abstract class _AccountScreenStore with Store {
   @action
   getAccount() async {
     isLoading = true;
+    if (isShimmering == false)
+      isShimmering = true;
     try {
       var response = await Injector.accountRepository.getAccount();
       switch (response.runtimeType) {
@@ -33,21 +38,31 @@ abstract class _AccountScreenStore with Store {
             accountData = response.data as AccountData;
             log("Success Model");
             isLoading = false;
+            isShimmering = false;
             break;
           }
         case ErrorModel:
           {
             log("Error Model");
             isLoading = false;
+            isShimmering = false;
             //fake data error
-            accountData = AccountData(linkAvatar: "",name: "",phone: "",gender: "",age: ",",city: "");
-            error = true;
+            accountData = AccountData(
+                linkAvatar: "",
+                name: "",
+                phone: "",
+                gender: "",
+                age: ",",
+                city: "");
+            error = false;
             break;
           }
       }
       isLoading = false;
+      isShimmering = false;
     } catch (error) {
       isLoading = false;
+      isShimmering = false;
     }
   }
 }
