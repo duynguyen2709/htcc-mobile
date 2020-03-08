@@ -2,7 +2,9 @@ import 'package:dio/dio.dart';
 
 class DioManager {
   static final DioManager _instance = DioManager._internal();
-  static const BASE_URL = "http://beautiful-me-app.posapp.vn/api/";
+  static const BASE_URL = "https://1612145.online/";
+  static const PATH_LOGIN = "api/gateway/public/login";
+  static const PATH_LOGOUT = "/api/gateway/private/logout/1";
 
   Dio dio;
 
@@ -16,6 +18,6 @@ class DioManager {
         connectTimeout: 10000,
         responseType: ResponseType.json,
         sendTimeout: 10000));
-    dio.interceptors.add(LogInterceptor(responseBody: true));
+    dio.interceptors.add(LogInterceptor(responseBody: true, requestBody: true));
   }
 }

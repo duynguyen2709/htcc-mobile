@@ -1,39 +1,49 @@
+// To parse this JSON data, do
+//
+//     final loginResponse = loginResponseFromJson(jsonString);
+
+import 'dart:convert';
+
+LoginResponse loginResponseFromJson(String str) => LoginResponse.fromJson(json.decode(str));
+
+String loginResponseToJson(LoginResponse data) => json.encode(data.toJson());
+
 class LoginResponse {
-  String status;
-  String message;
-  LoginData data;
+  int returnCode;
+  String returnMessage;
+  Data data;
 
   LoginResponse({
-    this.status,
-    this.message,
+    this.returnCode,
+    this.returnMessage,
     this.data,
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
-        status: json["status"],
-        message: json["message"],
-        data: LoginData.fromJson(json["data"]),
-      );
+    returnCode: json["returnCode"],
+    returnMessage: json["returnMessage"],
+    data: Data.fromJson(json["data"]),
+  );
 
   Map<String, dynamic> toJson() => {
-        "status": status,
-        "message": message,
-        "data": data.toJson(),
-      };
+    "returnCode": returnCode,
+    "returnMessage": returnMessage,
+    "data": data.toJson(),
+  };
 }
 
-class LoginData {
-  String a;
+class Data {
+  String token;
 
-  LoginData({
-    this.a,
+  Data({
+    this.token,
   });
 
-  factory LoginData.fromJson(Map<String, dynamic> json) => LoginData(
-        a: json["a"],
-      );
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+    token: json["token"],
+  );
 
   Map<String, dynamic> toJson() => {
-        "a": a,
-      };
+    "token": token,
+  };
 }

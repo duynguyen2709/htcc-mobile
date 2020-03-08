@@ -14,6 +14,10 @@ class Constants {
 
   //Shared preference
   static const String IS_LOGIN = "islogin";
+  static const String TOKEN = "token";
+  static const String USERNAME = "username";
+
+  //Status Model
 
   //UI
   static String userName = "";
@@ -21,15 +25,15 @@ class Constants {
   static String password = "";
 
   static String checkIn = "Điểm Danh";
-  static String hintUserName = "Email or phone";
+  static String hintUserName = "Email hoặc điện thoại";
 
-  static String hintPassword = "Password";
+  static String hintPassword = "Mật khẩu";
 
-  static String forgotPassword = "Forgot password";
+  static String forgotPassword = "Quên mật khẩu?";
 
-  static String code = "Code";
+  static String code = "Mã";
 
-  static String buttonLogin = "Login";
+  static String buttonLogin = "Đăng nhập";
 
   static String loading = "Please wait...";
 
@@ -37,7 +41,7 @@ class Constants {
 
   static String buttonErrorDialog = "Ok";
 
-  static String titleErrorDialog = "Error";
+  static String titleErrorDialog = "Thông báo";
 
   static String titleAppBarAccountScreen = "Personal details";
 

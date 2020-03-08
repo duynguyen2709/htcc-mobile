@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hethongchamcong_mobile/injector/injector.dart';
 import '../widget/section.dart';
 import 'package:hethongchamcong_mobile/widget/avatar_info_home.dart';
 
@@ -135,9 +135,11 @@ class _MoreScreenState extends State<MoreScreen> {
                       leading:  Icon(Icons.exit_to_app,color: Colors.black,),
                       title: "Đăng xuất",
                       following: false,
-                      onTap: () => {
-                        Navigator.pushNamed(
-                            context, Constants.account_screen)
+                      onTap: () async {
+                         await Injector.loginRepository.logout();
+                          Navigator.pushNamed(context, Constants.login_screen);
+//                        Navigator.pushNamed(
+//                            context, Constants.account_screen)
                       }),
                 ],
               ),
