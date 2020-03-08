@@ -5,7 +5,7 @@ class LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.transparent,
+      color: Colors.black26,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -13,14 +13,14 @@ class LoadingScreen extends StatelessWidget {
             color: Colors.blue,
             size: 50.0,
           ),
-          Text(
-            'Đang xử lý',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-              decoration: TextDecoration.none,
-            ),
-          )
+//          Text(
+//            'Đang xử lý',
+//            style: TextStyle(
+//              fontSize: 20,
+//              color: Colors.white,
+//              fontWeight: FontWeight.bold
+//            ),
+//          )
         ],
       ),
     );

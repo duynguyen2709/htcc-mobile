@@ -15,11 +15,16 @@ abstract class _LoginScreenStore with Store {
   @observable
   bool checkLogin;
 
+  @observable
+  String errorMessage;
+
   @action
-  login() async {
+  login(String userName, String password, String companyId) async {
     isLoading = true;
+    errorMessage = null;
+    checkLogin = null;
     try {
-      var response = await Injector.loginRepository.login();
+      var response = await Injector.loginRepository.login(userName, password, companyId);
       switch (response.runtimeType) {
         case SuccessModel:
           {
@@ -29,8 +34,29 @@ abstract class _LoginScreenStore with Store {
           }
         case ErrorModel:
           {
-            log("Error Model");
-            checkLogin = false;
+            switch (response.message) {
+              case Status.LOGIN_FAIL:
+                {
+                  log("Error Model");
+                  errorMessage = "Thông tin đăng nhập không chính xác!";
+                  checkLogin = false;
+                  break;
+                }
+              case Status.ERROR_NETWORK:
+                {
+                  log("Error Model");
+                  errorMessage = "Lỗi kết nối!";
+                  checkLogin = false;
+                  break;
+                }
+              default:
+                {
+                  errorMessage = "Thông tin đăng nhập không chính xác!";
+                  log("Error Model");
+                  checkLogin = false;
+                  break;
+                }
+            }
             break;
           }
       }

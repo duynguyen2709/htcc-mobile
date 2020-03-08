@@ -43,10 +43,28 @@ mixin _$LoginScreenStore on _LoginScreenStore, Store {
     }, _$checkLoginAtom, name: '${_$checkLoginAtom.name}_set');
   }
 
+  final _$errorMessageAtom = Atom(name: '_LoginScreenStore.errorMessage');
+
+  @override
+  String get errorMessage {
+    _$errorMessageAtom.context.enforceReadPolicy(_$errorMessageAtom);
+    _$errorMessageAtom.reportObserved();
+    return super.errorMessage;
+  }
+
+  @override
+  set errorMessage(String value) {
+    _$errorMessageAtom.context.conditionallyRunInAction(() {
+      super.errorMessage = value;
+      _$errorMessageAtom.reportChanged();
+    }, _$errorMessageAtom, name: '${_$errorMessageAtom.name}_set');
+  }
+
   final _$loginAsyncAction = AsyncAction('login');
 
   @override
-  Future login() {
-    return _$loginAsyncAction.run(() => super.login());
+  Future login(String userName, String password, String companyId) {
+    return _$loginAsyncAction
+        .run(() => super.login(userName, password, companyId));
   }
 }
