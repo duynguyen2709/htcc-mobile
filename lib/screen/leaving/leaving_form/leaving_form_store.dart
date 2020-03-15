@@ -19,7 +19,7 @@ abstract class _LeavingFormStore with Store {
 
   init(){
     events = {
-      DateTime(2020, 2, 1): ['New Year\'s Day'],
+      DateTime(2020, 3, 15): ['New Year\'s Day'],
       DateTime(2020, 2, 2): ['New Year\'s Day'],
       DateTime(2020, 2, 6): ['Epiphany'],
       DateTime(2020, 2, 14): ['Valentine\'s Day'],

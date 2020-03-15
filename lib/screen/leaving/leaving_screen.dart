@@ -40,22 +40,6 @@ class _LeavingScreenState extends State<LeavingScreen> {
       appBar: AppBar(
         title: Text("Xem lịch"),
         centerTitle: true,
-        flexibleSpace: WaveWidget(
-          config: CustomConfig(
-            gradients: [
-              [Colors.blueAccent, Colors.lightBlue],
-              [Colors.lightBlueAccent, Colors.blue],
-            ],
-            durations: [8000, 5000],
-            heightPercentages: [0.4, 0.42],
-            gradientBegin: Alignment.topLeft,
-            gradientEnd: Alignment.topRight,
-          ),
-          waveAmplitude: 10,
-          backgroundColor: Colors.blue,
-          size: Size(MediaQuery.of(context).size.width,
-              MediaQuery.of(context).size.height / 3.25),
-        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.assignment),
@@ -73,25 +57,13 @@ class _LeavingScreenState extends State<LeavingScreen> {
               if (leavingStore.infoLeaving != null) {
                 return InfoLeavingScreen();
               } else {
-                if (leavingStore.shouldRetry)
-                  return RetryScreen(refresh: _refresh);
+                if (leavingStore.shouldRetry) return RetryScreen(refresh: _refresh);
                 return EmptyScreen(refresh: _refresh);
               }
             },
           )
         ],
       ),
-//      body: Column(
-//        mainAxisSize: MainAxisSize.max,
-//        children: <Widget>[
-//          // Switch out 2 lines below to play with TableCalendar's settings
-//          //-----------------------
-//          _buildTableCalendarWithBuilders(),
-//          // _buildTableCalendarWithBuilders(),
-//          const SizedBox(height: 8.0),
-//          _buildButtons(),
-//        ],
-//      ),
     );
   }
 

@@ -11,6 +11,7 @@ class Constants {
   static const String home_screen = "/home";
   static const String password_screen = "/password";
   static const String leaving_form_screen = "/leavingform";
+  static const String detail_leaving_screen = "/detailleaving";
 
   //Shared preference
   static const String IS_LOGIN = "islogin";

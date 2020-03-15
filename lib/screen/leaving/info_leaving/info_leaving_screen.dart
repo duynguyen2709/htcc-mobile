@@ -32,177 +32,369 @@ class _InfoLeavingScreenState extends State<InfoLeavingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: _refresh,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: RichText(
-              text: TextSpan(
-                style: Theme.of(context).textTheme.body1,
-                children: [
-                  WidgetSpan(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                      child: Icon(Icons.date_range),
+    return NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return <Widget>[
+          SliverList(
+            delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+              return Column(
+                children: <Widget>[
+                  Container(
+                    color: Colors.white,
+                    child: Align(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: RichText(
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.body1,
+                            children: [
+                              WidgetSpan(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                                  child: Icon(Icons.date_range),
+                                ),
+                              ),
+                              TextSpan(
+                                text: 'Ngày nghỉ trong năm',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      alignment: Alignment.centerLeft,
                     ),
                   ),
-                  TextSpan(
-                    text: 'Ngày nghỉ trong năm',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(10.0),
-            margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(20),
-                )),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        "17",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
-                      ),
-                      Text(
-                        "Tổng",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        "17",
-                        style: TextStyle(
-                            color: Colors.pink,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                      ),
-                      Text(
-                        "Đã nghỉ",
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        "17",
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                      ),
-                      Text(
-                        "Còn lại",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    height: 50,
+                  Container(
+                    padding: const EdgeInsets.all(10.0),
+                    margin: const EdgeInsets.only(left: 10.0, right: 10.0),
                     decoration: BoxDecoration(
-                      border: Border(
-                        left: BorderSide(color: Colors.black),
-                      ),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        )),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                "17",
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              Text(
+                                "Tổng",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                "17",
+                                style: TextStyle(color: Colors.pink, fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              Text(
+                                "Đã nghỉ",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                "17",
+                                style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              Text(
+                                "Còn lại",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                left: BorderSide(color: Colors.black),
+                              ),
+                            ),
+                            child: PieChart(
+                              dataMap: dataMap,
+                              animationDuration: Duration(milliseconds: 800),
+                              showChartValuesInPercentage: false,
+                              showChartValues: false,
+                              showChartValuesOutside: false,
+                              showChartValueLabel: false,
+                              chartLegendSpacing: 1,
+                              showLegends: false,
+                              chartRadius: MediaQuery.of(context).size.width / 2.7,
+                              chartValueBackgroundColor: Colors.deepPurple,
+                              colorList: colorList,
+                              legendPosition: LegendPosition.right,
+                              decimalPlaces: 0,
+                              initialAngle: 0,
+                              chartValueStyle: defaultChartValueStyle.copyWith(
+                                color: Colors.blueGrey[900].withOpacity(0.9),
+                              ),
+                              chartType: ChartType.ring,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    child: PieChart(
-                      dataMap: dataMap,
-                      animationDuration: Duration(milliseconds: 800),
-                      showChartValuesInPercentage: false,
-                      showChartValues: false,
-                      showChartValuesOutside: false,
-                      showChartValueLabel: false,
-                      chartLegendSpacing: 1,
-                      showLegends: false,
-                      chartRadius: MediaQuery.of(context).size.width / 2.7,
-                      chartValueBackgroundColor: Colors.deepPurple,
-                      colorList: colorList,
-                      legendPosition: LegendPosition.right,
-                      decimalPlaces: 0,
-                      initialAngle: 0,
-                      chartValueStyle: defaultChartValueStyle.copyWith(
-                        color: Colors.blueGrey[900].withOpacity(0.9),
-                      ),
-                      chartType: ChartType.ring,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: RichText(
-              text: TextSpan(
-                style: Theme.of(context).textTheme.body1,
-                children: [
-                  WidgetSpan(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                      child: Icon(Icons.date_range),
-                    ),
-                  ),
-                  TextSpan(
-                    text: 'Chi tiết',
-                    style: TextStyle(fontSize: 18),
                   ),
                 ],
-              ),
-            ),
+              );
+            }, childCount: 1),
           ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(10.0),
-              margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  )),
-              child: ListView.builder(
-                physics: AlwaysScrollableScrollPhysics(),
-                itemCount: 6,
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    title: Text("cả ngày"),
-                    subtitle: Text("cả ngày"),
-                  );
-                },
-              ),
-            ),
+          SliverPersistentHeader(
+            pinned: true,
+            floating: true,
+            delegate: TitleDetailList(),
           ),
-        ],
+        ];
+      },
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: Container(
+          padding: EdgeInsets.all(8),
+          child: ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: 50,
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              return ListTile(
+                title: Text("cả ngày"),
+                subtitle: Text("cả ngày"),
+              );
+            },
+          ),
+        ),
+//        child: Column(
+//          crossAxisAlignment: CrossAxisAlignment.start,
+//          children: <Widget>[
+//            Padding(
+//              padding: const EdgeInsets.all(20.0),
+//              child: RichText(
+//                text: TextSpan(
+//                  style: Theme.of(context).textTheme.body1,
+//                  children: [
+//                    WidgetSpan(
+//                      child: Padding(
+//                        padding: const EdgeInsets.symmetric(horizontal: 2.0),
+//                        child: Icon(Icons.date_range),
+//                      ),
+//                    ),
+//                    TextSpan(
+//                      text: 'Ngày nghỉ trong năm',
+//                      style: TextStyle(fontSize: 18),
+//                    ),
+//                  ],
+//                ),
+//              ),
+//            ),
+//            Container(
+//              padding: const EdgeInsets.all(10.0),
+//              margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+//              decoration: BoxDecoration(
+//                  color: Colors.white,
+//                  borderRadius: BorderRadius.all(
+//                    Radius.circular(20),
+//                  )),
+//              child: Row(
+//                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                children: <Widget>[
+//                  Expanded(
+//                    child: Column(
+//                      children: <Widget>[
+//                        Text(
+//                          "17",
+//                          style: TextStyle(
+//                              fontWeight: FontWeight.bold, fontSize: 18),
+//                        ),
+//                        Text(
+//                          "Tổng",
+//                          style: TextStyle(
+//                            fontWeight: FontWeight.bold,
+//                          ),
+//                        )
+//                      ],
+//                    ),
+//                  ),
+//                  Expanded(
+//                    child: Column(
+//                      children: <Widget>[
+//                        Text(
+//                          "17",
+//                          style: TextStyle(
+//                              color: Colors.pink,
+//                              fontWeight: FontWeight.bold,
+//                              fontSize: 18),
+//                        ),
+//                        Text(
+//                          "Đã nghỉ",
+//                          style: TextStyle(
+//                            color: Colors.red,
+//                            fontWeight: FontWeight.bold,
+//                          ),
+//                        )
+//                      ],
+//                    ),
+//                  ),
+//                  Expanded(
+//                    child: Column(
+//                      children: <Widget>[
+//                        Text(
+//                          "17",
+//                          style: TextStyle(
+//                              color: Colors.blue,
+//                              fontWeight: FontWeight.bold,
+//                              fontSize: 18),
+//                        ),
+//                        Text(
+//                          "Còn lại",
+//                          style: TextStyle(
+//                            fontWeight: FontWeight.bold,
+//                          ),
+//                        )
+//                      ],
+//                    ),
+//                  ),
+//                  Expanded(
+//                    child: Container(
+//                      height: 50,
+//                      decoration: BoxDecoration(
+//                        border: Border(
+//                          left: BorderSide(color: Colors.black),
+//                        ),
+//                      ),
+//                      child: PieChart(
+//                        dataMap: dataMap,
+//                        animationDuration: Duration(milliseconds: 800),
+//                        showChartValuesInPercentage: false,
+//                        showChartValues: false,
+//                        showChartValuesOutside: false,
+//                        showChartValueLabel: false,
+//                        chartLegendSpacing: 1,
+//                        showLegends: false,
+//                        chartRadius: MediaQuery.of(context).size.width / 2.7,
+//                        chartValueBackgroundColor: Colors.deepPurple,
+//                        colorList: colorList,
+//                        legendPosition: LegendPosition.right,
+//                        decimalPlaces: 0,
+//                        initialAngle: 0,
+//                        chartValueStyle: defaultChartValueStyle.copyWith(
+//                          color: Colors.blueGrey[900].withOpacity(0.9),
+//                        ),
+//                        chartType: ChartType.ring,
+//                      ),
+//                    ),
+//                  ),
+//                ],
+//              ),
+//            ),
+//            Padding(
+//              padding: const EdgeInsets.all(20.0),
+//              child: RichText(
+//                text: TextSpan(
+//                  style: Theme.of(context).textTheme.body1,
+//                  children: [
+//                    WidgetSpan(
+//                      child: Padding(
+//                        padding: const EdgeInsets.symmetric(horizontal: 2.0),
+//                        child: Icon(Icons.date_range),
+//                      ),
+//                    ),
+//                    TextSpan(
+//                      text: 'Chi tiết',
+//                      style: TextStyle(fontSize: 18),
+//                    ),
+//                  ],
+//                ),
+//              ),
+//            ),
+//            Expanded(
+//              child: Container(
+//                padding: const EdgeInsets.all(10.0),
+//                margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+//                decoration: BoxDecoration(
+//                    color: Colors.white,
+//                    borderRadius: BorderRadius.all(
+//                      Radius.circular(20),
+//                    )),
+//                child: ListView.builder(
+//                  physics: AlwaysScrollableScrollPhysics(),
+//                  itemCount: 6,
+//                  shrinkWrap: true,
+//                  itemBuilder: (BuildContext context, int index) {
+//                    return ListTile(
+//                      title: Text("cả ngày"),
+//                      subtitle: Text("cả ngày"),
+//                    );
+//                  },
+//                ),
+//              ),
+//            ),
+//          ],
+//        ),
       ),
     );
   }
 
   Future<void> _refresh() async {}
+}
+
+class TitleDetailList extends SliverPersistentHeaderDelegate {
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: RichText(
+          text: TextSpan(
+            style: Theme.of(context).textTheme.body1,
+            children: [
+              WidgetSpan(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                  child: Icon(Icons.date_range),
+                ),
+              ),
+              TextSpan(
+                text: 'Chi tiết',
+                style: TextStyle(fontSize: 18),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  double get maxExtent => 70.0;
+
+  @override
+  double get minExtent => 70.0;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    return false;
+  }
 }
