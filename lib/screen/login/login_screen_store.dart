@@ -24,7 +24,7 @@ abstract class _LoginScreenStore with Store {
     errorMessage = null;
     checkLogin = null;
     try {
-      var response = await Injector.loginRepository.login(userName, password, companyId);
+      var response = await Injector.authRepository.login(userName, password, companyId);
       switch (response.runtimeType) {
         case SuccessModel:
           {

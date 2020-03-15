@@ -5,6 +5,7 @@ class DioManager {
   static const BASE_URL = "https://1612145.online/";
   static const PATH_LOGIN = "api/gateway/public/login";
   static const PATH_LOGOUT = "/api/gateway/private/logout/1";
+  static const PATH_CHANGE_PASSWORD = "api/gateway/private/changepassword/1";
 
   Dio dio;
 

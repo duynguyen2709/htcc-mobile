@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'login_screen_store.dart';
+part of 'password_screen_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,8 +8,8 @@ part of 'login_screen_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$LoginScreenStore on _LoginScreenStore, Store {
-  final _$isLoadingAtom = Atom(name: '_LoginScreenStore.isLoading');
+mixin _$PasswordScreenStore on _PasswordScreenStore, Store {
+  final _$isLoadingAtom = Atom(name: '_PasswordScreenStore.isLoading');
 
   @override
   bool get isLoading {
@@ -26,24 +26,24 @@ mixin _$LoginScreenStore on _LoginScreenStore, Store {
     }, _$isLoadingAtom, name: '${_$isLoadingAtom.name}_set');
   }
 
-  final _$checkLoginAtom = Atom(name: '_LoginScreenStore.checkLogin');
+  final _$isSuccessAtom = Atom(name: '_PasswordScreenStore.isSuccess');
 
   @override
-  bool get checkLogin {
-    _$checkLoginAtom.context.enforceReadPolicy(_$checkLoginAtom);
-    _$checkLoginAtom.reportObserved();
-    return super.checkLogin;
+  bool get isSuccess {
+    _$isSuccessAtom.context.enforceReadPolicy(_$isSuccessAtom);
+    _$isSuccessAtom.reportObserved();
+    return super.isSuccess;
   }
 
   @override
-  set checkLogin(bool value) {
-    _$checkLoginAtom.context.conditionallyRunInAction(() {
-      super.checkLogin = value;
-      _$checkLoginAtom.reportChanged();
-    }, _$checkLoginAtom, name: '${_$checkLoginAtom.name}_set');
+  set isSuccess(bool value) {
+    _$isSuccessAtom.context.conditionallyRunInAction(() {
+      super.isSuccess = value;
+      _$isSuccessAtom.reportChanged();
+    }, _$isSuccessAtom, name: '${_$isSuccessAtom.name}_set');
   }
 
-  final _$errorMessageAtom = Atom(name: '_LoginScreenStore.errorMessage');
+  final _$errorMessageAtom = Atom(name: '_PasswordScreenStore.errorMessage');
 
   @override
   String get errorMessage {
@@ -60,18 +60,19 @@ mixin _$LoginScreenStore on _LoginScreenStore, Store {
     }, _$errorMessageAtom, name: '${_$errorMessageAtom.name}_set');
   }
 
-  final _$loginAsyncAction = AsyncAction('login');
+  final _$changePasswordAsyncAction = AsyncAction('changePassword');
 
   @override
-  Future login(String userName, String password, String companyId) {
-    return _$loginAsyncAction
-        .run(() => super.login(userName, password, companyId));
+  Future changePassword(String userName, String newPassword, String oldPassword,
+      String companyId) {
+    return _$changePasswordAsyncAction.run(() =>
+        super.changePassword(userName, newPassword, oldPassword, companyId));
   }
 
   @override
   String toString() {
     final string =
-        'isLoading: ${isLoading.toString()},checkLogin: ${checkLogin.toString()},errorMessage: ${errorMessage.toString()}';
+        'isLoading: ${isLoading.toString()},isSuccess: ${isSuccess.toString()},errorMessage: ${errorMessage.toString()}';
     return '{$string}';
   }
 }

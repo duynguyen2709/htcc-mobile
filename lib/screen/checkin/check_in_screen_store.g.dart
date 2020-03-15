@@ -25,4 +25,10 @@ mixin _$CheckInStore on _CheckInStore, Store {
       _$isLoadingAtom.reportChanged();
     }, _$isLoadingAtom, name: '${_$isLoadingAtom.name}_set');
   }
+
+  @override
+  String toString() {
+    final string = 'isLoading: ${isLoading.toString()}';
+    return '{$string}';
+  }
 }
