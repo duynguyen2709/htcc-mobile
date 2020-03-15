@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hethongchamcong_mobile/data/remote/leaving/form_date.dart';
 import 'package:hethongchamcong_mobile/screen/account/account_screen.dart';
 import 'package:hethongchamcong_mobile/screen/cameracheckin/check_in_camera_screen.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen.dart';
+import 'package:hethongchamcong_mobile/screen/leaving/detail_leaving/detail_leaving.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/leaving_form/leaving_form.dart';
 import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
 import 'package:hethongchamcong_mobile/screen/main_screen.dart';
@@ -12,14 +14,13 @@ import '../config/constant.dart';
 class SlideCustomRoute<T> extends MaterialPageRoute<T> {
   final String routeName;
 
-  SlideCustomRoute(
-      {WidgetBuilder builder, RouteSettings settings, this.routeName})
+  SlideCustomRoute({WidgetBuilder builder, RouteSettings settings, this.routeName})
       : assert(routeName != null),
         super(builder: builder, settings: settings);
 
   @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child) {
+  Widget buildTransitions(
+      BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
     if (settings.isInitialRoute) return child;
 
     return new SlideTransition(
@@ -42,9 +43,7 @@ SlideCustomRoute initialSlideRoutes(RouteSettings settings) {
   switch (settings.name) {
     case Constants.login_screen:
       return new SlideCustomRoute(
-          builder: (_) => new LoginScreen(),
-          settings: settings,
-          routeName: Constants.login_screen);
+          builder: (_) => new LoginScreen(), settings: settings, routeName: Constants.login_screen);
     case Constants.home_screen:
       return new SlideCustomRoute(
           builder: (_) => new MainScreen(
@@ -54,33 +53,27 @@ SlideCustomRoute initialSlideRoutes(RouteSettings settings) {
           routeName: Constants.main_screen);
     case Constants.account_screen:
       return new SlideCustomRoute(
-          builder: (_) => new AccountScreen(),
-          settings: settings,
-          routeName: Constants.main_screen);
+          builder: (_) => new AccountScreen(), settings: settings, routeName: Constants.main_screen);
 
     case Constants.check_in_screen:
       return new SlideCustomRoute(
-          builder: (_) => new CheckInLocationPage(),
-          settings: settings,
-          routeName: Constants.check_in_screen);
+          builder: (_) => new CheckInLocationPage(), settings: settings, routeName: Constants.check_in_screen);
     case Constants.check_in_camera_screen:
       return new SlideCustomRoute(
-          builder: (_) => new CheckInCameraPage(),
-          settings: settings,
-          routeName: Constants.check_in_camera_screen);
+          builder: (_) => new CheckInCameraPage(), settings: settings, routeName: Constants.check_in_camera_screen);
     case Constants.password_screen:
       return new SlideCustomRoute(
-          builder: (_) => new PasswordScreen(),
-          settings: settings,
-          routeName: Constants.password_screen);
+          builder: (_) => new PasswordScreen(), settings: settings, routeName: Constants.password_screen);
     case Constants.leaving_form_screen:
       return new SlideCustomRoute(
-          builder: (_) => new LeavingFormScreen(),
+          builder: (_) => new LeavingFormScreen(), settings: settings, routeName: Constants.leaving_form_screen);
+    case Constants.detail_leaving_screen:
+      return new SlideCustomRoute(
+          builder: (_) => new DetailLeavingScreen(
+                listFormDate: settings.arguments as List<FormDate>,
+              ),
           settings: settings,
           routeName: Constants.leaving_form_screen);
   }
-  return new SlideCustomRoute(
-      builder: (_) => LoginScreen(),
-      settings: settings,
-      routeName: Constants.login_screen);
+  return new SlideCustomRoute(builder: (_) => LoginScreen(), settings: settings, routeName: Constants.login_screen);
 }
