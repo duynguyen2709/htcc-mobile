@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
-import 'package:hethongchamcong_mobile/data/remote/account/model/AccountResponse.dart';
+import 'package:hethongchamcong_mobile/data/remote/account/model/account_response.dart';
 import 'package:hethongchamcong_mobile/screen/account/account_screen_store.dart';
+import 'package:hethongchamcong_mobile/screen/widget/empty_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
+import 'package:hethongchamcong_mobile/screen/widget/retry_screen.dart';
+import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:wave/config.dart';
-import 'package:wave/wave.dart';
 
 class AccountScreen extends StatefulWidget {
   @override
@@ -20,34 +21,60 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   AccountScreenStore accountScreenStore;
 
-  // Controller TextField
-  TextEditingController _controller1;
-  TextEditingController _controller2;
-  TextEditingController _controller3;
-  TextEditingController _controller4;
+  TextEditingController _controllerId;
+
+  TextEditingController _controllerFullName;
+
+  TextEditingController _controllerBirthDay;
+
+  TextEditingController _controllerPhone;
+
+  TextEditingController _controllerOfficeId;
+
+  TextEditingController _controllerDepartment;
+
+  TextEditingController _controllerEmail;
+
+  TextEditingController _controllerAddress;
 
   @override
   void initState() {
     super.initState();
     accountScreenStore = AccountScreenStore();
-    _controller1 = TextEditingController();
-    _controller2 = TextEditingController();
-    _controller3 = TextEditingController();
-    _controller4 = TextEditingController();
-    accountScreenStore.getAccount();
-    reaction((_) => accountScreenStore.accountData, (AccountData data) {
-      if (data != null) {
-        _controller1.text = data.gender;
-        _controller2.text = data.age;
-        _controller3.text = data.city;
-        _controller4.text = data.age;
-      } else {}
-    });
 
-    reaction((_) => accountScreenStore.error, (bool error) {
+    _controllerId = TextEditingController();
+
+    _controllerFullName = TextEditingController();
+
+    _controllerBirthDay = TextEditingController();
+
+    _controllerPhone = TextEditingController();
+
+    _controllerOfficeId = TextEditingController();
+
+    _controllerDepartment = TextEditingController();
+
+    _controllerEmail = TextEditingController();
+
+    _controllerAddress = TextEditingController();
+
+    accountScreenStore.getAccount();
+
+    reaction((_) => accountScreenStore.errorUpdate, (bool error) {
+      if (error == null) return;
       if (error) {
         _showErrorDialog();
-        accountScreenStore.error = false;
+        accountScreenStore.errorUpdate = null;
+      } else {
+        _showErrorDialog();
+        accountScreenStore.errorUpdate = null;
+      }
+    });
+
+    reaction((_) => accountScreenStore.errorAuthenticate, (bool errorAuthenticate) {
+      if (errorAuthenticate) {
+        _showErrorDialog();
+        Navigator.pushReplacementNamed(context, Constants.login_screen);
       }
     });
   }
@@ -59,7 +86,7 @@ class _AccountScreenState extends State<AccountScreen> {
         // return object of type Dialog
         return AlertDialog(
           title: new Text(Constants.titleErrorDialog),
-          content: new Text(Constants.messageErrorDialog),
+          content: new Text(accountScreenStore.message),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
@@ -77,408 +104,367 @@ class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: Stack(
-        children: <Widget>[
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Container(
-                color: Colors.blue,
-                height: MediaQuery.of(context).size.height / 2,
-                width: MediaQuery.of(context).size.width,
-                child: WaveWidget(
-                  config: CustomConfig(
-                    gradients: [
-                      [Colors.blueAccent, Colors.lightBlue],
-                      [Colors.lightBlueAccent, Colors.blue],
-                    ],
-                    durations: [8000, 5000],
-                    heightPercentages: [0.4, 0.42],
-                    gradientBegin: Alignment.topLeft,
-                    gradientEnd: Alignment.topRight,
-                  ),
-                  waveAmplitude: 10,
-                  backgroundColor: Colors.blue,
-                  size: Size(MediaQuery.of(context).size.width,
-                      MediaQuery.of(context).size.height),
-                ),
-              )
-            ],
-          ),
-          Observer(
-            builder: (_) {
-              if (accountScreenStore.isShimmering) {
-                return _buildLoading();
-              } else {
-                return _buildSuccess(accountScreenStore.accountData);
-              }
-            },
-          ),
-          Observer(
-            builder: (BuildContext context) {
-              if (accountScreenStore.isLoading) {
-                return LoadingScreen();
-              }
-              return Center();
-            },
-          ),
-        ],
-      ),
-    );
+        appBar: AppBar(
+          title: Text("Thông tin cá nhân"),
+          centerTitle: true,
+          actions: <Widget>[
+            Observer(
+              builder: (BuildContext context) {
+                if (accountScreenStore.isConfig)
+                  return IconButton(
+                    icon: Icon(Icons.check),
+                    onPressed: () {
+                      accountScreenStore.updateAccount();
+                    },
+                  );
+                else
+                  return Center();
+              },
+            )
+          ],
+        ),
+        body: Stack(
+          children: <Widget>[
+            Observer(
+              builder: (_) {
+                if (accountScreenStore.errorNetwork)
+                  return RetryScreen(
+                    refresh: _refresh,
+                  );
+                if (accountScreenStore.account == null)
+                  return EmptyScreen(
+                    refresh: _refresh,
+                  );
+                else
+                  return buildSuccess(accountScreenStore.account);
+              },
+            ),
+            Observer(
+              builder: (_) {
+                if (accountScreenStore.isLoading)
+                  return LoadingScreen();
+                else
+                  return Center();
+              },
+            )
+          ],
+        ));
   }
 
-  Widget _buildLoading() {
-    return SafeArea(
-      child: SingleChildScrollView(
+  Widget buildSuccess(Account account) {
+    _controllerId.text = account.employeeId;
+
+    _controllerFullName.text = account.fullName;
+
+    _controllerBirthDay.text = account.birthDate;
+
+    _controllerPhone.text = account.phoneNumber;
+
+    _controllerOfficeId.text = account.officeId;
+
+    _controllerDepartment.text = account.department;
+
+    _controllerEmail.text = account.email;
+
+    _controllerAddress.text = account.address;
+
+    return RefreshIndicator(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Colors.blueAccent, Colors.blue, Colors.lightBlue, Colors.lightBlueAccent]),
+        ),
+        padding: const EdgeInsets.only(top: 8, bottom: 15, left: 8, right: 8),
         child: Column(
           children: <Widget>[
-            AppBar(
-              leading: IconButton(
-                icon: new Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () => Navigator.pop(context),
-              ),
-              backgroundColor: Colors.blue,
-              title: Text(Constants.titleAppBarAccountScreen),
-              centerTitle: true,
-              actions: <Widget>[],
-            ),
-            Shimmer.fromColors(
-                child: Container(
-                  width: 90,
-                  height: 90,
-                  margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: Colors.white),
-                ),
-                baseColor: Colors.grey[300],
-                highlightColor: Colors.white),
-            Shimmer.fromColors(
-                child: Container(
-                  width: 150,
-                  height: 20,
-                  margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                  decoration: BoxDecoration(
-                      shape: BoxShape.rectangle, color: Colors.white),
-                ),
-                baseColor: Colors.grey[300],
-                highlightColor: Colors.white),
-            Shimmer.fromColors(
-                child: Container(
-                  width: 150,
-                  height: 20,
-                  margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                  decoration: BoxDecoration(
-                      shape: BoxShape.rectangle, color: Colors.white),
-                ),
-                baseColor: Colors.grey[300],
-                highlightColor: Colors.white),
             Container(
-              decoration: new BoxDecoration(
-                  color: Colors.white, //n
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.6),
-                      spreadRadius: 5,
-                      blurRadius: 5,
-                      offset: Offset(0, 2), // changes position of shadow
-                    ),
-                  ], // ew Color.fromRGBO(255, 0, 0, 0.0),
-                  borderRadius:
-                      new BorderRadius.all(const Radius.circular(10.0))),
-              height: 200,
-              width: MediaQuery.of(context).size.width * 6 / 7,
-              alignment: Alignment.center,
-              child: Padding(
-                child: ListView(
+              margin: EdgeInsets.fromLTRB(0, 10, 0, 20),
+              width: 90,
+              height: 90,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100.0),
+                  child: FadeInImage.assetNetwork(
+                    placeholder: 'assets/gif/loading.gif',
+                    image: account.avatar,
+                    fit: BoxFit.cover,
+                  )),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
                   children: <Widget>[
-                    ListTile(
-                      leading: Icon(Icons.account_box),
-                      title: Text(
-                        "Gender",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      trailing: Shimmer.fromColors(
-                          child: Container(
-                            color: Colors.red,
-                            width: 100,
-                            height: 15,
-                          ),
-                          baseColor: Colors.grey[300],
-                          highlightColor: Colors.white),
+                    CustomTextField(
+                      boxDecoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                          color: Colors.white),
+                      controller: _controllerId,
+                      labelText: "Mã số nhân viên",
+                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
                     ),
-                    ListTile(
-                      leading: Icon(Icons.account_box),
-                      title: Text(
-                        "Gender",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      trailing: Shimmer.fromColors(
-                          child: Container(
-                            color: Colors.red,
-                            width: 100,
-                            height: 15,
-                          ),
-                          baseColor: Colors.grey[300],
-                          highlightColor: Colors.white),
+                    SizedBox(
+                      height: 10,
                     ),
-                    ListTile(
-                      leading: Icon(Icons.account_box),
-                      title: Text(
-                        "Gender",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      trailing: Shimmer.fromColors(
-                          child: Container(
-                            color: Colors.red,
-                            width: 100,
-                            height: 15,
-                          ),
-                          baseColor: Colors.grey[300],
-                          highlightColor: Colors.white),
+                    CustomSuffixTextField(
+                      controller: _controllerFullName,
+                      labelText: "Họ và tên",
+                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
+                      callbackUpdateStore: (String text) {
+                        accountScreenStore.isConfig = true;
+                        accountScreenStore.account.fullName = text;
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CustomSuffixTextField(
+                      controller: _controllerBirthDay,
+                      labelText: "Ngày sinh",
+                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
+                      callbackUpdateStore: (String text) {
+                        accountScreenStore.isConfig = true;
+                        accountScreenStore.account.birthDate = text;
+                      },
+                      isDate: true,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CustomSuffixTextField(
+                      controller: _controllerPhone,
+                      labelText: "Số điện thoại",
+                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
+                      callbackUpdateStore: (String text) {
+                        accountScreenStore.isConfig = true;
+                        accountScreenStore.account.phoneNumber = text;
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CustomSuffixTextField(
+                      controller: _controllerEmail,
+                      labelText: "Email",
+                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
+                      callbackUpdateStore: (String text) {
+                        accountScreenStore.isConfig = true;
+                        accountScreenStore.account.email = text;
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CustomSuffixTextField(
+                      controller: _controllerAddress,
+                      labelText: "Địa chỉ",
+                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
+                      callbackUpdateStore: (String text) {
+                        accountScreenStore.isConfig = true;
+                        accountScreenStore.account.address = text;
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CustomTextField(
+                      boxDecoration: BoxDecoration(color: Colors.white),
+                      controller: _controllerOfficeId,
+                      labelText: "Mã trụ sở",
+                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CustomTextField(
+                      boxDecoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                          color: Colors.white),
+                      controller: _controllerDepartment,
+                      labelText: "Trụ sở",
+                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
-                padding: EdgeInsets.all(10),
               ),
-            ),
-            Container(
-              height: 40,
-            ),
-            Container(
-              decoration: new BoxDecoration(
-                  color: Colors.white, //n
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.6),
-                      spreadRadius: 5,
-                      blurRadius: 5,
-                      offset: Offset(0, 2), // changes position of shadow
-                    ),
-                  ], // ew Color.fromRGBO(255, 0, 0, 0.0),
-                  borderRadius:
-                      new BorderRadius.all(const Radius.circular(10.0))),
-              height: 75,
-              width: MediaQuery.of(context).size.width * 6 / 7,
-              child: Padding(
-                child: ListView(
-                  children: <Widget>[
-                    ListTile(
-                      leading: Icon(Icons.account_box),
-                      title: Text(
-                        "Gender",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      trailing: Shimmer.fromColors(
-                          child: Container(
-                            color: Colors.red,
-                            width: 100,
-                            height: 15,
-                          ),
-                          baseColor: Colors.grey[300],
-                          highlightColor: Colors.white),
-                    ),
-                  ],
-                ),
-                padding: EdgeInsets.all(10),
-              ),
-            ),
-            Container(
-              height: 40,
             ),
           ],
         ),
-      ),
+      ), onRefresh: _refresh,
     );
   }
 
-  Widget _buildSuccess(AccountData account) {
-    return SafeArea(
-      child: RefreshIndicator(
-        onRefresh: _refresh,
-        child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          child: Column(
-            children: <Widget>[
-              AppBar(
-                leading: IconButton(
-                    icon: new Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Navigator.pop(context)),
-                backgroundColor: Colors.blue,
-                title: Text(Constants.titleAppBarAccountScreen),
-                centerTitle: true,
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                width: 90,
-                height: 90,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100.0),
-                    child: FadeInImage.assetNetwork(
-                      placeholder: 'assets/login_header.png',
-                      image: account.linkAvatar,
-                      fit: BoxFit.cover,
-                    )),
-              ),
-              Text(
-                account.name,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold),
-              ),
-              Text(
-                Constants.phone + account.phone,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                decoration: new BoxDecoration(
-                    color: Colors.white, //n
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.6),
-                        spreadRadius: 5,
-                        blurRadius: 5,
-                        offset: Offset(0, 2), // changes position of shadow
-                      ),
-                    ], // ew Color.fromRGBO(255, 0, 0, 0.0),
-                    borderRadius:
-                        new BorderRadius.all(const Radius.circular(10.0))),
-                height: MediaQuery.of(context).size.height * 2 / 7,
-                width: MediaQuery.of(context).size.width * 6 / 7,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    ListTile(
-                      leading: Icon(Icons.account_box),
-                      title: Text(
-                        "Gender",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      trailing: Observer(
-                          builder: (BuildContext context) => Container(
-                                width: MediaQuery.of(context).size.width / 3,
-                                height: 20,
-                                child: TextField(
-                                  enabled: accountScreenStore.edit,
-                                  controller: _controller1,
-                                  textAlign: TextAlign.center,
-                                ),
-                              )),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.account_box),
-                      title: Text(
-                        "Gender",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      trailing: Observer(
-                          builder: (BuildContext context) => Container(
-                                width: MediaQuery.of(context).size.width / 3,
-                                height: 20,
-                                child: TextField(
-                                  enabled: accountScreenStore.edit,
-                                  controller: _controller2,
-                                  textAlign: TextAlign.center,
-                                ),
-                              )),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.account_box),
-                      title: Text(
-                        "Gender",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      trailing: Observer(
-                          builder: (BuildContext context) => Container(
-                                width: MediaQuery.of(context).size.width / 3,
-                                height: 20,
-                                child: TextField(
-                                  enabled: accountScreenStore.edit,
-                                  controller: _controller3,
-                                  textAlign: TextAlign.center,
-                                ),
-                              )),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                height: 40,
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                decoration: new BoxDecoration(
-                    color: Colors.white, //n
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.6),
-                        spreadRadius: 5,
-                        blurRadius: 5,
-                        offset: Offset(0, 2), // changes position of shadow
-                      ),
-                    ], // ew Color.fromRGBO(255, 0, 0, 0.0),
-                    borderRadius:
-                        new BorderRadius.all(const Radius.circular(10.0))),
-                height: MediaQuery.of(context).size.height * 1 / 9,
-                width: MediaQuery.of(context).size.width * 6 / 7,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    ListTile(
-                      leading: Icon(Icons.account_box),
-                      title: Text(
-                        "Gender",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      trailing: Observer(
-                          builder: (BuildContext context) => Container(
-                                width: MediaQuery.of(context).size.width / 3,
-                                height: 20,
-                                child: TextField(
-                                  enabled: accountScreenStore.edit,
-                                  controller: _controller4,
-                                  textAlign: TextAlign.center,
-                                ),
-                              )),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Observer(
-                  builder: (BuildContext context) =>
-                      (accountScreenStore.edit == false)
-                          ? RaisedButton(
-                              child: Text("Sửa thông tin"),
-                              onPressed: () {
-                                accountScreenStore.edit = true;
-                              },
-                            )
-                          : RaisedButton(
-                              child: Text("Cập nhật"),
-                              onPressed: () {
-                                accountScreenStore.getAccount();
-                              },
-                            )),
-              SizedBox(
-                height: 40,
-              ),
-            ],
-          ),
+  Future<void> _refresh() async {
+    accountScreenStore.refresh();
+  }
+}
+
+class CustomTextField extends StatelessWidget {
+  const CustomTextField(
+      {Key key,
+      @required this.controller,
+      @required this.labelText,
+      @required this.textStyle,
+      @required this.boxDecoration})
+      : super(key: key);
+
+  final TextEditingController controller;
+  final String labelText;
+  final TextStyle textStyle;
+  final BoxDecoration boxDecoration;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: boxDecoration,
+      padding: const EdgeInsets.only(top: 8, bottom: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TextField(
+          enabled: false,
+          style: textStyle,
+          controller: controller,
+          decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(top: 5),
+              labelText: labelText,
+              labelStyle: TextStyle(color: Colors.black45, fontSize: 17),
+              disabledBorder: InputBorder.none),
         ),
       ),
     );
   }
+}
 
-  Future<void> _refresh() {
-    accountScreenStore.getAccount();
+class CustomSuffixTextField extends StatelessWidget {
+  const CustomSuffixTextField(
+      {Key key,
+      @required this.controller,
+      @required this.labelText,
+      @required this.textStyle,
+      this.isDate = false,
+      this.callbackUpdateStore})
+      : super(key: key);
+
+  final TextEditingController controller;
+
+  final String labelText;
+
+  final TextStyle textStyle;
+
+  final bool isDate;
+
+  final Function callbackUpdateStore;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(color: Colors.white),
+        padding: const EdgeInsets.only(top: 8, bottom: 8),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: Colors.black26))),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    enabled: false,
+                    style: textStyle,
+                    controller: controller,
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5),
+                        labelText: labelText,
+                        labelStyle: TextStyle(color: Colors.black45, fontSize: 17),
+                        disabledBorder: InputBorder.none),
+                  ),
+                ),
+                isDate
+                    ? IconButton(
+                        color: Colors.black,
+                        icon: Icon(Icons.date_range),
+                        onPressed: () {
+                          DatePicker.showDatePicker(context, showTitleActions: true, onChanged: (date) {},
+                              onConfirm: (date) {
+                            controller.text = DateFormat('yyyy-MM-dd').format(date);
+                            callbackUpdateStore(controller.text);
+                          }, currentTime: DateTime.now(), locale: LocaleType.vi);
+                        })
+                    : IconButton(
+                        icon: Icon(
+                          Icons.edit,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {
+                          TextEditingController textController = TextEditingController(text: controller.text);
+                          showDialog(
+                              context: context,
+                              child: Dialog(
+                                child: Container(
+                                  height: MediaQuery.of(context).size.height / 3,
+                                  child: Scaffold(
+                                    appBar: AppBar(
+                                      automaticallyImplyLeading: false,
+                                      title: Text("Chỉnh sửa"),
+                                      centerTitle: true,
+                                    ),
+                                    body: Container(
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: TextField(
+                                                style: textStyle,
+                                                controller: textController,
+                                                decoration: InputDecoration(
+                                                    contentPadding: EdgeInsets.only(top: 5),
+                                                    labelText: labelText,
+                                                    labelStyle: TextStyle(color: Colors.black45, fontSize: 15),
+                                                    disabledBorder: InputBorder.none),
+                                              ),
+                                            ),
+                                            Row(
+                                              children: <Widget>[
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: RaisedButton(
+                                                      child: Text("Hủy bỏ"),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: RaisedButton(
+                                                      child: Text("Đồng ý"),
+                                                      onPressed: () {
+                                                        callbackUpdateStore(textController.text);
+                                                        controller.text = textController.text;
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ));
+                        },
+                      )
+              ],
+            ),
+          ),
+        ));
   }
 }

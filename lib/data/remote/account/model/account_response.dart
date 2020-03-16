@@ -1,28 +1,24 @@
-// To parse this JSON data, do
-//
-//     final loginResponse = loginResponseFromJson(jsonString);
-
 import 'dart:convert';
 
-LoginResponse loginResponseFromJson(String str) => LoginResponse.fromJson(json.decode(str));
+AccountResponse accountResponseFromJson(String str) => AccountResponse.fromJson(json.decode(str));
 
-String loginResponseToJson(LoginResponse data) => json.encode(data.toJson());
+String accountResponseToJson(AccountResponse data) => json.encode(data.toJson());
 
-class LoginResponse {
+class AccountResponse {
   int returnCode;
   String returnMessage;
-  Data data;
+  Account data;
 
-  LoginResponse({
+  AccountResponse({
     this.returnCode,
     this.returnMessage,
     this.data,
   });
 
-  factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
+  factory AccountResponse.fromJson(Map<String, dynamic> json) => AccountResponse(
         returnCode: json["returnCode"],
         returnMessage: json["returnMessage"],
-        data: Data.fromJson(json["data"]),
+        data: Account.fromJson(json["data"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -32,27 +28,7 @@ class LoginResponse {
       };
 }
 
-class Data {
-  String token;
-  User user;
-
-  Data({
-    this.token,
-    this.user,
-  });
-
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
-        token: json["token"],
-        user: User.fromJson(json["user"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "token": token,
-        "user": user.toJson(),
-      };
-}
-
-class User {
+class Account {
   String companyId;
   String username;
   String employeeId;
@@ -66,7 +42,7 @@ class User {
   String address;
   String avatar;
 
-  User({
+  Account({
     this.companyId,
     this.username,
     this.employeeId,
@@ -81,7 +57,22 @@ class User {
     this.avatar,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
+  Account.empty() {
+    companyId = "";
+    username = "";
+    employeeId = "";
+    officeId = "";
+    department = "";
+    fullName = "";
+    birthDate = "";
+    email = "";
+    identityCardNo = "";
+    phoneNumber = "";
+    address = "";
+    avatar = "assets/human_error.png";
+  }
+
+  factory Account.fromJson(Map<String, dynamic> json) => Account(
         companyId: json["companyId"],
         username: json["username"],
         employeeId: json["employeeId"],

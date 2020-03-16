@@ -330,15 +330,15 @@ class _LoginScreenState extends State<LoginScreen> {
             return showDialog<bool>(
               context: context,
               builder: (c) => AlertDialog(
-                title: Text('Warning'),
-                content: Text('Do you really want to exit'),
+                title: Text('Thông báo'),
+                content: Text('Bạn có muốn thoát khỏi ứng dụng?'),
                 actions: [
                   FlatButton(
-                    child: Text('Yes'),
+                    child: Text('Có'),
                     onPressed: () => exit(0),
                   ),
                   FlatButton(
-                    child: Text('No'),
+                    child: Text('Không'),
                     onPressed: () {
                       Navigator.pop(c, false);
                     },

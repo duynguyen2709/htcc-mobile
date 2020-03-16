@@ -17,7 +17,26 @@ class Constants {
   static const String IS_LOGIN = "islogin";
   static const String TOKEN = "token";
   static const String USERNAME = "username";
+  static const String COMPANY_ID = "company_id";
+  static const String EMPLOYEE_ID = "employee_id";
+  static const String OFFICE_ID = "office_id";
+  static const String DEPARTMENT = "department";
+  static const String FULL_NAME = "full_name";
+  static const String BIRTH_DATE = 'birth_date';
+  static const String EMAIL = "email";
+  static const String IDENTITY_CARD_NO = "identity_card_no";
+  static const String PHONE_NUMBER = "phone_number";
+  static const String ADDRESS = "address";
+  static const String AVATAR = "avatar";
   static const String CHECK_IN_INFO = "checkin_info";
+
+  //Message Dialog
+
+  static const String MESSAGE_AUTHENTICATE = "Lỗi xác thực!";
+  static const String MESSAGE_NETWORK = "Lỗi kết nối!";
+  static const String MESSAGE_EMPTY = "Dữ liệu không có sẵn!";
+  static const String UPDATE_FAIL = "Cập nhật không thành công!";
+  static const String UPDATE_SUCCESSFUL = "Cập nhật thành công!";
 
   //Status Model
 

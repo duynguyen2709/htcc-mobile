@@ -16,5 +16,6 @@ class ErrorModel extends BaseModel {
 enum Status {
   LOGIN_FAIL,
   ERROR_NETWORK,
-  FAIL
+  FAIL,
+  ERROR_AUTHENTICATE
 }

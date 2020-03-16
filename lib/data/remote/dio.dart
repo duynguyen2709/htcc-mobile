@@ -5,8 +5,9 @@ class DioManager {
   // ignore: non_constant_identifier_names
   static String _BASE_URL = "";
   static const PATH_LOGIN = "api/gateway/public/login";
-  static const PATH_LOGOUT = "/api/gateway/private/logout/1";
+  static const PATH_LOGOUT = "api/gateway/private/logout";
   static const PATH_CHANGE_PASSWORD = "api/gateway/private/changepassword/1";
+  static const PATH_USER = "api/employee/users";
   static const PATH_CHECK_IN = "/api/employee/checkin/";
 
 

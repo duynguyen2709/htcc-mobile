@@ -26,38 +26,38 @@ mixin _$AccountScreenStore on _AccountScreenStore, Store {
     }, _$isLoadingAtom, name: '${_$isLoadingAtom.name}_set');
   }
 
-  final _$isShimmeringAtom = Atom(name: '_AccountScreenStore.isShimmering');
+  final _$accountAtom = Atom(name: '_AccountScreenStore.account');
 
   @override
-  bool get isShimmering {
-    _$isShimmeringAtom.context.enforceReadPolicy(_$isShimmeringAtom);
-    _$isShimmeringAtom.reportObserved();
-    return super.isShimmering;
+  Account get account {
+    _$accountAtom.context.enforceReadPolicy(_$accountAtom);
+    _$accountAtom.reportObserved();
+    return super.account;
   }
 
   @override
-  set isShimmering(bool value) {
-    _$isShimmeringAtom.context.conditionallyRunInAction(() {
-      super.isShimmering = value;
-      _$isShimmeringAtom.reportChanged();
-    }, _$isShimmeringAtom, name: '${_$isShimmeringAtom.name}_set');
+  set account(Account value) {
+    _$accountAtom.context.conditionallyRunInAction(() {
+      super.account = value;
+      _$accountAtom.reportChanged();
+    }, _$accountAtom, name: '${_$accountAtom.name}_set');
   }
 
-  final _$accountDataAtom = Atom(name: '_AccountScreenStore.accountData');
+  final _$isConfigAtom = Atom(name: '_AccountScreenStore.isConfig');
 
   @override
-  AccountData get accountData {
-    _$accountDataAtom.context.enforceReadPolicy(_$accountDataAtom);
-    _$accountDataAtom.reportObserved();
-    return super.accountData;
+  bool get isConfig {
+    _$isConfigAtom.context.enforceReadPolicy(_$isConfigAtom);
+    _$isConfigAtom.reportObserved();
+    return super.isConfig;
   }
 
   @override
-  set accountData(AccountData value) {
-    _$accountDataAtom.context.conditionallyRunInAction(() {
-      super.accountData = value;
-      _$accountDataAtom.reportChanged();
-    }, _$accountDataAtom, name: '${_$accountDataAtom.name}_set');
+  set isConfig(bool value) {
+    _$isConfigAtom.context.conditionallyRunInAction(() {
+      super.isConfig = value;
+      _$isConfigAtom.reportChanged();
+    }, _$isConfigAtom, name: '${_$isConfigAtom.name}_set');
   }
 
   final _$editAtom = Atom(name: '_AccountScreenStore.edit');
@@ -77,21 +77,73 @@ mixin _$AccountScreenStore on _AccountScreenStore, Store {
     }, _$editAtom, name: '${_$editAtom.name}_set');
   }
 
-  final _$errorAtom = Atom(name: '_AccountScreenStore.error');
+  final _$errorAuthenticateAtom =
+      Atom(name: '_AccountScreenStore.errorAuthenticate');
 
   @override
-  bool get error {
-    _$errorAtom.context.enforceReadPolicy(_$errorAtom);
-    _$errorAtom.reportObserved();
-    return super.error;
+  bool get errorAuthenticate {
+    _$errorAuthenticateAtom.context.enforceReadPolicy(_$errorAuthenticateAtom);
+    _$errorAuthenticateAtom.reportObserved();
+    return super.errorAuthenticate;
   }
 
   @override
-  set error(bool value) {
-    _$errorAtom.context.conditionallyRunInAction(() {
-      super.error = value;
-      _$errorAtom.reportChanged();
-    }, _$errorAtom, name: '${_$errorAtom.name}_set');
+  set errorAuthenticate(bool value) {
+    _$errorAuthenticateAtom.context.conditionallyRunInAction(() {
+      super.errorAuthenticate = value;
+      _$errorAuthenticateAtom.reportChanged();
+    }, _$errorAuthenticateAtom, name: '${_$errorAuthenticateAtom.name}_set');
+  }
+
+  final _$errorNetworkAtom = Atom(name: '_AccountScreenStore.errorNetwork');
+
+  @override
+  bool get errorNetwork {
+    _$errorNetworkAtom.context.enforceReadPolicy(_$errorNetworkAtom);
+    _$errorNetworkAtom.reportObserved();
+    return super.errorNetwork;
+  }
+
+  @override
+  set errorNetwork(bool value) {
+    _$errorNetworkAtom.context.conditionallyRunInAction(() {
+      super.errorNetwork = value;
+      _$errorNetworkAtom.reportChanged();
+    }, _$errorNetworkAtom, name: '${_$errorNetworkAtom.name}_set');
+  }
+
+  final _$errorUpdateAtom = Atom(name: '_AccountScreenStore.errorUpdate');
+
+  @override
+  bool get errorUpdate {
+    _$errorUpdateAtom.context.enforceReadPolicy(_$errorUpdateAtom);
+    _$errorUpdateAtom.reportObserved();
+    return super.errorUpdate;
+  }
+
+  @override
+  set errorUpdate(bool value) {
+    _$errorUpdateAtom.context.conditionallyRunInAction(() {
+      super.errorUpdate = value;
+      _$errorUpdateAtom.reportChanged();
+    }, _$errorUpdateAtom, name: '${_$errorUpdateAtom.name}_set');
+  }
+
+  final _$messageAtom = Atom(name: '_AccountScreenStore.message');
+
+  @override
+  String get message {
+    _$messageAtom.context.enforceReadPolicy(_$messageAtom);
+    _$messageAtom.reportObserved();
+    return super.message;
+  }
+
+  @override
+  set message(String value) {
+    _$messageAtom.context.conditionallyRunInAction(() {
+      super.message = value;
+      _$messageAtom.reportChanged();
+    }, _$messageAtom, name: '${_$messageAtom.name}_set');
   }
 
   final _$getAccountAsyncAction = AsyncAction('getAccount');
@@ -101,10 +153,17 @@ mixin _$AccountScreenStore on _AccountScreenStore, Store {
     return _$getAccountAsyncAction.run(() => super.getAccount());
   }
 
+  final _$refreshAsyncAction = AsyncAction('refresh');
+
   @override
-  String toString() {
-    final string =
-        'isLoading: ${isLoading.toString()},isShimmering: ${isShimmering.toString()},accountData: ${accountData.toString()},edit: ${edit.toString()},error: ${error.toString()}';
-    return '{$string}';
+  Future refresh() {
+    return _$refreshAsyncAction.run(() => super.refresh());
+  }
+
+  final _$updateAccountAsyncAction = AsyncAction('updateAccount');
+
+  @override
+  Future updateAccount() {
+    return _$updateAccountAsyncAction.run(() => super.updateAccount());
   }
 }

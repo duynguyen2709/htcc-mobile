@@ -136,8 +136,8 @@ class _MoreScreenState extends State<MoreScreen> {
                       title: "Đăng xuất",
                       following: false,
                       onTap: () async {
-                         await Injector.authRepository.logout();
-                          Navigator.pushNamed(context, Constants.login_screen);
+                         Injector.authRepository.logout();
+                          Navigator.pushReplacementNamed(context, Constants.login_screen);
 //                        Navigator.pushNamed(
 //                            context, Constants.account_screen)
                       }),

@@ -76,11 +76,4 @@ mixin _$LeavingFormStore on _LeavingFormStore, Store {
       _$eventsAtom.reportChanged();
     }, _$eventsAtom, name: '${_$eventsAtom.name}_set');
   }
-
-  @override
-  String toString() {
-    final string =
-        'isBooking: ${isBooking.toString()},isLoading: ${isLoading.toString()},listBooking: ${listBooking.toString()},events: ${events.toString()}';
-    return '{$string}';
-  }
 }
