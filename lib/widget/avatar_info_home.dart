@@ -17,7 +17,7 @@ class AvatarInfoHome extends StatelessWidget {
                     borderRadius: BorderRadius.circular(100.0),
                     child: FadeInImage.assetNetwork(
                       placeholder: 'assets/login_header.png',
-                      image: '',
+                      image: 'https://via.placeholder.com/150',
                       fit: BoxFit.cover,
                     )) ,),
             Padding(

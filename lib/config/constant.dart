@@ -17,6 +17,7 @@ class Constants {
   static const String IS_LOGIN = "islogin";
   static const String TOKEN = "token";
   static const String USERNAME = "username";
+  static const String CHECK_IN_INFO = "checkin_info";
 
   //Status Model
 
@@ -61,4 +62,6 @@ class Constants {
   static String messagePasswordError = "Mật khẩu không trùng lắp";
 
   static String messagePasswordEmpty = "Mật khẩu rỗng";
+
+
 }

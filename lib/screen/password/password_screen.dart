@@ -175,7 +175,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                             _newPasswordVisible
                                 ? Icons.visibility
                                 : Icons.visibility_off,
-                            color: _oldPasswordVisible
+                            color: _newPasswordVisible
                                 ? Theme.of(context).primaryColorDark
                                 : Colors.grey,
                           ),

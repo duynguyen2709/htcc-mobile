@@ -2,23 +2,29 @@ import 'package:dio/dio.dart';
 
 class DioManager {
   static final DioManager _instance = DioManager._internal();
-  static const BASE_URL = "https://1612145.online/";
+  // ignore: non_constant_identifier_names
+  static String _BASE_URL = "";
   static const PATH_LOGIN = "api/gateway/public/login";
   static const PATH_LOGOUT = "/api/gateway/private/logout/1";
   static const PATH_CHANGE_PASSWORD = "api/gateway/private/changepassword/1";
+  static const PATH_CHECK_IN = "/api/employee/checkin/";
+
 
   Dio dio;
 
   factory DioManager() {
     return _instance;
   }
+  DioManager.setBaseUrl(String baseUrl){
+      _BASE_URL = baseUrl;
+  }
 
   DioManager._internal() {
     dio = Dio(BaseOptions(
-        baseUrl: BASE_URL,
-        connectTimeout: 10000,
+        baseUrl: _BASE_URL,
+        connectTimeout: 90000,
         responseType: ResponseType.json,
-        sendTimeout: 10000));
+        sendTimeout: 90000));
     dio.interceptors.add(LogInterceptor(responseBody: true, requestBody: true));
   }
 }

@@ -1,0 +1,5 @@
+{
+  "env": "PROD",
+  "production": true,
+  "baseURL": "https://1612145.online/"
+}

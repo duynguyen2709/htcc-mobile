@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -6,6 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
+import 'package:hethongchamcong_mobile/data/remote/checkin/check_in_repository.dart';
+import 'package:hethongchamcong_mobile/data/remote/checkin/model/check_in_info_response.dart';
+import 'package:hethongchamcong_mobile/data/remote/checkin/model/check_in_param.dart';
+import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen_store.dart';
+import 'package:mobx/mobx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 
@@ -28,25 +35,33 @@ class CheckInLocationPage extends StatefulWidget {
 }
 
 class _CheckInLocationPageState extends State<CheckInLocationPage> {
-  Position _companyPosition =
-      Position(latitude: 10.762622, longitude: 106.660172);
+  Position _companyPosition;
   Position _curPosition = Position();
   bool isInCompanyZone = false;
+  bool isOffDay = false;
+  bool doneCheckIn = false;
   Timer _timer;
   String now;
   int followingHours;
   double metersToCompanyZone;
   Color _disableColor = Color(0xEEd0d0d0);
-  Color _checkInColor = Color(0xEE65beac);
-  Color _checkOutColor = Color(0xEE65beac);
+  Color _checkInColor = Colors.blue;
+  Color _checkOutColor = Color(0xEEFF9A00);
   var _checkInGradient = [
-    [Color(0xEE6eded0), Color(0xEE6eded0)],
-    [Color(0xEE66d0bd), Color(0xEE66d0bd)],
+    [Colors.blueAccent, Colors.lightBlue],
+    [Colors.lightBlueAccent, Colors.blue],
+  ];
+  var _checkOutGradient = [
+    [Color(0xeefda101), Color(0xeeff5a00)],
+    [Color(0xeeefff00), Color(0xeeff9a00)],
   ];
   var _disableGradient = [
     [Color(0xEEd0d0d0), Color(0xEEd0d0d0)],
     [Color(0xEEd0d0d0), Color(0xEEd0d0d0)],
   ];
+
+  CheckInStore _checkInStore;
+  CheckInInfo checkInInfo;
 
   Future<Position> locateUser() async {
     return Geolocator()
@@ -55,28 +70,30 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
 
   getUserLocation() async {
     _curPosition = await locateUser();
-    var distance = await Geolocator().distanceBetween(
-        _companyPosition.latitude,
-        _companyPosition.longitude,
-        _curPosition.latitude,
-        _curPosition.longitude);
-    if (this.mounted) {
-      if (distance * 1000 <= 1000) {
-        if (mounted) {
-          setState(() {
-            isInCompanyZone = true;
-          });
+    if (_companyPosition != null) {
+      var distance = await Geolocator().distanceBetween(
+          _companyPosition.latitude,
+          _companyPosition.longitude,
+          _curPosition.latitude,
+          _curPosition.longitude);
+      if (this.mounted) {
+        if (distance <= checkInInfo.maxAllowDistance) {
+          if (mounted) {
+            setState(() {
+              isInCompanyZone = true;
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              metersToCompanyZone = distance;
+              isInCompanyZone = false;
+            });
+          }
         }
       } else {
-        if (mounted) {
-          setState(() {
-            metersToCompanyZone = distance;
-            isInCompanyZone = false;
-          });
-        }
+        _timer.cancel();
       }
-    } else {
-      _timer.cancel();
     }
   }
 
@@ -109,6 +126,37 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     Timer.periodic(Duration(seconds: 1), (timer) {
       _getTime();
     });
+
+    _checkInStore = CheckInStore();
+    _checkInStore.getCheckInInfo("VNG", "admin1", "20200317");
+    reaction((_) => _checkInStore.getInfoCheckInSuccess, (isSuccess) async {
+      if (isSuccess == true) {
+        var sharedPreference = await SharedPreferences.getInstance();
+        var checkInInfoJson =
+            sharedPreference.getString(Constants.CHECK_IN_INFO);
+        checkInInfo = CheckInInfo.fromJson(json.decode(checkInInfoJson));
+        _companyPosition = Position(
+            longitude: checkInInfo.validLongitude,
+            latitude: checkInInfo.validLatitude);
+        setState(() {
+          if (!checkInInfo.canCheckin) isOffDay = true;
+          if (checkInInfo.hasCheckedIn && checkInInfo.hasCheckedOut)
+            doneCheckIn = true;
+        });
+      } else if (isSuccess != null)
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text(_checkInStore.errorMsg),
+        ));
+    });
+
+    reaction((_) => _checkInStore.checkInSuccess, (isSuccess) async {
+      if (isSuccess == true) {
+        _checkInStore.getCheckInInfo("VNG", "admin1", "20200317");
+      } else if (isSuccess != null)
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text(_checkInStore.errorMsg),
+        ));
+    });
   }
 
   @override
@@ -137,7 +185,6 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
   @override
   Widget build(BuildContext context) {
     now = TimeOfDay.fromDateTime(DateTime.now()).format(context);
-    followingHours = now.indexOf("AM");
 //    getLocation();
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
@@ -153,17 +200,20 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
         children: <Widget>[
           WaveWidget(
             config: CustomConfig(
-              gradients: [
-                [Colors.blueAccent, Colors.lightBlue],
-                [Colors.lightBlueAccent, Colors.blue],
-              ],
+              gradients: (checkInInfo != null)
+                  ? (checkInInfo.hasCheckedIn)
+                      ? _checkOutGradient
+                      : _checkInGradient
+                  : _checkInGradient,
               durations: [8000, 5000],
               heightPercentages: [0.4, 0.42],
               gradientBegin: Alignment.topLeft,
               gradientEnd: Alignment.topRight,
             ),
             waveAmplitude: 10,
-            backgroundColor: Colors.blue,
+            backgroundColor: (checkInInfo != null)
+                ? (checkInInfo.hasCheckedIn) ? _checkOutColor : _checkInColor
+                : _checkInColor,
             size: Size(MediaQuery.of(context).size.width,
                 MediaQuery.of(context).size.height / 3.25),
           ),
@@ -176,17 +226,12 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                     Text(now.replaceAll("AM", "").replaceAll("PM", ""),
                         style: TextStyle(
                             color: Colors.black,
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold)),
-                    Text(followingHours != -1 ? "AM" : "PM",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 25,
+                            fontSize: 65,
                             fontWeight: FontWeight.bold)),
                   ],
                 ),
                 margin: EdgeInsets.fromLTRB(
-                    0, MediaQuery.of(context).size.height / 7, 0, 0),
+                    0, MediaQuery.of(context).size.height / 8, 0, 0),
               ),
               Container(
                 child: Text(
@@ -204,10 +249,10 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                 margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
               ),
               Container(
-                height: 30,
+                height: 20,
               ),
               Container(
-                height: 70,
+                height: 50,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -215,9 +260,11 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                         topRight: Radius.circular(16))),
               ),
               Center(
-                child: CheckInButton,
+                child: _checkInButton(isInCompanyZone),
               ),
-              (!isInCompanyZone && metersToCompanyZone != null)
+              (((!isInCompanyZone) ||
+                          (checkInInfo != null && checkInInfo.hasCheckedIn)) &&
+                      metersToCompanyZone != null)
                   ? Column(
                       children: <Widget>[
                         Container(
@@ -227,7 +274,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                           child: Padding(
                             child: Text(
                                 "Khoảng cách đến vị trí điểm danh hợp lệ : " +
-                                    metersToCompanyZone.toStringAsFixed(2) +
+                                    metersToCompanyZone.toStringAsFixed(0) +
                                     " m",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(fontSize: 15)),
@@ -240,58 +287,63 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                       height: 0,
                     ),
               Container(height: 40),
-              Container(
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      height: 10,
-                      width: 10,
-                      margin: EdgeInsets.fromLTRB(0, 0, 16, 0),
+              (checkInInfo != null && checkInInfo.hasCheckedIn)
+                  ? Container(
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            height: 10,
+                            width: 10,
+                            margin: EdgeInsets.fromLTRB(0, 0, 16, 0),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.blue),
+                          ),
+                          Text(
+                            "Đã điểm danh đầu ca - ${checkInInfo.checkinTime}",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      margin: EdgeInsets.all(16),
+                      padding: EdgeInsets.only(bottom: 16),
+                      width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
-                          shape: BoxShape.circle, color: Colors.blue),
-                    ),
-                    Text(
-                      "Đã điểm danh đầu ca - 8h30",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ],
-                ),
-                margin: EdgeInsets.all(16),
-                padding: EdgeInsets.only(bottom: 16),
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    border: Border(
-                        bottom: BorderSide(
-                            color: Colors.grey.withAlpha(70), width: 1))),
-              ),
-              Container(
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      height: 10,
-                      width: 10,
-                      margin: EdgeInsets.fromLTRB(0, 0, 16, 0),
+                          shape: BoxShape.rectangle,
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Colors.grey.withAlpha(70), width: 1))),
+                    )
+                  : Container(),
+              (checkInInfo != null && checkInInfo.hasCheckedOut)
+                  ? Container(
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            height: 10,
+                            width: 10,
+                            margin: EdgeInsets.fromLTRB(0, 0, 16, 0),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xEEf3ba00)),
+                          ),
+                          Text(
+                            "Đã điểm danh cuối ca - ${checkInInfo.checkoutTime}",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      margin: EdgeInsets.all(16),
+                      padding: EdgeInsets.only(bottom: 16),
+                      width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
-                          shape: BoxShape.circle, color: Color(0xEEf3ba00)),
-                    ),
-                    Text(
-                      "Đã điểm danh cuối ca - 17h30",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ],
-                ),
-                margin: EdgeInsets.all(16),
-                padding: EdgeInsets.only(bottom: 16),
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    border: Border(
-                        bottom: BorderSide(
-                            color: Colors.grey.withAlpha(70), width: 1))),
-              ),
+                          shape: BoxShape.rectangle,
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Colors.grey.withAlpha(70), width: 1))),
+                    )
+                  : Container(),
               Container(
                 height: 50,
               )
@@ -302,14 +354,31 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     );
   }
 
-  Widget get CheckInButton {
+  Widget _checkInButton(bool isCompanyZone) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        CheckInParam param = new CheckInParam(
+            username: "admin1",
+            companyId: "VNG",
+            clientTime: DateTime.now().millisecondsSinceEpoch,
+            latitude: _curPosition.latitude,
+            longitude: _curPosition.longitude,
+            type: (checkInInfo.hasCheckedIn) ? 2 : 1,
+            usedWifi: false);
+        // ignore: unnecessary_statements
+        if (!doneCheckIn && isInCompanyZone) _checkInStore.checkIn(param);
+      },
       child: Container(
         decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-                color: isInCompanyZone ? _checkInColor : _disableColor,
+                color: (isCompanyZone && !doneCheckIn && !isOffDay)
+                    ? (checkInInfo != null)
+                        ? (checkInInfo.hasCheckedIn)
+                            ? _checkOutColor
+                            : _checkInColor
+                        : _checkInColor
+                    : _disableColor,
                 width: 2)),
         child: Padding(
           padding: EdgeInsets.all(3),
@@ -319,19 +388,29 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
               ClipOval(
                 child: WaveWidget(
                   config: CustomConfig(
-                    gradients:
-                        isInCompanyZone ? _checkInGradient : _disableGradient,
+                    gradients: (isCompanyZone && !doneCheckIn && !isOffDay)
+                        ? (checkInInfo != null)
+                            ? (checkInInfo.hasCheckedIn)
+                                ? _checkOutGradient
+                                : _checkInGradient
+                            : _checkInGradient
+                        : _disableGradient,
                     durations: [20000, 19440],
-                    heightPercentages: [0.5, 0.55],
+                    heightPercentages: [0.4, 0.45],
                     blur: MaskFilter.blur(BlurStyle.solid, 10),
                     gradientBegin: Alignment.bottomLeft,
                     gradientEnd: Alignment.topRight,
                   ),
                   waveAmplitude: 0,
-                  backgroundColor:
-                      isInCompanyZone ? _checkInColor : _disableColor,
-                  size: Size(MediaQuery.of(context).size.width / 2.5,
-                      MediaQuery.of(context).size.width / 2.5),
+                  backgroundColor: (isCompanyZone && !doneCheckIn && !isOffDay)
+                      ? (checkInInfo != null)
+                          ? (checkInInfo.hasCheckedIn)
+                              ? _checkOutColor
+                              : _checkInColor
+                          : _checkInColor
+                      : _disableColor,
+                  size: Size(MediaQuery.of(context).size.width / 2.25,
+                      MediaQuery.of(context).size.width / 2.25),
                 ),
               ),
               Text("Điểm danh",
