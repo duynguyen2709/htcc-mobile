@@ -366,7 +366,7 @@ class _StatisticScreenState extends State<StatisticScreen> {
                                               EdgeInsets.fromLTRB(16, 4, 0, 4),
                                         ),
                                         CircularPercentIndicator(
-                                          radius: 130.0,
+                                          radius: MediaQuery.of(context).size.width / 3.125,
                                           lineWidth: 12.0,
                                           animation: true,
                                           percent: 0.8,
@@ -454,7 +454,7 @@ class _StatisticScreenState extends State<StatisticScreen> {
                                               EdgeInsets.fromLTRB(16, 4, 0, 4),
                                         ),
                                         CircularPercentIndicator(
-                                          radius: 130.0,
+                                          radius: MediaQuery.of(context).size.width / 3.125,
                                           lineWidth: 12.0,
                                           animation: true,
                                           percent: 0.78,
@@ -535,7 +535,7 @@ class _StatisticScreenState extends State<StatisticScreen> {
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Container(
-                          height: MediaQuery.of(context).size.height / 10,
+                          height: MediaQuery.of(context).size.height / 9.5,
                           padding: EdgeInsets.all(8),
                           child: Row(
                             children: <Widget>[

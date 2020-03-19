@@ -1,6 +1,7 @@
 import 'dart:developer';
 
-import 'package:hethongchamcong_mobile/data/remote/base/base_model.dart';
+import 'package:hethongchamcong_mobile/data/base/base_model.dart';
+import 'package:hethongchamcong_mobile/data/base/result.dart';
 import 'package:hethongchamcong_mobile/injector/injector.dart';
 import 'package:mobx/mobx.dart';
 
@@ -26,15 +27,15 @@ abstract class _LoginScreenStore with Store {
     try {
       var response = await Injector.authRepository.login(userName, password, companyId);
       switch (response.runtimeType) {
-        case SuccessModel:
+        case Success:
           {
             log("Success Model");
             checkLogin = true;
             break;
           }
-        case ErrorModel:
+        case Error:
           {
-            switch (response.message) {
+            switch ((response as Error).status) {
               case Status.LOGIN_FAIL:
                 {
                   log("Error Model");

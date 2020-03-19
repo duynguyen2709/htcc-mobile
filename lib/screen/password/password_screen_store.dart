@@ -1,6 +1,5 @@
-import 'dart:developer';
 
-import 'package:hethongchamcong_mobile/data/remote/base/base_model.dart';
+import 'package:hethongchamcong_mobile/data/base/result.dart';
 import 'package:hethongchamcong_mobile/injector/injector.dart';
 import 'package:mobx/mobx.dart';
 
@@ -28,15 +27,15 @@ abstract class _PasswordScreenStore with Store {
       var response = await Injector.authRepository
           .changePassword(userName, newPassword, oldPassword, companyId);
       switch (response.runtimeType) {
-        case SuccessModel:
+        case Success:
           {
             isSuccess = true;
             break;
           }
-        case ErrorModel:
+        case Error:
           {
             isSuccess = false;
-            errorMessage = response.message;
+            errorMessage = (response as Error).msg;
             break;
           }
       }

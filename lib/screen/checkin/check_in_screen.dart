@@ -7,9 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
-import 'package:hethongchamcong_mobile/data/remote/checkin/check_in_repository.dart';
-import 'package:hethongchamcong_mobile/data/remote/checkin/model/check_in_info_response.dart';
-import 'package:hethongchamcong_mobile/data/remote/checkin/model/check_in_param.dart';
+import 'package:hethongchamcong_mobile/data/local/shared_preference.dart';
+import 'package:hethongchamcong_mobile/data/model/check_in_info.dart';
+import 'package:hethongchamcong_mobile/data/model/check_in_param.dart';
+import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen_store.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -126,9 +127,12 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     Timer.periodic(Duration(seconds: 1), (timer) {
       _getTime();
     });
-
     _checkInStore = CheckInStore();
-    _checkInStore.getCheckInInfo("VNG", "admin1", "20200317");
+    Pref.getInstance().then((pref) {
+      User user = User.fromJson(
+          json.decode(pref.getString(Constants.USER)));
+      _checkInStore.getCheckInInfo(user.companyId, user.username, null);
+    });
     reaction((_) => _checkInStore.getInfoCheckInSuccess, (isSuccess) async {
       if (isSuccess == true) {
         var sharedPreference = await SharedPreferences.getInstance();
@@ -151,7 +155,11 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
 
     reaction((_) => _checkInStore.checkInSuccess, (isSuccess) async {
       if (isSuccess == true) {
-        _checkInStore.getCheckInInfo("VNG", "admin1", "20200317");
+        Pref.getInstance().then((pref) {
+          User user = User.fromJson(
+              json.decode(pref.getString(Constants.USER)));
+          _checkInStore.getCheckInInfo(user.companyId, user.username, null);
+        });
       } else if (isSuccess != null)
         Scaffold.of(context).showSnackBar(SnackBar(
           content: Text(_checkInStore.errorMsg),
@@ -172,7 +180,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     });
   }
 
-  var DayOfWeek = <int, String>{
+  var dayOfWeek = <int, String>{
     1: "Thứ Hai",
     2: "Thứ Ba",
     3: "Thứ Tư",
@@ -235,7 +243,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
               ),
               Container(
                 child: Text(
-                    DayOfWeek[DateTime.now().weekday] +
+                    dayOfWeek[DateTime.now().weekday] +
                         ", " +
                         DateTime.now().day.toString() +
                         "/" +
@@ -356,10 +364,14 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
 
   Widget _checkInButton(bool isCompanyZone) {
     return GestureDetector(
-      onTap: () {
+      onTap: (doneCheckIn || !isInCompanyZone|| isOffDay) ? null : () async {
+        var sharedPreference = await SharedPreferences.getInstance();
+        User user = User.fromJson(
+            json.decode(sharedPreference.getString(Constants.USER)));
+        _checkInStore.getCheckInInfo(user.companyId, user.username, null);
         CheckInParam param = new CheckInParam(
-            username: "admin1",
-            companyId: "VNG",
+            username: user.username,
+            companyId: user.companyId,
             clientTime: DateTime.now().millisecondsSinceEpoch,
             latitude: _curPosition.latitude,
             longitude: _curPosition.longitude,

@@ -29,14 +29,14 @@ mixin _$AccountScreenStore on _AccountScreenStore, Store {
   final _$accountAtom = Atom(name: '_AccountScreenStore.account');
 
   @override
-  Account get account {
+  User get account {
     _$accountAtom.context.enforceReadPolicy(_$accountAtom);
     _$accountAtom.reportObserved();
     return super.account;
   }
 
   @override
-  set account(Account value) {
+  set account(User value) {
     _$accountAtom.context.conditionallyRunInAction(() {
       super.account = value;
       _$accountAtom.reportChanged();
@@ -165,5 +165,12 @@ mixin _$AccountScreenStore on _AccountScreenStore, Store {
   @override
   Future updateAccount() {
     return _$updateAccountAsyncAction.run(() => super.updateAccount());
+  }
+
+  @override
+  String toString() {
+    final string =
+        'isLoading: ${isLoading.toString()},account: ${account.toString()},isConfig: ${isConfig.toString()},edit: ${edit.toString()},errorAuthenticate: ${errorAuthenticate.toString()},errorNetwork: ${errorNetwork.toString()},errorUpdate: ${errorUpdate.toString()},message: ${message.toString()}';
+    return '{$string}';
   }
 }

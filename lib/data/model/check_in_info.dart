@@ -1,6 +1,7 @@
-import 'package:hethongchamcong_mobile/data/remote/base/base_response.dart';
 
-class CheckInInfo {
+import 'package:hethongchamcong_mobile/data/base/base_model.dart';
+
+class CheckInInfo  extends BaseModel{
   String allowWifiIP;
   bool canCheckin;
   String checkinTime;
@@ -26,9 +27,9 @@ class CheckInInfo {
         this.validCheckinTime,
         this.validCheckoutTime,
         this.validLatitude,
-        this.validLongitude});
+        this.validLongitude}) : super.fromJson(null) ;
 
-  CheckInInfo.fromJson(Map<String, dynamic> json) {
+  CheckInInfo.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     allowWifiIP = json['allowWifiIP'];
     canCheckin = json['canCheckin'];
     checkinTime = json['checkinTime'];
@@ -43,6 +44,7 @@ class CheckInInfo {
     validLongitude = json['validLongitude'];
   }
 
+  @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['allowWifiIP'] = this.allowWifiIP;
@@ -59,20 +61,4 @@ class CheckInInfo {
     data['validLongitude'] = this.validLongitude;
     return data;
   }
-}
-
-class CheckInInfoResponse extends BaseResponse<CheckInInfo>{
-  CheckInInfoResponse(Map<String,dynamic> json) : super(json);
-
-
-  @override
-  dataToJson(CheckInInfo data) {
-    data.toJson();
-  }
-
-  @override
-  CheckInInfo jsonToData(Map<String,dynamic > json) {
-    return CheckInInfo.fromJson(json);
-  }
-
 }

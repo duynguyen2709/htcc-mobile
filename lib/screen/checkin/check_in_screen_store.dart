@@ -1,8 +1,7 @@
-import 'package:hethongchamcong_mobile/data/remote/base/result.dart';
-import 'package:hethongchamcong_mobile/data/remote/checkin/model/check_in_param.dart';
+import 'package:hethongchamcong_mobile/data/base/result.dart';
+import 'package:hethongchamcong_mobile/data/model/check_in_param.dart';
 import 'package:hethongchamcong_mobile/injector/injector.dart';
 import 'package:mobx/mobx.dart';
-import 'dart:developer';
 
 part 'check_in_screen_store.g.dart';
 
@@ -26,15 +25,20 @@ abstract class _CheckInStore with Store{
   getCheckInInfo(String companyId, String username, String date) async {
     getInfoCheckInSuccess=null;
     errorMsg=null;
-
     try{
       var response = await Injector.checkInRepository.getCheckInInfo(companyId: companyId,username: username ,date: date);
-      if(response is Success){
-        getInfoCheckInSuccess = true;
-      }
-      else{
-        getInfoCheckInSuccess = false;
-        errorMsg = (response as Error).msg;
+      switch (response.runtimeType) {
+        case Success:
+          {
+            getInfoCheckInSuccess = true;
+            break;
+          }
+        case Error:
+          {
+            getInfoCheckInSuccess = false;
+            errorMsg = (response as Error).msg;
+            break;
+          }
       }
     }
     catch (error){

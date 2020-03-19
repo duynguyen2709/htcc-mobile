@@ -16,6 +16,7 @@ class Constants {
   //Shared preference
   static const String IS_LOGIN = "islogin";
   static const String TOKEN = "token";
+  static const String USER = "user";
   static const String USERNAME = "username";
   static const String COMPANY_ID = "company_id";
   static const String EMPLOYEE_ID = "employee_id";
@@ -81,6 +82,4 @@ class Constants {
   static String messagePasswordError = "Mật khẩu không trùng lắp";
 
   static String messagePasswordEmpty = "Mật khẩu rỗng";
-
-
 }

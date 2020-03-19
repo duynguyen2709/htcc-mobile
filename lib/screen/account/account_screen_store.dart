@@ -1,8 +1,9 @@
 import 'dart:developer';
 
 import 'package:hethongchamcong_mobile/config/constant.dart';
-import 'package:hethongchamcong_mobile/data/remote/account/model/account_response.dart';
-import 'package:hethongchamcong_mobile/data/remote/base/base_model.dart';
+import 'package:hethongchamcong_mobile/data/base/base_model.dart';
+import 'package:hethongchamcong_mobile/data/base/result.dart';
+import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/injector/injector.dart';
 import 'package:mobx/mobx.dart';
 
@@ -15,7 +16,7 @@ abstract class _AccountScreenStore with Store {
   bool isLoading = false;
 
   @observable
-  Account account;
+  User account;
 
   @observable
   bool isConfig = false;
@@ -41,14 +42,14 @@ abstract class _AccountScreenStore with Store {
     try {
       var response = await Injector.accountRepository.getAccount();
       switch (response.runtimeType) {
-        case SuccessModel:
+        case Success:
           {
-            account = response.data as Account;
+            account = (response as Success).data as User;
             log("Success Model");
             isLoading = false;
             break;
           }
-        case ErrorModel:
+        case Error:
           {
             account = null;
             isLoading = false;
@@ -72,16 +73,16 @@ abstract class _AccountScreenStore with Store {
     try {
       var response = await Injector.accountRepository.refresh();
       switch (response.runtimeType) {
-        case SuccessModel:
+        case Success:
           {
-            account = response.data as Account;
+            account = (response as Success).data as User;
             log("Success Model");
             isLoading = false;
             break;
           }
-        case ErrorModel:
+        case Error:
           {
-            switch (response.message) {
+            switch ((response as Error).status) {
               case Status.ERROR_NETWORK:
                 {
                   isLoading = false;
@@ -120,9 +121,9 @@ abstract class _AccountScreenStore with Store {
     try {
       var response = await Injector.accountRepository.updateAccount(account);
       switch (response.runtimeType) {
-        case SuccessModel:
+        case Success:
           {
-            account = response.data as Account;
+            account = (response as Success).data as User;
             log("Update Success Model");
             isConfig = false;
             message = Constants.UPDATE_SUCCESSFUL;
@@ -130,9 +131,9 @@ abstract class _AccountScreenStore with Store {
             errorUpdate = false;
             break;
           }
-        case ErrorModel:
+        case Error:
           {
-            switch (response.message) {
+            switch ((response as Error).status) {
               case Status.ERROR_NETWORK:
                 {
                   isLoading = false;

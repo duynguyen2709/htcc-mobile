@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
-import 'package:hethongchamcong_mobile/data/remote/account/model/account_response.dart';
+import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/screen/account/account_screen_store.dart';
 import 'package:hethongchamcong_mobile/screen/widget/empty_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
@@ -151,7 +151,7 @@ class _AccountScreenState extends State<AccountScreen> {
         ));
   }
 
-  Widget buildSuccess(Account account) {
+  Widget buildSuccess(User account) {
     _controllerId.text = account.employeeId;
 
     _controllerFullName.text = account.fullName;
