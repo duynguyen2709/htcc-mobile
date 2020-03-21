@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/leaving_screen.dart';
 import 'package:hethongchamcong_mobile/screen/more/more_screen.dart';
+import 'package:hethongchamcong_mobile/screen/notification/notification_screen.dart';
 import 'statistic/statisic_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -23,7 +24,7 @@ class _MainScreenState extends State<MainScreen> {
     ),
     Center(child: LeavingScreen()),
     StatisticScreen(),
-    Center(child: Text("Notification screen")),
+    NotificationScreen(),
     MoreScreen()
   ];
 

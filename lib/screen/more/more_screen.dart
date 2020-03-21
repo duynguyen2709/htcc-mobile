@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/model/login_response.dart';
 import 'package:hethongchamcong_mobile/injector/injector.dart';
-import 'package:hethongchamcong_mobile/widget/avatar_info_home.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:hethongchamcong_mobile/screen/widget/avatar_info_home.dart';
 import '../widget/section.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MoreScreen extends StatefulWidget {
   @override
@@ -94,7 +93,10 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
                       title: "Góp ý - Khiếu nại",
                       following: false,
-                      onTap: () => {Navigator.pushNamed(context, Constants.account_screen)}),
+                      onTap: () => {
+                        Navigator.pushNamed(
+                            context, Constants.complaint_screen)
+                      }),
                 ],
               ),
             ),

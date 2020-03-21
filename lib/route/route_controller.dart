@@ -4,6 +4,7 @@ import 'package:hethongchamcong_mobile/data/remote/leaving/form_date.dart';
 import 'package:hethongchamcong_mobile/screen/account/account_screen.dart';
 import 'package:hethongchamcong_mobile/screen/cameracheckin/check_in_camera_screen.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen.dart';
+import 'package:hethongchamcong_mobile/screen/complaint/complaint_screen.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/detail_leaving/detail_leaving.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/leaving_form/leaving_form.dart';
 import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
@@ -69,6 +70,9 @@ SlideCustomRoute initialSlideRoutes(RouteSettings settings) {
     case Constants.leaving_form_screen:
       return new SlideCustomRoute(
           builder: (_) => new LeavingFormScreen(), settings: settings, routeName: Constants.leaving_form_screen);
+    case Constants.complaint_screen:
+      return new SlideCustomRoute(
+          builder: (_) => new ComplaintScreen(), settings: settings, routeName: Constants.complaint_screen);
     case Constants.detail_leaving_screen:
       return new SlideCustomRoute(
           builder: (_) => new DetailLeavingScreen(
