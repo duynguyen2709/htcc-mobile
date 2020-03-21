@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'login_screen_store.dart';
+part of 'quick_login_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,8 +8,8 @@ part of 'login_screen_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$LoginScreenStore on _LoginScreenStore, Store {
-  final _$isLoadingAtom = Atom(name: '_LoginScreenStore.isLoading');
+mixin _$QuickLoginStore on _QuickLoginStore, Store {
+  final _$isLoadingAtom = Atom(name: '_QuickLoginStore.isLoading');
 
   @override
   bool get isLoading {
@@ -26,7 +26,7 @@ mixin _$LoginScreenStore on _LoginScreenStore, Store {
     }, _$isLoadingAtom, name: '${_$isLoadingAtom.name}_set');
   }
 
-  final _$checkLoginAtom = Atom(name: '_LoginScreenStore.checkLogin');
+  final _$checkLoginAtom = Atom(name: '_QuickLoginStore.checkLogin');
 
   @override
   bool get checkLogin {
@@ -43,7 +43,7 @@ mixin _$LoginScreenStore on _LoginScreenStore, Store {
     }, _$checkLoginAtom, name: '${_$checkLoginAtom.name}_set');
   }
 
-  final _$errorMessageAtom = Atom(name: '_LoginScreenStore.errorMessage');
+  final _$errorMessageAtom = Atom(name: '_QuickLoginStore.errorMessage');
 
   @override
   String get errorMessage {

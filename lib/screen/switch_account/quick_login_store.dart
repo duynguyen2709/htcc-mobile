@@ -5,11 +5,11 @@ import 'package:hethongchamcong_mobile/data/base/result.dart';
 import 'package:hethongchamcong_mobile/injector/injector.dart';
 import 'package:mobx/mobx.dart';
 
-part 'login_screen_store.g.dart';
+part 'quick_login_store.g.dart';
 
-class LoginScreenStore = _LoginScreenStore with _$LoginScreenStore;
+class QuickLoginStore = _QuickLoginStore with _$QuickLoginStore;
 
-abstract class _LoginScreenStore with Store {
+abstract class _QuickLoginStore with Store {
   @observable
   bool isLoading = false;
 
@@ -25,7 +25,7 @@ abstract class _LoginScreenStore with Store {
     errorMessage = null;
     checkLogin = null;
     try {
-      Result response = await Injector.authRepository.login(userName, password, companyId);
+      var response = await Injector.authRepository.login(userName, password, companyId);
       switch (response.runtimeType) {
         case Success:
           {
@@ -39,7 +39,7 @@ abstract class _LoginScreenStore with Store {
               case Status.LOGIN_FAIL:
                 {
                   log("Error Model");
-                  errorMessage = (response as Error).msg;
+                  errorMessage = "Thông tin đăng nhập không chính xác!";
                   checkLogin = false;
                   break;
                 }

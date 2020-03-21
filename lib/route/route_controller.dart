@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hethongchamcong_mobile/data/model/login_response.dart';
 import 'package:hethongchamcong_mobile/data/remote/leaving/form_date.dart';
 import 'package:hethongchamcong_mobile/screen/account/account_screen.dart';
 import 'package:hethongchamcong_mobile/screen/cameracheckin/check_in_camera_screen.dart';
@@ -8,6 +9,7 @@ import 'package:hethongchamcong_mobile/screen/leaving/leaving_form/leaving_form.
 import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
 import 'package:hethongchamcong_mobile/screen/main_screen.dart';
 import 'package:hethongchamcong_mobile/screen/password/password_screen.dart';
+import 'package:hethongchamcong_mobile/screen/switch_account/quick_login.dart';
 
 import '../config/constant.dart';
 
@@ -74,6 +76,13 @@ SlideCustomRoute initialSlideRoutes(RouteSettings settings) {
               ),
           settings: settings,
           routeName: Constants.leaving_form_screen);
+    case Constants.quick_login:
+      return new SlideCustomRoute(
+          builder: (_) => new QuickLogin(
+                users: settings.arguments as List<UserData>,
+              ),
+          settings: settings,
+          routeName: Constants.quick_login);
   }
   return new SlideCustomRoute(builder: (_) => LoginScreen(), settings: settings, routeName: Constants.login_screen);
 }

@@ -38,6 +38,8 @@ class _DetailLeavingScreenState extends State<DetailLeavingScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             DataTable(
+              horizontalMargin: 10,
+              columnSpacing: 10,
               columns: <DataColumn>[
                 DataColumn(
                     label: Text(
@@ -74,21 +76,23 @@ class _DetailLeavingScreenState extends State<DetailLeavingScreen> {
                         setState(() {});
                       });
                   }),
-                  DataCell(IconButton(
-                    icon: value.isCheck
-                        ? Icon(
-                            Icons.check,
-                            color: Colors.green,
-                          )
-                        : Icon(
-                            Icons.remove_circle,
-                            color: Colors.red,
-                          ),
-                    onPressed: () {
-                      setState(() {
-                        value.isCheck = !value.isCheck;
-                      });
-                    },
+                  DataCell(Center(
+                    child: IconButton(
+                      icon: value.isCheck
+                          ? Icon(
+                              Icons.check,
+                              color: Colors.green,
+                            )
+                          : Icon(
+                              Icons.remove_circle,
+                              color: Colors.red,
+                            ),
+                      onPressed: () {
+                        setState(() {
+                          value.isCheck = !value.isCheck;
+                        });
+                      },
+                    ),
                   ))
                 ]);
               }).toList(),

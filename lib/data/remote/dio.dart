@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:hethongchamcong_mobile/config/constant.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DioManager {
   static final DioManager _instance = DioManager._internal();
+
   // ignore: non_constant_identifier_names
   static String _BASE_URL = "";
   static const PATH_LOGIN = "api/gateway/public/login";
@@ -10,22 +13,31 @@ class DioManager {
   static const PATH_USER = "api/employee/users";
   static const PATH_CHECK_IN = "/api/employee/checkin/";
 
-
   Dio dio;
 
   factory DioManager() {
     return _instance;
   }
-  DioManager.setBaseUrl(String baseUrl){
-      _BASE_URL = baseUrl;
+
+  DioManager.setBaseUrl(String baseUrl) {
+    _BASE_URL = baseUrl;
   }
 
   DioManager._internal() {
-    dio = Dio(BaseOptions(
-        baseUrl: _BASE_URL,
-        connectTimeout: 90000,
-        responseType: ResponseType.json,
-        sendTimeout: 90000));
+    dio =
+        Dio(BaseOptions(baseUrl: _BASE_URL, connectTimeout: 30000, responseType: ResponseType.json, sendTimeout: 30000));
+
+    dio.interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
+      var sharedPreference = await SharedPreferences.getInstance();
+      var token = sharedPreference.getString(Constants.TOKEN);
+      options.headers.addAll({"authorization": "Bearer $token"});
+      return options;
+    }, onResponse: (Response response) async {
+      return response;
+    }, onError: (DioError e) async {
+      return e;
+    }));
+
     dio.interceptors.add(LogInterceptor(responseBody: true, requestBody: true));
   }
 }

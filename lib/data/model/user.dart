@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:hethongchamcong_mobile/data/base/base_model.dart';
 
 class User extends BaseModel {
@@ -8,6 +6,7 @@ class User extends BaseModel {
   String employeeId;
   String officeId;
   String department;
+  String title;
   String fullName;
   String birthDate;
   String email;
@@ -16,14 +15,14 @@ class User extends BaseModel {
   String address;
   String avatar;
 
-
   @override
-  User.fromJson(Map<String,dynamic> json)  : super.fromJson(json){
+  User.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     companyId = json['companyId'];
     username = json['username'];
     employeeId = json['employeeId'];
     officeId = json['officeId'];
     department = json['department'];
+    title = json['title'];
     fullName = json['fullName'];
     birthDate = json['birthDate'];
     email = json['email'];
@@ -41,6 +40,7 @@ class User extends BaseModel {
     data['employeeId'] = this.employeeId;
     data['officeId'] = this.officeId;
     data['department'] = this.department;
+    data['title'] = this.title;
     data['fullName'] = this.fullName;
     data['birthDate'] = this.birthDate;
     data['email'] = this.email;
@@ -50,6 +50,4 @@ class User extends BaseModel {
     data['avatar'] = this.avatar;
     return data;
   }
-
-
 }

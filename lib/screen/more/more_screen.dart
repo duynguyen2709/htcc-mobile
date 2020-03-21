@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
+import 'package:hethongchamcong_mobile/data/model/login_response.dart';
 import 'package:hethongchamcong_mobile/injector/injector.dart';
-import '../widget/section.dart';
 import 'package:hethongchamcong_mobile/widget/avatar_info_home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../widget/section.dart';
 
 class MoreScreen extends StatefulWidget {
   @override
@@ -26,20 +29,13 @@ class _MoreScreenState extends State<MoreScreen> {
                       gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [
-                            Colors.blueAccent,
-                            Colors.blue,
-                            Colors.lightBlue,
-                            Colors.lightBlueAccent
-                          ]),
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(15),
-                          bottomRight: Radius.circular(15))),
+                          colors: [Colors.blueAccent, Colors.blue, Colors.lightBlue, Colors.lightBlueAccent]),
+                      borderRadius:
+                          BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15))),
                 ),
                 Center(
                     child: Container(
-                        margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height / 12),
+                        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height / 12),
                         child: AvatarInfoHome())),
               ],
             ),
@@ -55,8 +51,7 @@ class _MoreScreenState extends State<MoreScreen> {
                       offset: Offset(0, 2), // changes position of shadow
                     ),
                   ], // ew Color.fromRGBO(255, 0, 0, 0.0),
-                  borderRadius:
-                      new BorderRadius.all(const Radius.circular(10.0))),
+                  borderRadius: new BorderRadius.all(const Radius.circular(10.0))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
@@ -67,42 +62,39 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
                       title: "Thông tin cá nhân",
                       following: true,
-                      onTap: () => {
-                            Navigator.pushNamed(
-                                context, Constants.account_screen)
-                          }),
+                      onTap: () => {Navigator.pushNamed(context, Constants.account_screen)}),
                   Section(
-                      leading: Icon(Icons.lock_outline,color: Colors.black,),
+                      leading: Icon(
+                        Icons.lock_outline,
+                        color: Colors.black,
+                      ),
                       title: "Đổi mật khẩu",
                       following: false,
-                      onTap: () => {
-                            Navigator.pushNamed(
-                                context, Constants.password_screen)
-                          }),
+                      onTap: () => {Navigator.pushNamed(context, Constants.password_screen)}),
                   Section(
-                      leading: Icon(Icons.contacts,color: Colors.black,),
+                      leading: Icon(
+                        Icons.contacts,
+                        color: Colors.black,
+                      ),
                       title: "Danh bạ công ty",
                       following: false,
-                      onTap: () => {
-                        Navigator.pushNamed(
-                            context, Constants.account_screen)
-                      }),
+                      onTap: () => {Navigator.pushNamed(context, Constants.account_screen)}),
                   Section(
-                      leading: ImageIcon(AssetImage("./assets/payroll.png"),color: Colors.black,),
+                      leading: ImageIcon(
+                        AssetImage("./assets/payroll.png"),
+                        color: Colors.black,
+                      ),
                       title: "Quản lý bảng lương",
                       following: false,
-                      onTap: () => {
-                        Navigator.pushNamed(
-                            context, Constants.account_screen)
-                      }),
+                      onTap: () => {Navigator.pushNamed(context, Constants.account_screen)}),
                   Section(
-                      leading: ImageIcon(AssetImage("./assets/complaint.png"),color: Colors.black,),
+                      leading: ImageIcon(
+                        AssetImage("./assets/complaint.png"),
+                        color: Colors.black,
+                      ),
                       title: "Góp ý - Khiếu nại",
                       following: false,
-                      onTap: () => {
-                        Navigator.pushNamed(
-                            context, Constants.account_screen)
-                      }),
+                      onTap: () => {Navigator.pushNamed(context, Constants.account_screen)}),
                 ],
               ),
             ),
@@ -118,25 +110,40 @@ class _MoreScreenState extends State<MoreScreen> {
                       offset: Offset(0, 2), // changes position of shadow
                     ),
                   ], // ew Color.fromRGBO(255, 0, 0, 0.0),
-                  borderRadius:
-                      new BorderRadius.all(const Radius.circular(10.0))),
+                  borderRadius: new BorderRadius.all(const Radius.circular(10.0))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Section(
-                      leading:  Icon(Icons.info_outline,color: Colors.black,),
+                      leading: Icon(
+                        Icons.info_outline,
+                        color: Colors.black,
+                      ),
                       title: "Về ứng dụng",
                       following: false,
-                      onTap: () => {
-                        Navigator.pushNamed(
-                            context, Constants.account_screen)
-                      }),
+                      onTap: () => {Navigator.pushNamed(context, Constants.account_screen)}),
                   Section(
-                      leading:  Icon(Icons.exit_to_app,color: Colors.black,),
+                      leading: Icon(
+                        Icons.exit_to_app,
+                        color: Colors.black,
+                      ),
                       title: "Đăng xuất",
                       following: false,
                       onTap: () async {
-                         Injector.authRepository.logout();
+                        Injector.authRepository.logout();
+
+                        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+                        String usersJson = sharedPreferences.getString(Constants.USERS);
+
+                        List<UserData> users;
+
+                        if (usersJson != null && usersJson.isNotEmpty) {
+                          users = userDataFromJson(usersJson);
+                        }
+                        if (users != null && users.isNotEmpty)
+                          Navigator.pushReplacementNamed(context, Constants.quick_login, arguments: users);
+                        else
                           Navigator.pushReplacementNamed(context, Constants.login_screen);
 //                        Navigator.pushNamed(
 //                            context, Constants.account_screen)

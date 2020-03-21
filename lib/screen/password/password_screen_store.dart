@@ -1,4 +1,3 @@
-
 import 'package:hethongchamcong_mobile/data/base/result.dart';
 import 'package:hethongchamcong_mobile/injector/injector.dart';
 import 'package:mobx/mobx.dart';
@@ -18,14 +17,12 @@ abstract class _PasswordScreenStore with Store {
   String errorMessage;
 
   @action
-  changePassword(String userName, String newPassword, String oldPassword,
-      String companyId) async {
+  changePassword(String newPassword, String oldPassword) async {
     isLoading = true;
     errorMessage = null;
     isSuccess = null;
     try {
-      var response = await Injector.authRepository
-          .changePassword(userName, newPassword, oldPassword, companyId);
+      var response = await Injector.authRepository.changePassword(newPassword, oldPassword);
       switch (response.runtimeType) {
         case Success:
           {

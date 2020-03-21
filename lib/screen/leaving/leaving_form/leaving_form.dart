@@ -94,7 +94,6 @@ class _LeavingFormScreenState extends State<LeavingFormScreen> {
                     child: Form(
                       key: _formKey,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Expanded(
                             child: Padding(

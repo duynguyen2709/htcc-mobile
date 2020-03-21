@@ -12,23 +12,13 @@ class Constants {
   static const String password_screen = "/password";
   static const String leaving_form_screen = "/leavingform";
   static const String detail_leaving_screen = "/detailleaving";
+  static const String quick_login = "/quicklogin";
 
   //Shared preference
   static const String IS_LOGIN = "islogin";
   static const String TOKEN = "token";
   static const String USER = "user";
-  static const String USERNAME = "username";
-  static const String COMPANY_ID = "company_id";
-  static const String EMPLOYEE_ID = "employee_id";
-  static const String OFFICE_ID = "office_id";
-  static const String DEPARTMENT = "department";
-  static const String FULL_NAME = "full_name";
-  static const String BIRTH_DATE = 'birth_date';
-  static const String EMAIL = "email";
-  static const String IDENTITY_CARD_NO = "identity_card_no";
-  static const String PHONE_NUMBER = "phone_number";
-  static const String ADDRESS = "address";
-  static const String AVATAR = "avatar";
+  static const String USERS = "users";
   static const String CHECK_IN_INFO = "checkin_info";
 
   //Message Dialog
@@ -47,19 +37,20 @@ class Constants {
   static String password = "";
 
   static String checkIn = "Điểm Danh";
-  static String hintUserName = "Email hoặc điện thoại";
+
+  static String hintUserName = "Tên đăng nhập";
 
   static String hintPassword = "Mật khẩu";
 
   static String forgotPassword = "Quên mật khẩu?";
 
-  static String code = "Mã";
+  static String code = "Mã công ty";
 
   static String buttonLogin = "Đăng nhập";
 
   static String loading = "Please wait...";
 
-  static String messageErrorDialog = "Email/phone or password is incorrected";
+  static String messageErrorDialog = "Tài khoản hoặc mật khẩu không chính xác!";
 
   static String buttonErrorDialog = "Ok";
 
@@ -77,7 +68,7 @@ class Constants {
 
   static String titleErrorPassword = "Mật khẩu rỗng";
 
-  static String titleErrorCode = "Code rỗng";
+  static String titleErrorCode = "Mã công ty rỗng";
 
   static String messagePasswordError = "Mật khẩu không trùng lắp";
 
