@@ -93,11 +93,4 @@ mixin _$LeavingStore on _LeavingStore, Store {
       _$dataMapAtom.reportChanged();
     }, _$dataMapAtom, name: '${_$dataMapAtom.name}_set');
   }
-
-  @override
-  String toString() {
-    final string =
-        'isLoading: ${isLoading.toString()},shouldRetry: ${shouldRetry.toString()},events: ${events.toString()},infoLeaving: ${infoLeaving.toString()},dataMap: ${dataMap.toString()}';
-    return '{$string}';
-  }
 }

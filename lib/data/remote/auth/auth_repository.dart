@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/base/api_response.dart';
 import 'package:hethongchamcong_mobile/data/base/base_model.dart';
@@ -8,105 +7,94 @@ import 'package:hethongchamcong_mobile/data/base/base_repository.dart';
 import 'package:hethongchamcong_mobile/data/base/result.dart';
 import 'package:hethongchamcong_mobile/data/model/empty.dart';
 import 'package:hethongchamcong_mobile/data/model/login_response.dart';
+import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/data/remote/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepository extends BaseRepository {
   AuthRepository() : super();
 
-  Future<Result> login(
-      String userName, String password, String companyId) async {
+  Future<Result> login(String userName, String password, String companyId) async {
     Map<String, dynamic> map = Map();
-    map.addAll({
-      "clientId": "1",
-      "companyId": companyId,
-      "password": password,
-      "username": userName
-    });
+    map.addAll({"clientId": "1", "companyId": companyId.trim(), "password": password, "username": userName.trim()});
     try {
       var response = await dio.post(DioManager.PATH_LOGIN, data: map);
-      ApiResponse<LoginResponse> loginResponse = ApiResponse.fromJson(
-          response.data, (json) => LoginResponse.fromJson(json));
-      if (loginResponse.returnCode == 1) {
+
+      if (response.data["returnCode"] == 1 && response.data != null) {
+        ApiResponse<UserData> loginResponse = ApiResponse.fromJson(response.data, (json) => UserData.fromJson(json));
+
         var sharedPreference = await SharedPreferences.getInstance();
-        sharedPreference.setString(
-            Constants.TOKEN, loginResponse.data.token);
-        sharedPreference.setString(
-            Constants.USER, json.encode(loginResponse.data.user.toJson()));
-        return Success(
-            msg: loginResponse.returnMessage, data: loginResponse.data);
+
+        sharedPreference.setString(Constants.TOKEN, loginResponse.data.token);
+        sharedPreference.setString(Constants.USER, json.encode(loginResponse.data.user));
+
+        var users = sharedPreference.getString(Constants.USERS);
+
+        addNewUser(sharedPreference, loginResponse.data, users, password);
+
+        return Success(msg: loginResponse.returnMessage, data: loginResponse.data);
       }
-      return Error(status: Status.FAIL, msg: loginResponse.returnMessage);
+      return Error(status: Status.LOGIN_FAIL, msg: response.data['returnMessage']);
     } catch (error) {
-      return Error(
-          status: Status.FAIL, msg: "Vui lòng kiểm tra lại kết nối mạng.");
+      return Error(status: Status.ERROR_NETWORK, msg: "Vui lòng kiểm tra lại kết nối mạng.");
     }
   }
 
   Future<Result> logout() async {
     try {
       var sharedPreference = await SharedPreferences.getInstance();
-      String token = sharedPreference.getString(Constants.TOKEN);
-      removeSharedPreference(sharedPreference);
-      var response = await dio.post(DioManager.PATH_LOGOUT,
-          options: Options(headers: {"authorization": "Bearer $token"}));
 
-      ApiResponse<Empty> logOutResponse =
-          ApiResponse.fromJson(response.data, (json) => Empty.fromJson(json));
+      var response = await dio.post(DioManager.PATH_LOGOUT);
+
+      ApiResponse<Empty> logOutResponse = ApiResponse.fromJson(response.data, (json) => Empty.fromJson(json));
       if (logOutResponse.returnCode == 1) {
+        sharedPreference.setString(Constants.TOKEN, null);
+
+        sharedPreference.setString(Constants.IS_LOGIN, null);
+
         return Success(msg: logOutResponse.returnMessage, data: null);
       }
+      sharedPreference.setString(Constants.TOKEN, null);
+
+      sharedPreference.setString(Constants.IS_LOGIN, null);
+
       return Error(status: Status.FAIL, msg: logOutResponse.returnMessage);
     } catch (error) {
-      return Error(
-          status: Status.FAIL, msg: "Vui lòng kiểm tra lại kết nối mạng.");
+      var sharedPreference = await SharedPreferences.getInstance();
+
+      sharedPreference.setString(Constants.TOKEN, null);
+
+      sharedPreference.setString(Constants.IS_LOGIN, null);
+
+      return Error(status: Status.FAIL, msg: "Vui lòng kiểm tra lại kết nối mạng.");
     }
   }
 
-  Future<Result> changePassword(String userName, String newPassword,
-      String oldPassword, String companyId) async {
-    Map<String, dynamic> map = Map();
-    map.addAll({
-      "clientId": "1",
-      "companyId": companyId,
-      "newPassword": newPassword,
-      "oldPassword": oldPassword,
-      "username": userName
-    });
+  Future<Result> changePassword(String newPassword, String oldPassword) async {
     try {
-      var sharedPreference = await SharedPreferences.getInstance();
-      String token = sharedPreference.getString(Constants.TOKEN);
-      var response = await dio.put(DioManager.PATH_CHANGE_PASSWORD,
-          options: Options(
-              headers: {"authorization": "Bearer $token", "clientId": 1}),
-          data: map);
-      ApiResponse<Empty> changePasswordResponse =
-          ApiResponse.fromJson(response.data, (json) => Empty.fromJson(json));
+      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+      User user = User.fromJson(jsonDecode(sharedPreferences.getString(Constants.USER)));
+
+      Map<String, dynamic> map = Map();
+
+      map.addAll({
+        "clientId": "1",
+        "companyId": user.companyId,
+        "newPassword": newPassword,
+        "oldPassword": oldPassword,
+        "username": user.username
+      });
+      var response = await dio.put(DioManager.PATH_CHANGE_PASSWORD, data: map);
+      ApiResponse<Empty> changePasswordResponse = ApiResponse.fromJson(response.data, (json) => Empty.fromJson(json));
       if (changePasswordResponse.returnCode == 1) {
+        updatePassword(
+            sharedPreferences, User.fromJson(jsonDecode(sharedPreferences.getString(Constants.USER))), newPassword);
         return Success(msg: changePasswordResponse.returnMessage, data: null);
       }
-      return Error(
-          status: Status.FAIL, msg: changePasswordResponse.returnMessage);
+      return Error(status: Status.FAIL, msg: changePasswordResponse.returnMessage);
     } catch (error) {
-      return Error(
-          status: Status.FAIL, msg: "Vui lòng kiểm tra lại kết nối mạng.");
+      return Error(status: Status.FAIL, msg: "Vui lòng kiểm tra lại kết nối mạng.");
     }
-  }
-
-  void removeSharedPreference(SharedPreferences sharedPreference) {
-    sharedPreference.setBool(Constants.IS_LOGIN, false);
-    sharedPreference.setString(Constants.TOKEN, null);
-    sharedPreference.setString(Constants.USERNAME, null);
-    sharedPreference.setString(Constants.COMPANY_ID, null);
-    sharedPreference.setString(Constants.EMPLOYEE_ID, null);
-    sharedPreference.setString(Constants.OFFICE_ID, null);
-    sharedPreference.setString(Constants.DEPARTMENT, null);
-    sharedPreference.setString(Constants.FULL_NAME, null);
-    sharedPreference.setString(Constants.BIRTH_DATE, null);
-    sharedPreference.setString(Constants.EMAIL, null);
-    sharedPreference.setString(Constants.IDENTITY_CARD_NO, null);
-    sharedPreference.setString(Constants.PHONE_NUMBER, null);
-    sharedPreference.setString(Constants.ADDRESS, null);
-    sharedPreference.setString(Constants.AVATAR, null);
   }
 }

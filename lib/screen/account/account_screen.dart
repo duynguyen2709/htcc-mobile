@@ -25,9 +25,13 @@ class _AccountScreenState extends State<AccountScreen> {
 
   TextEditingController _controllerFullName;
 
+  TextEditingController _controllerTitle;
+
   TextEditingController _controllerBirthDay;
 
   TextEditingController _controllerPhone;
+
+  TextEditingController _controllerCMND;
 
   TextEditingController _controllerOfficeId;
 
@@ -46,9 +50,13 @@ class _AccountScreenState extends State<AccountScreen> {
 
     _controllerFullName = TextEditingController();
 
+    _controllerTitle = TextEditingController();
+
     _controllerBirthDay = TextEditingController();
 
     _controllerPhone = TextEditingController();
+
+    _controllerCMND = TextEditingController();
 
     _controllerOfficeId = TextEditingController();
 
@@ -105,8 +113,16 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Thông tin cá nhân"),
+          title: Text("Trang cá nhân"),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
           actions: <Widget>[
             Observer(
               builder: (BuildContext context) {
@@ -156,9 +172,13 @@ class _AccountScreenState extends State<AccountScreen> {
 
     _controllerFullName.text = account.fullName;
 
+    _controllerTitle.text = account.title;
+
     _controllerBirthDay.text = account.birthDate;
 
     _controllerPhone.text = account.phoneNumber;
+
+    _controllerCMND.text = account.identityCardNo;
 
     _controllerOfficeId.text = account.officeId;
 
@@ -170,12 +190,6 @@ class _AccountScreenState extends State<AccountScreen> {
 
     return RefreshIndicator(
       child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Colors.blueAccent, Colors.blue, Colors.lightBlue, Colors.lightBlueAccent]),
-        ),
         padding: const EdgeInsets.only(top: 8, bottom: 15, left: 8, right: 8),
         child: Column(
           children: <Widget>[
@@ -191,17 +205,25 @@ class _AccountScreenState extends State<AccountScreen> {
                     fit: BoxFit.cover,
                   )),
             ),
+            Padding(
+              child: Text(
+                "Thông tin cá nhân",
+                style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              padding: const EdgeInsets.only(top: 8, bottom: 15, left: 8, right: 8),
+            ),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
                     CustomTextField(
                       boxDecoration: BoxDecoration(
+                          border: Border.all(color: Colors.black45),
                           borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                           color: Colors.white),
                       controller: _controllerId,
                       labelText: "Mã số nhân viên",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
+                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
                     ),
                     SizedBox(
                       height: 10,
@@ -209,7 +231,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     CustomSuffixTextField(
                       controller: _controllerFullName,
                       labelText: "Họ và tên",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
+                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
                       callbackUpdateStore: (String text) {
                         accountScreenStore.isConfig = true;
                         accountScreenStore.account.fullName = text;
@@ -218,10 +240,22 @@ class _AccountScreenState extends State<AccountScreen> {
                     SizedBox(
                       height: 10,
                     ),
+                    CustomTextField(
+                      boxDecoration: BoxDecoration(
+                          border: Border.all(color: Colors.black45),
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                          color: Colors.white),
+                      controller: _controllerTitle,
+                      labelText: "Chức danh",
+                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     CustomSuffixTextField(
                       controller: _controllerBirthDay,
                       labelText: "Ngày sinh",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
+                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
                       callbackUpdateStore: (String text) {
                         accountScreenStore.isConfig = true;
                         accountScreenStore.account.birthDate = text;
@@ -232,9 +266,21 @@ class _AccountScreenState extends State<AccountScreen> {
                       height: 10,
                     ),
                     CustomSuffixTextField(
+                      controller: _controllerCMND,
+                      labelText: "CMND",
+                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                      callbackUpdateStore: (String text) {
+                        accountScreenStore.isConfig = true;
+                        accountScreenStore.account.identityCardNo = text;
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CustomSuffixTextField(
                       controller: _controllerPhone,
                       labelText: "Số điện thoại",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
+                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
                       callbackUpdateStore: (String text) {
                         accountScreenStore.isConfig = true;
                         accountScreenStore.account.phoneNumber = text;
@@ -246,7 +292,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     CustomSuffixTextField(
                       controller: _controllerEmail,
                       labelText: "Email",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
+                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
                       callbackUpdateStore: (String text) {
                         accountScreenStore.isConfig = true;
                         accountScreenStore.account.email = text;
@@ -258,32 +304,49 @@ class _AccountScreenState extends State<AccountScreen> {
                     CustomSuffixTextField(
                       controller: _controllerAddress,
                       labelText: "Địa chỉ",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
+                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
                       callbackUpdateStore: (String text) {
                         accountScreenStore.isConfig = true;
                         accountScreenStore.account.address = text;
                       },
+                      boxDecoration: BoxDecoration(
+                          border: Border.all(color: Colors.black45),
+                          borderRadius:
+                              BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                          color: Colors.white),
                     ),
                     SizedBox(
                       height: 10,
                     ),
+                    Padding(
+                      child: Text(
+                        "Nơi làm việc",
+                        style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      padding: const EdgeInsets.only(top: 8, bottom: 15, left: 8, right: 8),
+                    ),
                     CustomTextField(
-                      boxDecoration: BoxDecoration(color: Colors.white),
+                      boxDecoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                        border: Border.all(color: Colors.black45),
+                      ),
                       controller: _controllerOfficeId,
-                      labelText: "Mã trụ sở",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
+                      labelText: "Chi nhánh",
+                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     CustomTextField(
                       boxDecoration: BoxDecoration(
+                          border: Border.all(color: Colors.black45),
                           borderRadius:
                               BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
                           color: Colors.white),
                       controller: _controllerDepartment,
-                      labelText: "Trụ sở",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
+                      labelText: "Phòng ban",
+                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
                     ),
                   ],
                 ),
@@ -291,7 +354,8 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
           ],
         ),
-      ), onRefresh: _refresh,
+      ),
+      onRefresh: _refresh,
     );
   }
 
@@ -328,7 +392,7 @@ class CustomTextField extends StatelessWidget {
           decoration: InputDecoration(
               contentPadding: EdgeInsets.only(top: 5),
               labelText: labelText,
-              labelStyle: TextStyle(color: Colors.black45, fontSize: 17),
+              labelStyle: TextStyle(color: Colors.black45, fontSize: 16),
               disabledBorder: InputBorder.none),
         ),
       ),
@@ -343,7 +407,8 @@ class CustomSuffixTextField extends StatelessWidget {
       @required this.labelText,
       @required this.textStyle,
       this.isDate = false,
-      this.callbackUpdateStore})
+      this.callbackUpdateStore,
+      this.boxDecoration})
       : super(key: key);
 
   final TextEditingController controller;
@@ -356,10 +421,17 @@ class CustomSuffixTextField extends StatelessWidget {
 
   final Function callbackUpdateStore;
 
+  final BoxDecoration boxDecoration;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(color: Colors.white),
+        decoration: (boxDecoration != null)
+            ? boxDecoration
+            : BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.black45),
+              ),
         padding: const EdgeInsets.only(top: 8, bottom: 8),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -375,7 +447,7 @@ class CustomSuffixTextField extends StatelessWidget {
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.only(top: 5),
                         labelText: labelText,
-                        labelStyle: TextStyle(color: Colors.black45, fontSize: 17),
+                        labelStyle: TextStyle(color: Colors.black45, fontSize: 16),
                         disabledBorder: InputBorder.none),
                   ),
                 ),
@@ -388,7 +460,7 @@ class CustomSuffixTextField extends StatelessWidget {
                               onConfirm: (date) {
                             controller.text = DateFormat('yyyy-MM-dd').format(date);
                             callbackUpdateStore(controller.text);
-                          }, currentTime: DateTime.now(), locale: LocaleType.vi);
+                          }, currentTime: DateFormat('yyyy-MM-dd').parse(controller.text), locale: LocaleType.vi);
                         })
                     : IconButton(
                         icon: Icon(
@@ -401,7 +473,7 @@ class CustomSuffixTextField extends StatelessWidget {
                               context: context,
                               child: Dialog(
                                 child: Container(
-                                  height: MediaQuery.of(context).size.height / 3,
+                                  height: MediaQuery.of(context).size.height / 3 + 20,
                                   child: Scaffold(
                                     appBar: AppBar(
                                       automaticallyImplyLeading: false,

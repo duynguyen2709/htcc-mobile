@@ -63,16 +63,8 @@ mixin _$PasswordScreenStore on _PasswordScreenStore, Store {
   final _$changePasswordAsyncAction = AsyncAction('changePassword');
 
   @override
-  Future changePassword(String userName, String newPassword, String oldPassword,
-      String companyId) {
-    return _$changePasswordAsyncAction.run(() =>
-        super.changePassword(userName, newPassword, oldPassword, companyId));
-  }
-
-  @override
-  String toString() {
-    final string =
-        'isLoading: ${isLoading.toString()},isSuccess: ${isSuccess.toString()},errorMessage: ${errorMessage.toString()}';
-    return '{$string}';
+  Future changePassword(String newPassword, String oldPassword) {
+    return _$changePasswordAsyncAction
+        .run(() => super.changePassword(newPassword, oldPassword));
   }
 }

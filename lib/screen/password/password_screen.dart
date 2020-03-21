@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/screen/password/password_screen_store.dart';
 import 'package:mobx/mobx.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 
 class PasswordScreen extends StatefulWidget {
   @override
@@ -20,8 +19,7 @@ enum PasswordError {
 const Map<PasswordError, String> errorMessage = {
   PasswordError.EMPTY: "Vui lòng nhập mật khẩu.",
   PasswordError.SHORT: "Mật khẩu phải có ít nhất 8 kí tự.",
-  PasswordError.INVALID:
-      "Mật khẩu không hợp lệ. Mật khẩu phải có ít nhất 1 kí tự a-z, A-Z, 0-9.",
+  PasswordError.INVALID: "Mật khẩu không hợp lệ. Mật khẩu phải có ít nhất 1 kí tự a-z, A-Z, 0-9.",
   PasswordError.VALID: "",
 };
 
@@ -48,8 +46,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
     reaction((_) => passwordScreenStore.isSuccess, (isSuccess) async {
       if (isSuccess == true) {
         _showErrorDialog("Đổi mật khẩu thành công");
-      } else if (isSuccess != null)
-        _showErrorDialog(passwordScreenStore.errorMessage);
+      } else if (isSuccess != null) _showErrorDialog(passwordScreenStore.errorMessage);
     });
   }
 
@@ -93,20 +90,14 @@ class _PasswordScreenState extends State<PasswordScreen> {
         child: Column(
           children: <Widget>[
             Container(
-              height:MediaQuery.of(context).size.height / 2,
+              height: MediaQuery.of(context).size.height / 2,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20)),
-                 gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.blueAccent,
-                    Colors.blue,
-                    Colors.lightBlue,
-                    Colors.lightBlueAccent
-                  ]),),
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.blueAccent, Colors.blue, Colors.lightBlue, Colors.lightBlueAccent]),
+              ),
               child: Column(
                 children: <Widget>[
                   Container(
@@ -116,9 +107,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     margin: EdgeInsets.fromLTRB(16, 4, 16, 4),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10)),
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                         color: Colors.white),
                     child: TextFormField(
                       keyboardType: TextInputType.text,
@@ -131,12 +120,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
                         // Here is key idea
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _oldPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: _oldPasswordVisible
-                                ? Theme.of(context).primaryColorDark
-                                : Colors.grey,
+                            _oldPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                            color: _oldPasswordVisible ? Theme.of(context).primaryColorDark : Colors.grey,
                           ),
                           onPressed: () {
                             setState(() {
@@ -150,10 +135,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                   errorMsgOldPass != PasswordError.VALID
                       ? Text(
                           errorMessage[errorMsgOldPass],
-                          style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
+                          style: TextStyle(color: Colors.red, fontSize: 14, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.start,
                         )
                       : Container(),
@@ -172,12 +154,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
                         // Here is key idea
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _newPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: _newPasswordVisible
-                                ? Theme.of(context).primaryColorDark
-                                : Colors.grey,
+                            _newPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                            color: _newPasswordVisible ? Theme.of(context).primaryColorDark : Colors.grey,
                           ),
                           onPressed: () {
                             setState(() {
@@ -191,10 +169,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                   errorMsgNewPass != PasswordError.VALID
                       ? Text(
                           errorMessage[errorMsgNewPass],
-                          style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
+                          style: TextStyle(color: Colors.red, fontSize: 14, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.start,
                         )
                       : Container(),
@@ -202,9 +177,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     margin: EdgeInsets.fromLTRB(16, 8, 16, 4),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(10),
-                            bottomRight: Radius.circular(10)),
+                        borderRadius:
+                            BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
                         color: Colors.white),
                     child: TextFormField(
                       keyboardType: TextInputType.text,
@@ -217,12 +191,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
                         // Here is key idea
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _repeatVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: _repeatVisible
-                                ? Theme.of(context).primaryColorDark
-                                : Colors.grey,
+                            _repeatVisible ? Icons.visibility : Icons.visibility_off,
+                            color: _repeatVisible ? Theme.of(context).primaryColorDark : Colors.grey,
                           ),
                           onPressed: () {
                             setState(() {
@@ -236,10 +206,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                   errorMsgRetypePass != PasswordError.VALID
                       ? Text(
                           errorMessage[errorMsgRetypePass],
-                          style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
+                          style: TextStyle(color: Colors.red, fontSize: 14, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.start,
                         )
                       : Container(),
@@ -253,21 +220,22 @@ class _PasswordScreenState extends State<PasswordScreen> {
               height: 100,
               alignment: Alignment.center,
               child: SizedBox(
-                width: MediaQuery.of(context).size.width -32 ,
-                child:
-                  RaisedButton(
-                    color: Colors.lightBlue,
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-                    onPressed: () {
-                      // ignore: unnecessary_statements
-                      _validate() ? _changePassword() : null;
-                    },
-                    textColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(10.0),
-                        side: BorderSide(color: Colors.white)),
-                    child: Text("Thay đổi mật khấu", style: TextStyle(fontSize: 18),),
+                width: MediaQuery.of(context).size.width - 32,
+                child: RaisedButton(
+                  color: Colors.lightBlue,
+                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+                  onPressed: () {
+                    // ignore: unnecessary_statements
+                    _validate() ? _changePassword() : null;
+                  },
+                  textColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(10.0), side: BorderSide(color: Colors.white)),
+                  child: Text(
+                    "Thay đổi mật khấu",
+                    style: TextStyle(fontSize: 18),
                   ),
+                ),
               ),
             )
           ],
@@ -278,7 +246,9 @@ class _PasswordScreenState extends State<PasswordScreen> {
 
   _changePassword() async {
     passwordScreenStore.changePassword(
-        "admin", _repeatController.text, _oldPasswordController.text, "VNG");
+      _repeatController.text,
+      _oldPasswordController.text,
+    );
   }
 
   bool _validate() {
@@ -300,9 +270,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
       errorMsgNewPass = err2;
       errorMsgRetypePass = err3;
     });
-    if (err1 != PasswordError.VALID ||
-        err2 != PasswordError.VALID ||
-        err3 != PasswordError.VALID) {
+    if (err1 != PasswordError.VALID || err2 != PasswordError.VALID || err3 != PasswordError.VALID) {
       return false;
     } else
       return true;
