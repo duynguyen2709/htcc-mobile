@@ -24,7 +24,7 @@ class Constants {
 
   //Message Dialog
 
-  static const String MESSAGE_AUTHENTICATE = "Lỗi xác thực!";
+  static const String MESSAGE_AUTHENTICATE = "Lỗi xác thực!\nVui lòng đăng nhập lại để tiếp tục.";
   static const String MESSAGE_NETWORK = "Lỗi kết nối!";
   static const String MESSAGE_EMPTY = "Dữ liệu không có sẵn!";
   static const String UPDATE_FAIL = "Cập nhật không thành công!";

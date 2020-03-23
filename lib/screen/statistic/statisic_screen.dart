@@ -197,37 +197,35 @@ class _StatisticScreenState extends State<StatisticScreen> {
     return Scaffold(
         backgroundColor: Color(0xEEEEEEEE),
         body: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            child: Stack(
-              children: <Widget>[
-                //Wave header
-                Container(
-                  height: MediaQuery.of(context).size.height / 3,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.blueAccent,
-                          Colors.blue,
-                          Colors.lightBlue,
-                          Colors.lightBlueAccent
-                        ]),
-                  ),
+          child: Stack(
+            children: <Widget>[
+              //Wave header
+              Container(
+                height: MediaQuery.of(context).size.height / 3,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.blueAccent,
+                        Colors.blue,
+                        Colors.lightBlue,
+                        Colors.lightBlueAccent
+                      ]),
                 ),
-                SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        height: MediaQuery.of(context).size.height / 10,
-                      ),
-                      Card(
-                        margin: EdgeInsets.symmetric(horizontal: 16),
-                        elevation: 5,
-                        child: Container(
-                          height: MediaQuery.of(context).size.height / 10,
-                          padding: EdgeInsets.all(12),
+              ),
+              Column(
+                children: <Widget>[
+                  Container(
+                    height: MediaQuery.of(context).size.height / 10,
+                  ),
+                  Card(
+                    margin: EdgeInsets.symmetric(horizontal: 16),
+                    elevation: 5,
+                    child: Wrap(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.all(16),
                           child: Row(
                             children: <Widget>[
                               Expanded(
@@ -263,11 +261,12 @@ class _StatisticScreenState extends State<StatisticScreen> {
                                   ],
                                 ),
                               ),
-                              VerticalDivider(
+                              Container( height: 50,child: VerticalDivider(
                                 thickness: 1,
                                 indent: 5,
                                 endIndent: 5,
-                              ),
+                              ),),
+
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,241 +302,244 @@ class _StatisticScreenState extends State<StatisticScreen> {
                             ],
                           ),
                         ),
-                      ),
-                      Container(
-                        height: MediaQuery.of(context).size.height / 20,
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.width / 1.9,
-                        child: ListView(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.all(5),
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Card(
-                                    elevation: 5,
-                                    child: Column(
-                                      children: <Widget>[
-                                        Container(
-                                          child: Row(
-                                            children: <Widget>[
-                                              Container(
-                                                height: 10,
-                                                width: 10,
-                                                margin: EdgeInsets.fromLTRB(
-                                                    0, 0, 16, 0),
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Colors.blueAccent),
-                                              ),
-                                              Text(
-                                                "Có mặt",
-                                                textAlign: TextAlign.start,
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                            ],
-                                          ),
-                                          margin:
-                                              EdgeInsets.fromLTRB(16, 4, 0, 4),
-                                        ),
-                                        Container(
-                                          child: Row(
-                                            children: <Widget>[
-                                              Container(
-                                                height: 10,
-                                                width: 10,
-                                                margin: EdgeInsets.fromLTRB(
-                                                    0, 0, 16, 0),
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Colors.grey
-                                                        .withAlpha(50)),
-                                              ),
-                                              Text(
-                                                "Vắng",
-                                                textAlign: TextAlign.start,
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                            ],
-                                          ),
-                                          margin:
-                                              EdgeInsets.fromLTRB(16, 4, 0, 4),
-                                        ),
-                                        CircularPercentIndicator(
-                                          radius: MediaQuery.of(context).size.width / 3.125,
-                                          lineWidth: 12.0,
-                                          animation: true,
-                                          percent: 0.8,
-                                          center: Container(
-                                            margin: EdgeInsets.only(left: 9),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                Text(
-                                                  "80",
-                                                  style: TextStyle(
-                                                      fontSize: 40,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                ),
-                                                Text("%",
-                                                    style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.w600))
-                                              ],
-                                            ),
-                                          ),
-                                          circularStrokeCap:
-                                              CircularStrokeCap.round,
-                                          progressColor: Colors.blueAccent,
-                                          backgroundColor:
-                                              Colors.grey.withAlpha(50),
-                                        ),
-                                      ],
-                                    )),
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(5),
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Card(
-                                    elevation: 5,
-                                    child: Column(
-                                      children: <Widget>[
-                                        Container(
-                                          child: Row(
-                                            children: <Widget>[
-                                              Container(
-                                                height: 10,
-                                                width: 10,
-                                                margin: EdgeInsets.fromLTRB(
-                                                    0, 0, 16, 0),
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Colors.blueAccent),
-                                              ),
-                                              Text(
-                                                "Đúng giờ",
-                                                textAlign: TextAlign.start,
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                            ],
-                                          ),
-                                          margin:
-                                              EdgeInsets.fromLTRB(16, 4, 0, 4),
-                                        ),
-                                        Container(
-                                          child: Row(
-                                            children: <Widget>[
-                                              Container(
-                                                height: 10,
-                                                width: 10,
-                                                margin: EdgeInsets.fromLTRB(
-                                                    0, 0, 16, 0),
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Colors.grey
-                                                        .withAlpha(50)),
-                                              ),
-                                              Text(
-                                                "Đến sớm /trễ",
-                                                textAlign: TextAlign.start,
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                            ],
-                                          ),
-                                          margin:
-                                              EdgeInsets.fromLTRB(16, 4, 0, 4),
-                                        ),
-                                        CircularPercentIndicator(
-                                          radius: MediaQuery.of(context).size.width / 3.125,
-                                          lineWidth: 12.0,
-                                          animation: true,
-                                          percent: 0.78,
-                                          center: Container(
-                                            margin: EdgeInsets.only(left: 9),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                Text(
-                                                  "78",
-                                                  style: TextStyle(
-                                                      fontSize: 40,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                ),
-                                                Text("%",
-                                                    style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.w600))
-                                              ],
-                                            ),
-                                          ),
-                                          circularStrokeCap:
-                                              CircularStrokeCap.round,
-                                          progressColor: Colors.lightBlue,
-                                          backgroundColor:
-                                              Colors.grey.withAlpha(50),
-                                        ),
-                                      ],
-                                    )),
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(5),
-                                height:
-                                    MediaQuery.of(context).size.width / 1.85,
-                                width: MediaQuery.of(context).size.width / 1.9,
-                                child: Card(
-                                    elevation: 5,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height / 20,
+                  ),
+                  SizedBox(
+                    height: 230,
+                    child: ListView(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            width: 200,
+                            child: Card(
+                                elevation: 5,
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      child: Row(
                                         children: <Widget>[
-                                          Text(
-                                            "Số giờ làm việc ngoài giờ",
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w600),
-                                            textAlign: TextAlign.center,
-                                          ),
                                           Container(
-                                            height: 20,
+                                            height: 10,
+                                            width: 10,
+                                            margin: EdgeInsets.fromLTRB(
+                                                0, 0, 16, 0),
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.blueAccent),
                                           ),
                                           Text(
-                                            "40.0",
-                                            style: TextStyle(
-                                                fontSize: 60,
-                                                color: Colors.lightBlueAccent),
-                                          )
+                                            "Có mặt",
+                                            textAlign: TextAlign.start,
+                                            style: TextStyle(fontSize: 16),
+                                          ),
                                         ],
                                       ),
-                                    )),
-                              ),
-                            ]),
-                      ),
-                      Card(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.white, width: 1),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Container(
-                          height: MediaQuery.of(context).size.height / 9.5,
-                          padding: EdgeInsets.all(8),
-                          child: Row(
+                                      margin:
+                                          EdgeInsets.fromLTRB(16, 4, 0, 4),
+                                    ),
+                                    Container(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Container(
+                                            height: 10,
+                                            width: 10,
+                                            margin: EdgeInsets.fromLTRB(
+                                                0, 0, 16, 0),
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.grey
+                                                    .withAlpha(50)),
+                                          ),
+                                          Text(
+                                            "Vắng",
+                                            textAlign: TextAlign.start,
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ],
+                                      ),
+                                      margin:
+                                          EdgeInsets.fromLTRB(16, 4, 0, 4),
+                                    ),
+                                    CircularPercentIndicator(
+                                      radius: 140,
+                                      lineWidth: 12.0,
+                                      animation: true,
+                                      percent: 0.8,
+                                      center: Container(
+                                        margin: EdgeInsets.only(left: 9),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: <Widget>[
+                                            Text(
+                                              "80",
+                                              style: TextStyle(
+                                                  fontSize: 40,
+                                                  fontWeight:
+                                                      FontWeight.w600),
+                                            ),
+                                            Text("%",
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.w600))
+                                          ],
+                                        ),
+                                      ),
+                                      circularStrokeCap:
+                                          CircularStrokeCap.round,
+                                      progressColor: Colors.blueAccent,
+                                      backgroundColor:
+                                          Colors.grey.withAlpha(50),
+                                    ),
+                                  ],
+                                )),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            width: 200,
+                            child: Card(
+                                elevation: 5,
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Container(
+                                            height: 10,
+                                            width: 10,
+                                            margin: EdgeInsets.fromLTRB(
+                                                0, 0, 16, 0),
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.blueAccent),
+                                          ),
+                                          Text(
+                                            "Đúng giờ",
+                                            textAlign: TextAlign.start,
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ],
+                                      ),
+                                      margin:
+                                          EdgeInsets.fromLTRB(16, 4, 0, 4),
+                                    ),
+                                    Container(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Container(
+                                            height: 10,
+                                            width: 10,
+                                            margin: EdgeInsets.fromLTRB(
+                                                0, 0, 16, 0),
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.grey
+                                                    .withAlpha(50)),
+                                          ),
+                                          Text(
+                                            "Đến sớm /trễ",
+                                            textAlign: TextAlign.start,
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ],
+                                      ),
+                                      margin:
+                                          EdgeInsets.fromLTRB(16, 4, 0, 4),
+                                    ),
+                                    CircularPercentIndicator(
+                                      radius: 140,
+                                      lineWidth: 12.0,
+                                      animation: true,
+                                      percent: 0.78,
+                                      center: Container(
+                                        margin: EdgeInsets.only(left: 9),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: <Widget>[
+                                            Text(
+                                              "78",
+                                              style: TextStyle(
+                                                  fontSize: 40,
+                                                  fontWeight:
+                                                      FontWeight.w600),
+                                            ),
+                                            Text("%",
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.w600))
+                                          ],
+                                        ),
+                                      ),
+                                      circularStrokeCap:
+                                          CircularStrokeCap.round,
+                                      progressColor: Colors.lightBlue,
+                                      backgroundColor:
+                                          Colors.grey.withAlpha(50),
+                                    ),
+                                  ],
+                                )),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            height:
+                                230,
+                            width: 200,
+                            child: Card(
+                                elevation: 5,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        "Số giờ làm việc ngoài giờ",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      Container(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        "40.0",
+                                        style: TextStyle(
+                                            fontSize: 60,
+                                            color: Colors.lightBlueAccent),
+                                      )
+                                    ],
+                                  ),
+                                )),
+                          ),
+                        ]),
+                  ),
+                  Card(
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.white, width: 1),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      child: Wrap(
+                        children: <Widget>[
+                          Row(
                             children: <Widget>[
                               Expanded(
                                 child: Column(
@@ -558,11 +560,11 @@ class _StatisticScreenState extends State<StatisticScreen> {
                                   ],
                                 ),
                               ),
-                              VerticalDivider(
+                              Container( height: 50,child: VerticalDivider(
                                 thickness: 1,
-                                indent: 10,
-                                endIndent: 10,
-                              ),
+                                indent: 5,
+                                endIndent: 5,
+                              ),),
                               Expanded(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -583,11 +585,11 @@ class _StatisticScreenState extends State<StatisticScreen> {
                                   ],
                                 ),
                               ),
-                              VerticalDivider(
+                              Container( height: 50,child: VerticalDivider(
                                 thickness: 1,
-                                indent: 10,
-                                endIndent: 10,
-                              ),
+                                indent: 5,
+                                endIndent: 5,
+                              ),),
                               Expanded(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -610,121 +612,121 @@ class _StatisticScreenState extends State<StatisticScreen> {
                               ),
                             ],
                           ),
-                        ),
+                        ],
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(8)),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.grey,
-                                  blurRadius: 12,
-                                  spreadRadius: 5)
-                            ]),
-                        margin: EdgeInsets.all(8),
-                        padding: EdgeInsets.only(
-                            left: 10, top: 8, right: 12, bottom: 0),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Container(
-                            padding: EdgeInsets.only(
-                                left: 16, top: 24, right: 12, bottom: 12),
-                            width: MediaQuery.of(context).size.width,
-                            child: BarChart(
-                              BarChartData(
-                                  alignment: BarChartAlignment.spaceAround,
-                                  maxY: 24,
-                                  gridData: FlGridData(
-                                    show: true,
-                                    checkToShowVerticalLine: (value) => value == 0,
-                                    getDrawingVerticalLine: (value) => FlLine(
-                                      color: Colors.grey,
-                                      strokeWidth: 1,
-                                    ),
-                                    checkToShowHorizontalLine: (value) =>
-                                        value == 8 || value == 17,
-                                    getDrawingHorizontalLine: (value) => FlLine(
-                                        color: Colors.grey,
-                                        strokeWidth: 1,
-                                        dashArray: [8, 2]),
-                                  ),
-                                  barTouchData: BarTouchData(
-                                    touchTooltipData: BarTouchTooltipData(
-                                      tooltipBgColor: Colors.grey,
-                                      getTooltipItem: (_a, _b, _c, _d) => null,
-                                    ),
-                                  ),
-                                  titlesData: FlTitlesData(
-                                    show: true,
-                                    bottomTitles: SideTitles(
-                                      showTitles: true,
-                                      textStyle: TextStyle(
-                                          color: const Color(0xff7589a2),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14),
-                                      margin: 20,
-                                      getTitles: (double value) {
-                                        if (date.length <= 7)
-                                          return date[value.toInt()];
-                                        else {
-                                          var step = (date.length / 7.0).ceil();
-                                          if (value % step == 0)
-                                            return date[value.floor()];
-                                          else
-                                            return '';
-                                        }
-                                      },
-                                    ),
-                                    leftTitles: SideTitles(
-                                        showTitles: true,
-                                        textStyle: TextStyle(
-                                            color: const Color(0xff7589a2),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14),
-                                        margin: 20,
-                                        getTitles: (double value) {
-                                          switch (value.toInt()) {
-                                            case 0:
-                                              return '12 am';
-                                            case 4:
-                                              return '4 am';
-                                            case 8:
-                                              return '8 am';
-                                            case 12:
-                                              return '12 pm';
-                                            case 16:
-                                              return '4 pm';
-                                            case 20:
-                                              return '8 pm';
-                                            case 24:
-                                              return '12 am';
-                                            default:
-                                              return '';
-                                          }
-                                        }),
-                                  ),
-                                  borderData: FlBorderData(
-                                      show: true,
-                                      border: Border(
-                                          left: BorderSide(color: Colors.grey),
-                                          bottom: BorderSide(color: Colors.grey),
-                                          top: BorderSide.none,
-                                          right: BorderSide.none)),
-                                  barGroups: data),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: double.infinity,
-                        height: 60,
-                      )
-                    ],
+                    ),
                   ),
-                )
-              ],
-            ),
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey,
+                              blurRadius: 12,
+                              spreadRadius: 5)
+                        ]),
+                    margin: EdgeInsets.all(8),
+                    padding: EdgeInsets.only(
+                        left: 10, top: 8, right: 12, bottom: 0),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        padding: EdgeInsets.only(
+                            left: 16, top: 24, right: 12, bottom: 12),
+                        width: MediaQuery.of(context).size.width,
+                        child: BarChart(
+                          BarChartData(
+                              alignment: BarChartAlignment.spaceAround,
+                              maxY: 24,
+                              gridData: FlGridData(
+                                show: true,
+                                checkToShowVerticalLine: (value) => value == 0,
+                                getDrawingVerticalLine: (value) => FlLine(
+                                  color: Colors.grey,
+                                  strokeWidth: 1,
+                                ),
+                                checkToShowHorizontalLine: (value) =>
+                                    value == 8 || value == 17,
+                                getDrawingHorizontalLine: (value) => FlLine(
+                                    color: Colors.grey,
+                                    strokeWidth: 1,
+                                    dashArray: [8, 2]),
+                              ),
+                              barTouchData: BarTouchData(
+                                touchTooltipData: BarTouchTooltipData(
+                                  tooltipBgColor: Colors.grey,
+                                  getTooltipItem: (_a, _b, _c, _d) => null,
+                                ),
+                              ),
+                              titlesData: FlTitlesData(
+                                show: true,
+                                bottomTitles: SideTitles(
+                                  showTitles: true,
+                                  textStyle: TextStyle(
+                                      color: const Color(0xff7589a2),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14),
+                                  margin: 20,
+                                  getTitles: (double value) {
+                                    if (date.length <= 7)
+                                      return date[value.toInt()];
+                                    else {
+                                      var step = (date.length / 7.0).ceil();
+                                      if (value % step == 0)
+                                        return date[value.floor()];
+                                      else
+                                        return '';
+                                    }
+                                  },
+                                ),
+                                leftTitles: SideTitles(
+                                    showTitles: true,
+                                    textStyle: TextStyle(
+                                        color: const Color(0xff7589a2),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14),
+                                    margin: 20,
+                                    getTitles: (double value) {
+                                      switch (value.toInt()) {
+                                        case 0:
+                                          return '12 am';
+                                        case 4:
+                                          return '4 am';
+                                        case 8:
+                                          return '8 am';
+                                        case 12:
+                                          return '12 pm';
+                                        case 16:
+                                          return '4 pm';
+                                        case 20:
+                                          return '8 pm';
+                                        case 24:
+                                          return '12 am';
+                                        default:
+                                          return '';
+                                      }
+                                    }),
+                              ),
+                              borderData: FlBorderData(
+                                  show: true,
+                                  border: Border(
+                                      left: BorderSide(color: Colors.grey),
+                                      bottom: BorderSide(color: Colors.grey),
+                                      top: BorderSide.none,
+                                      right: BorderSide.none)),
+                              barGroups: data),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 60,
+                  )
+                ],
+              )
+            ],
           ),
         )
         // This trailing comma makes auto-formatting nicer for build methods.

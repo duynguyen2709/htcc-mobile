@@ -5,6 +5,8 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/local/shared_preference.dart';
@@ -12,13 +14,17 @@ import 'package:hethongchamcong_mobile/data/model/check_in_info.dart';
 import 'package:hethongchamcong_mobile/data/model/check_in_param.dart';
 import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen_store.dart';
+import 'package:hethongchamcong_mobile/screen/main_screen.dart';
+import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 
 class CheckInLocationPage extends StatefulWidget {
-  CheckInLocationPage({Key key, this.title}) : super(key: key);
+  final MainScreenState parent;
+
+  CheckInLocationPage({Key key, this.title, this.parent}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -32,10 +38,11 @@ class CheckInLocationPage extends StatefulWidget {
   final String title;
 
   @override
-  _CheckInLocationPageState createState() => _CheckInLocationPageState();
+  _CheckInLocationPageState createState() => _CheckInLocationPageState(parent);
 }
 
 class _CheckInLocationPageState extends State<CheckInLocationPage> {
+  final MainScreenState parent;
   Position _companyPosition;
   Position _curPosition = Position();
   bool isInCompanyZone = false;
@@ -63,6 +70,8 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
 
   CheckInStore _checkInStore;
   CheckInInfo checkInInfo;
+
+  _CheckInLocationPageState(this.parent);
 
   Future<Position> locateUser() async {
     return Geolocator()
@@ -98,19 +107,118 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     }
   }
 
-  double getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-    var theta = lon1 - lon2;
-    var dist = sin(deg2rad(lat1)) * sin(deg2rad(lat2)) +
-        cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(deg2rad(theta));
-    dist = acos(dist);
-    dist = dist * 180.0 / pi;
-    dist = dist * 60 * 1.1515;
-    dist = dist * 1.609344;
-    return dist;
+  Future<void> _refresh() async {
+    var pref = await Pref.getInstance();
+    User user = User.fromJson(json.decode(pref.getString(Constants.USER)));
+    return await _checkInStore.getCheckInInfo(
+        user.companyId, user.username, null);
   }
 
-  double deg2rad(deg) {
-    return deg * (pi / 180);
+  openAlertBox(
+      bool isCheckout, String timeValid, String timeNow, Function onContinue) {
+    String content = "";
+    if (isCheckout) {
+      content = "Giờ tan ca hợp lệ là $timeValid. Bạn muốn tan ca sớm ?";
+    } else {
+      content =
+          "Đã trễ giờ điểm danh. Giờ điểm danh hợp lệ là $timeValid. Bạn vẫn muốn điểm danh ?";
+    }
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(24.0))),
+            contentPadding: EdgeInsets.all(12.0),
+            backgroundColor: Colors.white,
+            content: Container(
+              color: Colors.transparent,
+              width: 300.0,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      "Xác nhận",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                    ),
+                    SizedBox(
+                      height: 6,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        content,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300, fontSize: 18),
+                      ),
+                    ),
+                    Divider(
+                      color: Colors.grey,
+                      height: 4.0,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: InkWell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Hủy",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.of(context, rootNavigator: true)
+                                  .pop('dialog');
+                            },
+                            hoverColor: Colors.transparent,
+                            splashColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                          ),
+                        ),
+                        Container(
+                          color: Colors.grey,
+                          height: 30,
+                          width: 0.5,
+                        ),
+                        Expanded(
+                          child: InkWell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Tiếp tục",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            onTap: () {
+                              onContinue();
+                              Navigator.of(context, rootNavigator: true)
+                                  .pop('dialog');
+                            },
+                            hoverColor: Colors.transparent,
+                            splashColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                          ),
+                        )
+                      ],
+                    )
+                  ]),
+            ),
+          );
+        });
   }
 
   @override
@@ -129,8 +237,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     });
     _checkInStore = CheckInStore();
     Pref.getInstance().then((pref) {
-      User user = User.fromJson(
-          json.decode(pref.getString(Constants.USER)));
+      User user = User.fromJson(json.decode(pref.getString(Constants.USER)));
       _checkInStore.getCheckInInfo(user.companyId, user.username, null);
     });
     reaction((_) => _checkInStore.getInfoCheckInSuccess, (isSuccess) async {
@@ -146,6 +253,8 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
           if (!checkInInfo.canCheckin) isOffDay = true;
           if (checkInInfo.hasCheckedIn && checkInInfo.hasCheckedOut)
             doneCheckIn = true;
+          else
+            doneCheckIn = false;
         });
       } else if (isSuccess != null)
         Scaffold.of(context).showSnackBar(SnackBar(
@@ -156,8 +265,8 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     reaction((_) => _checkInStore.checkInSuccess, (isSuccess) async {
       if (isSuccess == true) {
         Pref.getInstance().then((pref) {
-          User user = User.fromJson(
-              json.decode(pref.getString(Constants.USER)));
+          User user =
+              User.fromJson(json.decode(pref.getString(Constants.USER)));
           _checkInStore.getCheckInInfo(user.companyId, user.username, null);
         });
       } else if (isSuccess != null)
@@ -165,6 +274,37 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
           content: Text(_checkInStore.errorMsg),
         ));
     });
+
+    reaction((_) => _checkInStore.errorAuth, (errorAuthenticate) async {
+      if (errorAuthenticate) {
+        _showErrorDialog(true);
+      }
+    });
+  }
+
+  void _showErrorDialog(bool isAuthErr) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(Constants.titleErrorDialog),
+          content: new Text(_checkInStore.errorMsg),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text(Constants.buttonErrorDialog),
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (isAuthErr)
+                  Navigator.pushReplacementNamed(
+                      context, Constants.login_screen);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -174,10 +314,17 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
   }
 
   void _getTime() {
-    setState(() {
-      now = TimeOfDay.fromDateTime(DateTime.now()).format(context);
-      followingHours = now.indexOf("AM");
-    });
+    if (mounted)
+      setState(() {
+        var time = TimeOfDay.fromDateTime(DateTime.now());
+        if (time.hour > 12)
+          followingHours = 2;
+        else
+          followingHours = 1;
+        time = time.replacing(hour: time.hourOfPeriod);
+        now = (time.hour > 9 ? "${time.hour}:" : "0${time.hour}:") +
+            (time.minute > 9 ? "${time.minute}" : "0${time.minute}");
+      });
   }
 
   var dayOfWeek = <int, String>{
@@ -192,194 +339,325 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
 
   @override
   Widget build(BuildContext context) {
-    now = TimeOfDay.fromDateTime(DateTime.now()).format(context);
-//    getLocation();
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-
+    _getTime();
+    if (checkInInfo != null) {
+      if (parent.getSelectedIndex() == 0)
+        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+          statusBarColor: checkInInfo.hasCheckedIn
+              ? _checkOutColor
+              : _checkInColor, //or set color with: Color(0xFF0000FF)
+        ));
+    } else {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.blue, // status bar color
+      ));
+    }
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-          child: Stack(
-        children: <Widget>[
-          WaveWidget(
-            config: CustomConfig(
-              gradients: (checkInInfo != null)
-                  ? (checkInInfo.hasCheckedIn)
-                      ? _checkOutGradient
-                      : _checkInGradient
-                  : _checkInGradient,
-              durations: [8000, 5000],
-              heightPercentages: [0.4, 0.42],
-              gradientBegin: Alignment.topLeft,
-              gradientEnd: Alignment.topRight,
-            ),
-            waveAmplitude: 10,
-            backgroundColor: (checkInInfo != null)
-                ? (checkInInfo.hasCheckedIn) ? _checkOutColor : _checkInColor
-                : _checkInColor,
-            size: Size(MediaQuery.of(context).size.width,
-                MediaQuery.of(context).size.height / 3.25),
-          ),
-          Column(
-            children: <Widget>[
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: ListView(
+          children: <Widget>[
+            Stack(
+              children: <Widget>[
+                WaveWidget(
+                  config: CustomConfig(
+                    gradients: (checkInInfo != null)
+                        ? (checkInInfo.hasCheckedIn)
+                            ? _checkOutGradient
+                            : _checkInGradient
+                        : _checkInGradient,
+                    durations: [8000, 5000],
+                    heightPercentages: [0.4, 0.42],
+                    gradientBegin: Alignment.topLeft,
+                    gradientEnd: Alignment.topRight,
+                  ),
+                  waveAmplitude: 10,
+                  backgroundColor: (checkInInfo != null)
+                      ? (checkInInfo.hasCheckedIn)
+                          ? _checkOutColor
+                          : _checkInColor
+                      : _checkInColor,
+                  size: Size(MediaQuery.of(context).size.width,
+                      MediaQuery.of(context).size.height / 3.125),
+                ),
+                Column(
                   children: <Widget>[
-                    Text(now.replaceAll("AM", "").replaceAll("PM", ""),
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 65,
-                            fontWeight: FontWeight.bold)),
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(now,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 60,
+                                  fontWeight: FontWeight.bold)),
+                          Text(followingHours == 1 ? " AM" : " PM",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                      margin: EdgeInsets.fromLTRB(
+                          0, MediaQuery.of(context).size.height / 8, 0, 0),
+                    ),
+                    Container(
+                      child: Text(
+                          dayOfWeek[DateTime.now().weekday] +
+                              ", " +
+                              DateTime.now().day.toString() +
+                              "/" +
+                              DateTime.now().month.toString() +
+                              "/" +
+                              DateTime.now().year.toString(),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w500)),
+                      margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    ),
+                    Container(
+                      height: 60,
+                      margin: EdgeInsets.only(top: 8),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16),
+                              topRight: Radius.circular(16))),
+                    ),
+                    (checkInInfo != null && checkInInfo.canCheckin)
+                        ? Column(
+                            children: <Widget>[
+                              Center(
+                                child: _checkInButton(isInCompanyZone),
+                              ),
+                              (((!isInCompanyZone)) &&
+                                      metersToCompanyZone != null &&
+                                      !doneCheckIn)
+                                  ? Column(
+                                      children: <Widget>[
+                                        Container(
+                                          height: 30,
+                                        ),
+                                        Center(
+                                          child: Padding(
+                                            child: Text(
+                                                "Khoảng cách đến vị trí điểm danh hợp lệ : " +
+                                                    metersToCompanyZone
+                                                        .toStringAsFixed(0) +
+                                                    " m",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(fontSize: 15)),
+                                            padding: EdgeInsets.fromLTRB(
+                                                36, 0, 36, 0),
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  : Container(
+                                      height: 0,
+                                    ),
+                              Container(height: 40),
+                              (checkInInfo != null && checkInInfo.hasCheckedIn)
+                                  ? Container(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Container(
+                                            height: 10,
+                                            width: 10,
+                                            margin: EdgeInsets.fromLTRB(
+                                                0, 0, 16, 0),
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.blue),
+                                          ),
+                                          Text(
+                                            "Đã điểm danh đầu ca - ",
+                                            textAlign: TextAlign.start,
+                                            style: TextStyle(fontSize: 17),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.all(4),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: isCheckInLate()
+                                                      ? Colors.red
+                                                      : Colors.blue),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                            ),
+                                            child: Text(
+                                              checkInInfo.checkinTime,
+                                              style: TextStyle(
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      margin: EdgeInsets.all(16),
+                                      padding: EdgeInsets.only(bottom: 16),
+                                      width: MediaQuery.of(context).size.width,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.rectangle,
+                                          border: Border(
+                                              bottom: BorderSide(
+                                                  color:
+                                                      Colors.grey.withAlpha(70),
+                                                  width: 1))),
+                                    )
+                                  : Container(),
+                              (checkInInfo != null && checkInInfo.hasCheckedOut)
+                                  ? Container(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Container(
+                                            height: 10,
+                                            width: 10,
+                                            margin: EdgeInsets.fromLTRB(
+                                                0, 0, 16, 0),
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color(0xEEf3ba00)),
+                                          ),
+                                          Text(
+                                            "Đã điểm danh cuối ca - ",
+                                            textAlign: TextAlign.start,
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.all(4),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: isCheckOutEarly()
+                                                      ? Colors.red
+                                                      : _checkOutColor),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                            ),
+                                            child: Text(
+                                              checkInInfo.checkoutTime,
+                                              style: TextStyle(
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      margin: EdgeInsets.all(16),
+                                      padding: EdgeInsets.only(bottom: 16),
+                                      width: MediaQuery.of(context).size.width,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.rectangle,
+                                          border: Border(
+                                              bottom: BorderSide(
+                                                  color:
+                                                      Colors.grey.withAlpha(70),
+                                                  width: 1))),
+                                    )
+                                  : Container(),
+                              Container(
+                                height: 50,
+                              )
+                            ],
+                          )
+                        : _dayOffPage,
                   ],
                 ),
-                margin: EdgeInsets.fromLTRB(
-                    0, MediaQuery.of(context).size.height / 8, 0, 0),
-              ),
-              Container(
-                child: Text(
-                    dayOfWeek[DateTime.now().weekday] +
-                        ", " +
-                        DateTime.now().day.toString() +
-                        "/" +
-                        DateTime.now().month.toString() +
-                        "/" +
-                        DateTime.now().year.toString(),
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w500)),
-                margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-              ),
-              Container(
-                height: 20,
-              ),
-              Container(
-                height: 50,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16))),
-              ),
-              Center(
-                child: _checkInButton(isInCompanyZone),
-              ),
-              (((!isInCompanyZone) ||
-                          (checkInInfo != null && checkInInfo.hasCheckedIn)) &&
-                      metersToCompanyZone != null)
-                  ? Column(
-                      children: <Widget>[
-                        Container(
-                          height: 30,
-                        ),
-                        Center(
-                          child: Padding(
-                            child: Text(
-                                "Khoảng cách đến vị trí điểm danh hợp lệ : " +
-                                    metersToCompanyZone.toStringAsFixed(0) +
-                                    " m",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 15)),
-                            padding: EdgeInsets.fromLTRB(36, 0, 36, 0),
-                          ),
-                        )
-                      ],
-                    )
-                  : Container(
-                      height: 0,
-                    ),
-              Container(height: 40),
-              (checkInInfo != null && checkInInfo.hasCheckedIn)
-                  ? Container(
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            height: 10,
-                            width: 10,
-                            margin: EdgeInsets.fromLTRB(0, 0, 16, 0),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.blue),
-                          ),
-                          Text(
-                            "Đã điểm danh đầu ca - ${checkInInfo.checkinTime}",
-                            textAlign: TextAlign.start,
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
-                      margin: EdgeInsets.all(16),
-                      padding: EdgeInsets.only(bottom: 16),
+                Observer(builder: (_) {
+                  if (_checkInStore.isLoading)
+                    return Container(
                       width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          border: Border(
-                              bottom: BorderSide(
-                                  color: Colors.grey.withAlpha(70), width: 1))),
-                    )
-                  : Container(),
-              (checkInInfo != null && checkInInfo.hasCheckedOut)
-                  ? Container(
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            height: 10,
-                            width: 10,
-                            margin: EdgeInsets.fromLTRB(0, 0, 16, 0),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0xEEf3ba00)),
-                          ),
-                          Text(
-                            "Đã điểm danh cuối ca - ${checkInInfo.checkoutTime}",
-                            textAlign: TextAlign.start,
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ],
+                      height: MediaQuery.of(context).size.height,
+                      color: Colors.black45,
+                      child: SpinKitCircle(
+                        color: Colors.blue,
+                        size: 50.0,
                       ),
-                      margin: EdgeInsets.all(16),
-                      padding: EdgeInsets.only(bottom: 16),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          border: Border(
-                              bottom: BorderSide(
-                                  color: Colors.grey.withAlpha(70), width: 1))),
-                    )
-                  : Container(),
-              Container(
-                height: 50,
-              )
-            ],
+                    );
+                  else
+                    return Center();
+                }),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget get _dayOffPage {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        (checkInInfo != null && checkInInfo.hasCheckedIn)
+            ? Image.asset("assets/empty_icon_check_out.PNG")
+            : Image.asset("assets/empty_icon.PNG"),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "Hôm nay là ngày nghỉ.\nBạn không cần phải điểm danh",
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+            textAlign: TextAlign.center,
           ),
-        ],
-      )),
+        )
+      ],
     );
   }
 
   Widget _checkInButton(bool isCompanyZone) {
     return GestureDetector(
-      onTap: (doneCheckIn || !isInCompanyZone|| isOffDay) ? null : () async {
-        var sharedPreference = await SharedPreferences.getInstance();
-        User user = User.fromJson(
-            json.decode(sharedPreference.getString(Constants.USER)));
-        _checkInStore.getCheckInInfo(user.companyId, user.username, null);
-        CheckInParam param = new CheckInParam(
-            username: user.username,
-            companyId: user.companyId,
-            clientTime: DateTime.now().millisecondsSinceEpoch,
-            latitude: _curPosition.latitude,
-            longitude: _curPosition.longitude,
-            type: (checkInInfo.hasCheckedIn) ? 2 : 1,
-            usedWifi: false);
-        // ignore: unnecessary_statements
-        if (!doneCheckIn && isInCompanyZone) _checkInStore.checkIn(param);
-      },
+      onTap: (doneCheckIn || !isInCompanyZone || isOffDay)
+          ? null
+          : () async {
+              var sharedPreference = await SharedPreferences.getInstance();
+              CheckInInfo info = CheckInInfo.fromJson(json
+                  .decode(sharedPreference.getString(Constants.CHECK_IN_INFO)));
+              User user = User.fromJson(
+                  json.decode(sharedPreference.getString(Constants.USER)));
+              CheckInParam param = new CheckInParam(
+                  username: user.username,
+                  companyId: user.companyId,
+                  clientTime: DateTime.now().millisecondsSinceEpoch,
+                  latitude: _curPosition.latitude,
+                  longitude: _curPosition.longitude,
+                  type: (info.hasCheckedIn) ? 2 : 1,
+                  usedWifi: false);
+              TimeOfDay _startTime;
+              if (!info.hasCheckedIn) {
+                _startTime = TimeOfDay(
+                    hour: int.parse(info.validCheckinTime.split(":")[0]),
+                    minute: int.parse(info.validCheckinTime.split(":")[1]));
+              } else {
+                _startTime = TimeOfDay(
+                    hour: int.parse(info.validCheckoutTime.split(":")[0]),
+                    minute: int.parse(info.validCheckoutTime.split(":")[1]));
+              }
+              TimeOfDay _currentTime = TimeOfDay.fromDateTime(DateTime.now());
+              if (!info.hasCheckedIn) {
+                if ((_currentTime.hour > _startTime.hour) ||
+                    (_currentTime.hour == _startTime.hour &&
+                        _currentTime.minute > _startTime.minute)) {
+                  openAlertBox(false, info.validCheckinTime,
+                      _currentTime.format(context), () async {
+                    _checkInStore.checkIn(param);
+                  });
+                } else if (!doneCheckIn && isInCompanyZone)
+                  _checkInStore.checkIn(param);
+              } else {
+                if ((_currentTime.hour < _startTime.hour) ||
+                    (_currentTime.hour == _startTime.hour &&
+                        _currentTime.minute < _startTime.minute)) {
+                  openAlertBox(true, info.validCheckoutTime,
+                      _currentTime.format(context), () async {
+                    _checkInStore.checkIn(param);
+                  });
+                } else if (!doneCheckIn && isInCompanyZone)
+                  _checkInStore.checkIn(param);
+              }
+            },
       child: Container(
         decoration: BoxDecoration(
             shape: BoxShape.circle,
@@ -436,5 +714,31 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
         ),
       ),
     );
+  }
+
+  bool isCheckInLate() {
+    TimeOfDay _startTime = TimeOfDay(
+        hour: int.parse(checkInInfo.validCheckinTime.split(":")[0]),
+        minute: int.parse(checkInInfo.validCheckinTime.split(":")[1]));
+    TimeOfDay _currentTime = TimeOfDay.fromDateTime(DateTime.now());
+    if ((_currentTime.hour > _startTime.hour) ||
+        (_currentTime.hour == _startTime.hour &&
+            _currentTime.minute > _startTime.minute))
+      return true;
+    else
+      return false;
+  }
+
+  isCheckOutEarly() {
+    TimeOfDay _startTime = TimeOfDay(
+        hour: int.parse(checkInInfo.validCheckoutTime.split(":")[0]),
+        minute: int.parse(checkInInfo.validCheckoutTime.split(":")[1]));
+    TimeOfDay _currentTime = TimeOfDay.fromDateTime(DateTime.now());
+    if ((_currentTime.hour < _startTime.hour) ||
+        (_currentTime.hour == _startTime.hour &&
+            _currentTime.minute < _startTime.minute))
+      return true;
+    else
+      return false;
   }
 }

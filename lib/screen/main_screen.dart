@@ -12,21 +12,22 @@ class MainScreen extends StatefulWidget {
   MainScreen({this.title});
 
   @override
-  _MainScreenState createState() => _MainScreenState();
+  MainScreenState createState() => MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class MainScreenState extends State<MainScreen> {
   int _selectedPage = 0;
-  final PageStorageBucket bucket = PageStorageBucket();
-  final _pageOptions = [
-    CheckInLocationPage(
-      key: PageStorageKey('CheckInScreen'),
-    ),
-    Center(child: LeavingScreen()),
-    StatisticScreen(),
-    NotificationScreen(),
-    MoreScreen()
-  ];
+
+//  final _pageOptions = [
+//    CheckInLocationPage(
+//      key: PageStorageKey('CheckInScreen'),
+//      parent: this,
+//    ),
+//    Center(child: LeavingScreen(key: PageStorageKey('Leaving'))),
+//    StatisticScreen(),
+//    NotificationScreen(),
+//    MoreScreen()
+//  ];
 
   @override
   void initState() {
@@ -45,19 +46,33 @@ class _MainScreenState extends State<MainScreen> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return Scaffold(
-      bottomNavigationBar: bottomNavigationBar,
-      body: Stack(
-        children: <Widget>[
-          IndexedStack(
-            index: _selectedPage,
-            children: _pageOptions,
-          ),
-        ],
+    var _pageOptions = [
+      CheckInLocationPage(
+        key: PageStorageKey('CheckInScreen'),
+        parent: this,
       ),
-
+      LeavingScreen(key: PageStorageKey('Leaving')),
+      StatisticScreen(),
+      NotificationScreen(),
+      MoreScreen()
+    ];
+    return Scaffold(
+        body: Stack(
+          children: <Widget>[
+            IndexedStack(
+              index: _selectedPage,
+              children: _pageOptions,
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: bottomNavigationBar,
+            ),
+          ],
+        )
 //      bottomNavigationBar: bottomNavigationBar, // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        );
   }
 
   Widget get bottomNavigationBar {
@@ -106,6 +121,11 @@ class _MainScreenState extends State<MainScreen> {
           unselectedItemColor: Colors.grey,
           currentIndex: _selectedPage,
           onTap: (int index) {
+            if (index != 0) {
+              SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                statusBarColor: Colors.blue, // status bar color
+              ));
+            }
             setState(() {
               _selectedPage = index;
             });
@@ -114,4 +134,6 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
+
+  int getSelectedIndex() => _selectedPage;
 }

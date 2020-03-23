@@ -173,16 +173,23 @@ class _InfoLeavingScreenState extends State<InfoLeavingScreen> {
         onRefresh: _refresh,
         child: Container(
           padding: EdgeInsets.all(8),
-          child: ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: 50,
-            shrinkWrap: true,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title: Text("cả ngày"),
-                subtitle: Text("cả ngày"),
-              );
-            },
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: 50,
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      title: Text("cả ngày"),
+                      subtitle: Text("cả ngày"),
+                    );
+                  },
+                ),
+              ),
+              Container(height: 40,)
+            ],
           ),
         ),
 //        child: Column(

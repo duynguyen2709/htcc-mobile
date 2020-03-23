@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/model/login_response.dart';
+import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/injector/injector.dart';
 import 'package:hethongchamcong_mobile/screen/widget/avatar_info_home.dart';
 import '../widget/section.dart';
@@ -13,6 +17,27 @@ class MoreScreen extends StatefulWidget {
 }
 
 class _MoreScreenState extends State<MoreScreen> {
+  String avatar;
+  String username;
+  String employeeID;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    SharedPreferences.getInstance().then((pref) {
+      String jsonUser = pref.getString(Constants.USER);
+      if (jsonUser != null && jsonUser.isNotEmpty) {
+        User user = User.fromJson(json.decode(jsonUser));
+        setState(() {
+          avatar = user.avatar;
+          username = user.username;
+          employeeID = user.employeeId;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,14 +53,21 @@ class _MoreScreenState extends State<MoreScreen> {
                       gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [Colors.blueAccent, Colors.blue, Colors.lightBlue, Colors.lightBlueAccent]),
-                      borderRadius:
-                          BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15))),
+                          colors: [
+                            Colors.blueAccent,
+                            Colors.blue,
+                            Colors.lightBlue,
+                            Colors.lightBlueAccent
+                          ]),
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(15),
+                          bottomRight: Radius.circular(15))),
                 ),
                 Center(
                     child: Container(
-                        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height / 12),
-                        child: AvatarInfoHome())),
+                        margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height / 12),
+                        child: AvatarInfoHome(avatar: avatar,username: username,employeeId: employeeID))),
               ],
             ),
             Container(
@@ -50,7 +82,8 @@ class _MoreScreenState extends State<MoreScreen> {
                       offset: Offset(0, 2), // changes position of shadow
                     ),
                   ], // ew Color.fromRGBO(255, 0, 0, 0.0),
-                  borderRadius: new BorderRadius.all(const Radius.circular(10.0))),
+                  borderRadius:
+                      new BorderRadius.all(const Radius.circular(10.0))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
@@ -61,7 +94,10 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
                       title: "Thông tin cá nhân",
                       following: true,
-                      onTap: () => {Navigator.pushNamed(context, Constants.account_screen)}),
+                      onTap: () => {
+                            Navigator.pushNamed(
+                                context, Constants.account_screen)
+                          }),
                   Section(
                       leading: Icon(
                         Icons.lock_outline,
@@ -69,7 +105,10 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
                       title: "Đổi mật khẩu",
                       following: false,
-                      onTap: () => {Navigator.pushNamed(context, Constants.password_screen)}),
+                      onTap: () => {
+                            Navigator.pushNamed(
+                                context, Constants.password_screen)
+                          }),
                   Section(
                       leading: Icon(
                         Icons.contacts,
@@ -77,7 +116,10 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
                       title: "Danh bạ công ty",
                       following: false,
-                      onTap: () => {Navigator.pushNamed(context, Constants.account_screen)}),
+                      onTap: () => {
+                            Navigator.pushNamed(
+                                context, Constants.account_screen)
+                          }),
                   Section(
                       leading: ImageIcon(
                         AssetImage("./assets/payroll.png"),
@@ -85,7 +127,10 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
                       title: "Quản lý bảng lương",
                       following: false,
-                      onTap: () => {Navigator.pushNamed(context, Constants.account_screen)}),
+                      onTap: () => {
+                            Navigator.pushNamed(
+                                context, Constants.account_screen)
+                          }),
                   Section(
                       leading: ImageIcon(
                         AssetImage("./assets/complaint.png"),
@@ -94,9 +139,9 @@ class _MoreScreenState extends State<MoreScreen> {
                       title: "Góp ý - Khiếu nại",
                       following: false,
                       onTap: () => {
-                        Navigator.pushNamed(
-                            context, Constants.complaint_screen)
-                      }),
+                            Navigator.pushNamed(
+                                context, Constants.complaint_screen)
+                          }),
                 ],
               ),
             ),
@@ -112,7 +157,8 @@ class _MoreScreenState extends State<MoreScreen> {
                       offset: Offset(0, 2), // changes position of shadow
                     ),
                   ], // ew Color.fromRGBO(255, 0, 0, 0.0),
-                  borderRadius: new BorderRadius.all(const Radius.circular(10.0))),
+                  borderRadius:
+                      new BorderRadius.all(const Radius.circular(10.0))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
@@ -123,7 +169,10 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
                       title: "Về ứng dụng",
                       following: false,
-                      onTap: () => {Navigator.pushNamed(context, Constants.account_screen)}),
+                      onTap: () => {
+                            Navigator.pushNamed(
+                                context, Constants.account_screen)
+                          }),
                   Section(
                       leading: Icon(
                         Icons.exit_to_app,
@@ -134,9 +183,11 @@ class _MoreScreenState extends State<MoreScreen> {
                       onTap: () async {
                         Injector.authRepository.logout();
 
-                        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                        SharedPreferences sharedPreferences =
+                            await SharedPreferences.getInstance();
 
-                        String usersJson = sharedPreferences.getString(Constants.USERS);
+                        String usersJson =
+                            sharedPreferences.getString(Constants.USERS);
 
                         List<UserData> users;
 
@@ -144,9 +195,12 @@ class _MoreScreenState extends State<MoreScreen> {
                           users = userDataFromJson(usersJson);
                         }
                         if (users != null && users.isNotEmpty)
-                          Navigator.pushReplacementNamed(context, Constants.quick_login, arguments: users);
+                          Navigator.pushReplacementNamed(
+                              context, Constants.quick_login,
+                              arguments: users);
                         else
-                          Navigator.pushReplacementNamed(context, Constants.login_screen);
+                          Navigator.pushReplacementNamed(
+                              context, Constants.login_screen);
 //                        Navigator.pushNamed(
 //                            context, Constants.account_screen)
                       }),

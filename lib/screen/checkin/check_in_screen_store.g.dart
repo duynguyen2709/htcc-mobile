@@ -80,6 +80,23 @@ mixin _$CheckInStore on _CheckInStore, Store {
     }, _$errorMsgAtom, name: '${_$errorMsgAtom.name}_set');
   }
 
+  final _$errorAuthAtom = Atom(name: '_CheckInStore.errorAuth');
+
+  @override
+  bool get errorAuth {
+    _$errorAuthAtom.context.enforceReadPolicy(_$errorAuthAtom);
+    _$errorAuthAtom.reportObserved();
+    return super.errorAuth;
+  }
+
+  @override
+  set errorAuth(bool value) {
+    _$errorAuthAtom.context.conditionallyRunInAction(() {
+      super.errorAuth = value;
+      _$errorAuthAtom.reportChanged();
+    }, _$errorAuthAtom, name: '${_$errorAuthAtom.name}_set');
+  }
+
   final _$getCheckInInfoAsyncAction = AsyncAction('getCheckInInfo');
 
   @override
@@ -93,5 +110,12 @@ mixin _$CheckInStore on _CheckInStore, Store {
   @override
   Future checkIn(CheckInParam param) {
     return _$checkInAsyncAction.run(() => super.checkIn(param));
+  }
+
+  @override
+  String toString() {
+    final string =
+        'isLoading: ${isLoading.toString()},getInfoCheckInSuccess: ${getInfoCheckInSuccess.toString()},checkInSuccess: ${checkInSuccess.toString()},errorMsg: ${errorMsg.toString()},errorAuth: ${errorAuth.toString()}';
+    return '{$string}';
   }
 }

@@ -64,7 +64,7 @@ class CustomAppBarState extends State<CustomAppBar>{
             transitionOnUserGestures: true,
             child: Card(
               elevation: 10,
-              color: Colors.blueAccent,
+              color: Colors.blue,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30),

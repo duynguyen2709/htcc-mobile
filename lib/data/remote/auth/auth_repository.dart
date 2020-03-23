@@ -9,6 +9,7 @@ import 'package:hethongchamcong_mobile/data/model/empty.dart';
 import 'package:hethongchamcong_mobile/data/model/login_response.dart';
 import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/data/remote/dio.dart';
+import 'package:hethongchamcong_mobile/data/utils/handle_respone.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepository extends BaseRepository {
@@ -86,15 +87,14 @@ class AuthRepository extends BaseRepository {
         "username": user.username
       });
       var response = await dio.put(DioManager.PATH_CHANGE_PASSWORD, data: map);
-      ApiResponse<Empty> changePasswordResponse = ApiResponse.fromJson(response.data, (json) => Empty.fromJson(json));
-      if (changePasswordResponse.returnCode == 1) {
+      var result  = handleResponse(response, (json) => Empty.fromJson(json));
+      if (result is Success) {
         updatePassword(
             sharedPreferences, User.fromJson(jsonDecode(sharedPreferences.getString(Constants.USER))), newPassword);
-        return Success(msg: changePasswordResponse.returnMessage, data: null);
       }
-      return Error(status: Status.FAIL, msg: changePasswordResponse.returnMessage);
+      return result;
     } catch (error) {
-      return Error(status: Status.FAIL, msg: "Vui lòng kiểm tra lại kết nối mạng.");
+      return handleError(error);
     }
   }
 }

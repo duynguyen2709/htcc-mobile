@@ -2,6 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AvatarInfoHome extends StatelessWidget {
+  final String avatar;
+  final String username;
+  final String employeeId;
+
+  const AvatarInfoHome({Key key, this.avatar, this.username, this.employeeId}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -15,15 +20,15 @@ class AvatarInfoHome extends StatelessWidget {
                 height: (MediaQuery.of(context).size.width) / 4.5,
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(100.0),
-                    child: FadeInImage.assetNetwork(
-                      placeholder: 'assets/login_header.png',
-                      image: 'https://via.placeholder.com/150',
+                    child: (avatar!= null )?FadeInImage.assetNetwork(
+                      placeholder: 'assets/human_error.png',
+                      image: avatar,
                       fit: BoxFit.cover,
-                    )) ,),
+                    ) : Image.asset("./assets/human_error.png")) ,),
             Padding(
               padding: EdgeInsets.only(top: 16),
               child: Text(
-                "Duy Nguyễn",
+                username!=null? username :"",
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 22,
@@ -32,9 +37,9 @@ class AvatarInfoHome extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 8),
+              padding: EdgeInsets.only(top: 4),
               child: Text(
-                "1612145",
+                employeeId!=null?  employeeId :"" ,
                 style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 20,

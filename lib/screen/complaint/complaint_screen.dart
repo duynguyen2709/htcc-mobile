@@ -26,7 +26,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
   ];
   String _currentSelectedValue = '';
   var _opacity = 1.0;
-  var _aligment = Alignment.center;
+  var _alignment = Alignment.center;
   var _isBack = false;
   var _timer;
 
@@ -154,23 +154,19 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                 ),
                 Container(height: 20,),
                 Container(
-                  height: 10,
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(24),topRight: Radius.circular(24))
-                  ),
-                ),
-                Container(
-                  color: Colors.blue,
                   width: MediaQuery.of(context).size.width,
                   alignment: Alignment.bottomCenter,
                   padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(24),topRight: Radius.circular(24))
+                  ),
                   child: Stack(
                     alignment: Alignment.center,
                     children: <Widget>[
                       AnimatedContainer(
                         duration: Duration(seconds: _isBack ? 0 : 4),
-                        alignment: _aligment,
+                        alignment: _alignment,
                         child: AnimatedOpacity(
                           opacity: _opacity,
                           duration: Duration(seconds: _isBack ? 0 : 3),
@@ -198,13 +194,13 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                                 new Timer(const Duration(seconds: 5), () {
                               setState(() {
                                 _isBack = true;
-                                _aligment = Alignment.center;
+                                _alignment = Alignment.center;
                                 _opacity = 1.0;
                               });
                             });
                             setState(() {
                               _isBack = false;
-                              _aligment = _aligment == Alignment.bottomRight
+                              _alignment = _alignment == Alignment.bottomRight
                                   ? Alignment.center
                                   : Alignment.bottomRight;
                               _opacity = _opacity == 0.0 ? 1.0 : 0.0;
