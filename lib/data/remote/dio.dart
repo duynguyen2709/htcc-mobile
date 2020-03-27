@@ -11,7 +11,8 @@ class DioManager {
   static const PATH_LOGOUT = "api/gateway/private/logout";
   static const PATH_CHANGE_PASSWORD = "api/gateway/private/changepassword/1";
   static const PATH_USER = "api/employee/users";
-  static const PATH_CHECK_IN = "/api/employee/checkin/";
+  static const PATH_CHECK_IN = "api/employee/checkin/";
+  static const PATH_COMPLAINT = "api/employee/complaint";
 
   Dio dio;
 

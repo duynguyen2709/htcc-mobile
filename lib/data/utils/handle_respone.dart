@@ -25,6 +25,24 @@ Result handleResponse<T extends BaseModel>(
   }
 }
 
+Result handleListResponse<T extends BaseModel>(
+    Response response,  T Function(Map<String, dynamic>) func) {
+  try {
+    if (response.data["returnCode"] == 401 || response.data["returnCode"] == -8)
+      return Error(status: Status.ERROR_AUTHENTICATE);
+    var res = ListApiResponse<T>.fromJson(response.data, func);
+    if (res.returnCode == 1) {
+      return Success(data: res.data, msg: res.returnMessage);
+    } else {
+      return Error(status: Status.FAIL, msg: res.returnMessage);
+    }
+  } catch (error) {
+    if (response.data["returnCode"] == 401 || response.data["returnCode"] == -8)
+      return Error(status: Status.ERROR_AUTHENTICATE);
+    return Error(
+        status: Status.FAIL, msg: "Vui lòng kiểm tra lại kết nối mạng.");
+  }
+}
 Result handleError(DioError error) {
   if (error.response.statusCode == 401) {
     return Error(status: Status.ERROR_AUTHENTICATE);

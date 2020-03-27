@@ -122,9 +122,11 @@ class MainScreenState extends State<MainScreen> {
           currentIndex: _selectedPage,
           onTap: (int index) {
             if (index != 0) {
-              SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-                statusBarColor: Colors.blue, // status bar color
-              ));
+              Future.delayed(Duration(milliseconds: 100), () {
+                SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                  statusBarColor: Colors.blue, // status bar color
+                ));
+              });
             }
             setState(() {
               _selectedPage = index;

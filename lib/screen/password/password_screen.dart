@@ -324,26 +324,26 @@ class _PasswordScreenState extends State<PasswordScreen> {
     err2 = PasswordError.VALID;
     err3 = PasswordError.VALID;
     if (_oldPasswordController.text == "") {
-      err1 = PasswordError.EMPTY;
-    } else if (_oldPasswordController.text.length < 8) {
-      err1 = PasswordError.SHORT;
-    } else if (!validatePasswordStructure(_oldPasswordController.text)) {
-      err1 = PasswordError.INVALID;
-    }
+      err1 = PasswordError.EMPTY;}
+//    } else if (_oldPasswordController.text.length < 8) {
+//      err1 = PasswordError.SHORT;
+//    } else if (!validatePasswordStructure(_oldPasswordController.text)) {
+//      err1 = PasswordError.INVALID;
+//    }
     if (_newPasswordController.text == "") {
-      err2 = PasswordError.EMPTY;
-    } else if (_newPasswordController.text.length < 8) {
-      err2 = PasswordError.SHORT;
-    } else if (!validatePasswordStructure(_newPasswordController.text)) {
-      err2 = PasswordError.INVALID;
-    }
+      err2 = PasswordError.EMPTY;}
+//    } else if (_newPasswordController.text.length < 8) {
+//      err2 = PasswordError.SHORT;
+//    } else if (!validatePasswordStructure(_newPasswordController.text)) {
+//      err2 = PasswordError.INVALID;
+//    }
     if (_repeatController.text == "") {
-      err3 = PasswordError.EMPTY;
-    } else if (_repeatController.text.length < 8) {
-      err3 = PasswordError.SHORT;
-    } else if (!validatePasswordStructure(_repeatController.text)) {
-      err3 = PasswordError.INVALID;
-    }
+      err3 = PasswordError.EMPTY;}
+//    } else if (_repeatController.text.length < 8) {
+//      err3 = PasswordError.SHORT;
+//    } else if (!validatePasswordStructure(_repeatController.text)) {
+//      err3 = PasswordError.INVALID;
+//    }
     if (_repeatController.text.compareTo(_newPasswordController.text) != 0) {
       err3 = PasswordError.NOT_EQUAL;
     }

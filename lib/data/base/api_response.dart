@@ -1,4 +1,6 @@
 
+import 'package:hethongchamcong_mobile/data/model/complaint.dart';
+
 import 'base_model.dart';
 
 class ApiResponse<T extends BaseModel> {
@@ -11,6 +13,20 @@ class ApiResponse<T extends BaseModel> {
       T Function(Map<String, dynamic>) func) {
     returnMessage = json["returnMessage"] ?? "";
     data = func(json["data"]);
+    returnCode = json["returnCode"];
+  }
+}
+
+class ListApiResponse<T extends BaseModel>{
+  int returnCode;
+  List<T> data;
+  String returnMessage;
+
+  ListApiResponse.fromJson(
+      Map<String, dynamic> json,
+      T Function(Map<String, dynamic>) func) {
+    returnMessage = json["returnMessage"] ?? "";
+    data = (json["data"] as List).map((e) => func(e)).toList();
     returnCode = json["returnCode"];
   }
 }

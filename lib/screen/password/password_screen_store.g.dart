@@ -60,6 +60,23 @@ mixin _$PasswordScreenStore on _PasswordScreenStore, Store {
     }, _$errorMessageAtom, name: '${_$errorMessageAtom.name}_set');
   }
 
+  final _$errorAuthAtom = Atom(name: '_PasswordScreenStore.errorAuth');
+
+  @override
+  bool get errorAuth {
+    _$errorAuthAtom.context.enforceReadPolicy(_$errorAuthAtom);
+    _$errorAuthAtom.reportObserved();
+    return super.errorAuth;
+  }
+
+  @override
+  set errorAuth(bool value) {
+    _$errorAuthAtom.context.conditionallyRunInAction(() {
+      super.errorAuth = value;
+      _$errorAuthAtom.reportChanged();
+    }, _$errorAuthAtom, name: '${_$errorAuthAtom.name}_set');
+  }
+
   final _$changePasswordAsyncAction = AsyncAction('changePassword');
 
   @override
@@ -71,7 +88,7 @@ mixin _$PasswordScreenStore on _PasswordScreenStore, Store {
   @override
   String toString() {
     final string =
-        'isLoading: ${isLoading.toString()},isSuccess: ${isSuccess.toString()},errorMessage: ${errorMessage.toString()}';
+        'isLoading: ${isLoading.toString()},isSuccess: ${isSuccess.toString()},errorMessage: ${errorMessage.toString()},errorAuth: ${errorAuth.toString()}';
     return '{$string}';
   }
 }

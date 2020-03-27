@@ -13,6 +13,8 @@ class Constants {
   static const String leaving_form_screen = "/leavingform";
   static const String detail_leaving_screen = "/detailleaving";
   static const String complaint_screen = "/complaint";
+  static const String complaint_form = "/complaint/new";
+  static const String complaint_detail = "/complaint/detail";
   static const String quick_login = "/quicklogin";
 
   //Shared preference

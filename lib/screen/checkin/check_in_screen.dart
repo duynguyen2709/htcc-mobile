@@ -317,11 +317,14 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     if (mounted)
       setState(() {
         var time = TimeOfDay.fromDateTime(DateTime.now());
-        if (time.hour > 12)
+        if (time.hour >= 12)
           followingHours = 2;
-        else
+        else {
           followingHours = 1;
-        time = time.replacing(hour: time.hourOfPeriod);
+        }
+        if(time.hour>12){
+          time = time.replacing(hour: time.hourOfPeriod);
+        }
         now = (time.hour > 9 ? "${time.hour}:" : "0${time.hour}:") +
             (time.minute > 9 ? "${time.minute}" : "0${time.minute}");
       });

@@ -18,11 +18,11 @@ class PickImageWidget extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
   @override
-  _PickImageWidgetState createState() => _PickImageWidgetState();
+  PickImageWidgetState createState() => PickImageWidgetState();
 }
 
-class _PickImageWidgetState extends State<PickImageWidget> {
-  File _pickedImage;
+class PickImageWidgetState extends State<PickImageWidget> {
+  File pickedImage;
 
   void _pickImage() async {
     final imageSource = await showModalBottomSheet<ImageSource>(
@@ -41,9 +41,9 @@ class _PickImageWidgetState extends State<PickImageWidget> {
         ));
 
     if (imageSource != null) {
-      final file = await ImagePicker.pickImage(source: imageSource);
+      final file = await ImagePicker.pickImage(source: imageSource, imageQuality: 80, );
       if (file != null) {
-        setState(() => _pickedImage = file);
+        setState(() => pickedImage = file);
       }
     }
   }
@@ -78,9 +78,9 @@ class _PickImageWidgetState extends State<PickImageWidget> {
             borderRadius: BorderRadius.all(Radius.circular(5)),
             image: new DecorationImage(
                 fit: BoxFit.fill,
-                image: _pickedImage == null
+                image: pickedImage == null
                     ? AssetImage('./assets/add_image.png')
-                    : FileImage(_pickedImage))),
+                    : FileImage(pickedImage))),
       ),
       onTap: () => _pickImage(),
     );
