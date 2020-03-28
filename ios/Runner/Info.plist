@@ -43,8 +43,8 @@
 	<false/>
 	<key>NSCameraUsageDescription</key>
     <string>Enable myApp to access your camera to capture your photo</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Enable myApp to access mic to record your voice</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Enable myApp to access your camera to choose your photo</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>This app needs access to location in the background.</string>
     <key>NSLocationAlwaysUsageDescription</key>

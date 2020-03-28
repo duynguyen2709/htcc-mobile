@@ -238,20 +238,24 @@ class ComplaintListState extends State<ComplaintList>
                                       "${model.date} - ",
                                       style: TextStyle(color: Colors.grey),
                                     ),
-                                    Container(
-                                      padding: EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: codeToColor(model.status),
-                                        width: 2),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                      ),
-                                      child: Text(
-                                        codeToStatus(model.status),
-                                        style: TextStyle(
-                                            fontStyle: FontStyle.italic,
-                                            fontWeight: FontWeight.bold),
+                                    Flexible(
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        padding: EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: codeToColor(model.status),
+                                          width: 2),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5)),
+                                        ),
+                                        child: Text(
+                                          codeToStatus(model.status),
+                                          style: TextStyle(
+                                              fontStyle: FontStyle.italic,
+                                              fontWeight: FontWeight.bold),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
                                     )
                                   ],
