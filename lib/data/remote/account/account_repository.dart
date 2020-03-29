@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/base/api_response.dart';
 import 'package:hethongchamcong_mobile/data/base/base_model.dart';
@@ -8,7 +10,6 @@ import 'package:hethongchamcong_mobile/data/base/base_repository.dart';
 import 'package:hethongchamcong_mobile/data/base/result.dart';
 import 'package:hethongchamcong_mobile/data/model/login_response.dart';
 import 'package:hethongchamcong_mobile/data/remote/dio.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/user.dart';
@@ -42,7 +43,7 @@ class AccountRepository extends BaseRepository {
       if (getUserResponse.returnCode == 1) {
         var sharedPreference = await SharedPreferences.getInstance();
         sharedPreference.setString(Constants.USER, json.encode(getUserResponse.data.toJson()));
-        updateUserData(sharedPreference, account);
+        await updateUserData(sharedPreference, account);
         return Success(msg: getUserResponse.returnMessage, data: getUserResponse.data);
       }
 
@@ -57,12 +58,12 @@ class AccountRepository extends BaseRepository {
     }
   }
 
-  Future<Result> updateAccount(User account) async {
+  Future<Result> updateAccount(User account, File image) async {
     try {
-      Map<String, dynamic> map = Map();
-      map.addAll({
+      FormData map = FormData.fromMap({
         "address": account.address,
-        "avatar": account.avatar,
+        "avatar":
+        (image != null) ? await MultipartFile.fromFile(image.path, filename: image.path.split('/').last) : "",
         "birthDate": account.birthDate,
         "companyId": account.companyId,
         "department": account.department,
@@ -71,16 +72,20 @@ class AccountRepository extends BaseRepository {
         "fullName": account.fullName,
         "identityCardNo": account.identityCardNo,
         "officeId": account.officeId,
+        "title": account.title,
         "phoneNumber": account.phoneNumber,
         "username": account.username
       });
+
       String realPath = DioManager.PATH_USER + "/${account.companyId}/${account.username}";
-      var response = await dio.put(realPath, data: map);
+
+      var response = await dio.post(realPath, data: map);
+
       ApiResponse<User> getUserResponse = ApiResponse.fromJson(response.data, (json) => User.fromJson(json));
       if (getUserResponse.returnCode == 1) {
         var sharedPreference = await SharedPreferences.getInstance();
         sharedPreference.setString(Constants.USER, json.encode(getUserResponse.data.toJson()));
-        updateUserData(sharedPreference, account);
+        await updateUserData(sharedPreference, getUserResponse.data);
         return Success(data: getUserResponse.data, msg: getUserResponse.returnMessage);
       }
       if (response.data["returnCode"] == 401 || response.data["returnCode"] == -8)

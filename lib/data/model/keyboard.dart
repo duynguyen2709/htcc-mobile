@@ -1,0 +1,3 @@
+enum KeyBoard{
+  TEXT, NUMBER
+}
