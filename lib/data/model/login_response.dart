@@ -23,12 +23,12 @@ addNewUser(SharedPreferences sharedPreferences, UserData userData, String users,
   sharedPreferences.setString(Constants.USERS, userDataToJson(list));
 }
 
-updateUserData(SharedPreferences sharedPreferences, User user) {
+updateUserData(SharedPreferences sharedPreferences, User user) async {
   String usersJson = sharedPreferences.getString(Constants.USERS);
   List<UserData> users = userDataFromJson(usersJson);
   UserData userData = users.lastWhere((value) => value.user.employeeId == user.employeeId);
   userData.user = user;
-  sharedPreferences.setString(Constants.USERS, userDataToJson(users));
+  await sharedPreferences.setString(Constants.USERS, userDataToJson(users));
 }
 
 updatePassword(SharedPreferences sharedPreferences, User user, String newPassword) {

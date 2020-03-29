@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:hethongchamcong_mobile/config/app_color.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/screen/login/login_screen_store.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
@@ -108,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Colors.grey[100],
         body: Stack(
           children: <Widget>[
             GestureDetector(
@@ -124,16 +121,46 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   children: <Widget>[
                     Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50)),
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.blue, Colors.blue[700]]),
+                      ),
                       width: 200,
                       height: MediaQuery.of(context).size.height / 3,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      child: Stack(
                         children: <Widget>[
-                          FlutterLogo(
-                            size: 100,
+                          Center(
+                            child: Container(
+                              decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                              padding: EdgeInsets.all(10),
+                              child: FlutterLogo(
+                                size: 80,
+                              ),
+                            ),
                           ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Text(
+                                "Đăng nhập",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic),
+                              ),
+                            ),
+                          )
                         ],
                       ),
+                    ),
+                    SizedBox(
+                      height: 40,
                     ),
                     Form(
                       key: _formKey,
@@ -148,21 +175,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 prefixIcon: Icon(Icons.business_center),
                                 focusedErrorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.red)),
+                                    borderSide: BorderSide(color: Colors.red, width: 2)),
                                 errorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.red)),
+                                    borderSide: BorderSide(color: Colors.red, width: 2)),
                                 focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Color(AppColor.accentColor))),
+                                    borderSide: BorderSide(color: Colors.blue, width: 2)),
                                 enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                                ),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    borderSide: BorderSide(color: Colors.black, width: 2)),
                                 contentPadding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                                 labelText: Constants.code,
-                                hintStyle: focusNodeCode.hasFocus
-                                    ? TextStyle(color: Color(AppColor.accentColor))
-                                    : TextStyle(),
+                                hintStyle: focusNodeCode.hasFocus ? TextStyle(color: Colors.blue) : TextStyle(),
                                 filled: true,
                               ),
                               validator: (value) {
@@ -184,20 +209,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 prefixIcon: Icon(Icons.mail),
                                 focusedErrorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.red)),
+                                    borderSide: BorderSide(color: Colors.red, width: 2)),
                                 errorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.red)),
+                                    borderSide: BorderSide(color: Colors.red, width: 2)),
                                 focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Color(AppColor.accentColor))),
+                                    borderSide: BorderSide(color: Colors.blue, width: 2)),
                                 enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                                ),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    borderSide: BorderSide(color: Colors.black, width: 2)),
                                 contentPadding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                                 labelText: Constants.hintUserName,
-                                hintStyle:
-                                    focusNodeUserName.hasFocus ? TextStyle(color: Color(0x78b9eb)) : TextStyle(),
+                                hintStyle: focusNodeUserName.hasFocus ? TextStyle(color: Color(0x78b9eb)) : TextStyle(),
                                 filled: true,
                               ),
                               validator: (value) {
@@ -237,21 +261,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                 focusedErrorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.red)),
+                                    borderSide: BorderSide(color: Colors.red, width: 2)),
                                 errorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.red)),
+                                    borderSide: BorderSide(color: Colors.red, width: 2)),
                                 focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Color(AppColor.accentColor))),
+                                    borderSide: BorderSide(color: Colors.blue, width: 2)),
                                 enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                                ),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    borderSide: BorderSide(color: Colors.black, width: 2)),
                                 contentPadding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                                 labelText: Constants.hintPassword,
-                                hintStyle: focusNodePassword.hasFocus
-                                    ? TextStyle(color: Color(AppColor.accentColor))
-                                    : TextStyle(),
+                                hintStyle: focusNodePassword.hasFocus ? TextStyle(color: Colors.blue) : TextStyle(),
                                 filled: true,
                               ),
                               validator: (value) {
@@ -261,10 +283,32 @@ class _LoginScreenState extends State<LoginScreen> {
                                 return null;
                               },
                             ),
-                            padding: EdgeInsets.only(bottom: 25),
+                            padding: EdgeInsets.only(bottom: 10),
                             margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                           ),
                         ],
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                        child: InkWell(
+                          onTap: () {},
+                          child: Container(
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            child: Text(
+                              Constants.forgotPassword,
+                              textAlign: TextAlign.end,
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     Container(
@@ -282,30 +326,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (!currentFocus.hasPrimaryFocus) {
                             currentFocus.unfocus();
                           }
-
                           if (_formKey.currentState.validate()) _login();
                         },
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(320.0),
                         ),
                       ),
-                      margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    ),
-                    Center(
-                      child: Container(
-                        width: 200,
-                        child: FlatButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            Constants.forgotPassword,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Color(AppColor.accentColor)),
-                          ),
-                        ),
-                      ),
+                      margin: EdgeInsets.fromLTRB(20, 10, 20, 0),
                     ),
                   ],
                   crossAxisAlignment: CrossAxisAlignment.stretch,

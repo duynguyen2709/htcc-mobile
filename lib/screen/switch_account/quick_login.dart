@@ -90,110 +90,157 @@ class _QuickLoginState extends State<QuickLogin> {
     return SafeArea(
       child: WillPopScope(
           child: Scaffold(
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: Colors.grey[100],
             body: Stack(
               children: <Widget>[
                 Column(
                   children: <Widget>[
                     Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50)),
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.blue, Colors.blue[600]]),
+                      ),
                       width: 200,
-                      height: MediaQuery.of(context).size.height / 4,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height / 3,
+                      child: Stack(
                         children: <Widget>[
-                          FlutterLogo(
-                            size: 100,
+                          Center(
+                            child: Container(
+                              decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                              padding: EdgeInsets.all(10),
+                              child: FlutterLogo(
+                                size: 80,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              child: Text(
+                                "Danh sách tài khoản",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic),
+                              ),
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Container(
-                      height: 50,
-                      child: Align(
-                          alignment: Alignment.topCenter,
-                          child: Text(
-                            "Danh sách tài khoản",
-                            style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),
-                          )),
+                    SizedBox(
+                      height: 20,
                     ),
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: widget.users.length + 1,
-                        itemBuilder: (BuildContext context, int index) {
-                          if (index != widget.users.length)
-                            return InkWell(
-                              child: Container(
-                                padding: EdgeInsets.only(top: 10, bottom: 10),
-                                height: 70,
-                                child: Row(
-                                  children: <Widget>[
-                                    SizedBox(
-                                      width: 30,
-                                    ),
-                                    FadeInImage.assetNetwork(
-                                      height: 50,
-                                      width: 50,
-                                      placeholder: 'assets/gif/loading.gif',
-                                      image: widget.users[index].user.avatar,
-                                      fit: BoxFit.cover,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      widget.users[index].user.fullName,
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    ),
-                                    Spacer(),
-                                    _buildPopupMenu(widget.users[index]),
-                                    SizedBox(
-                                      width: 30,
-                                    )
-                                  ],
+                      child: Container(
+                        child: ListView.builder(
+                          itemCount: widget.users.length + 1,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index != widget.users.length)
+                              return Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.all(Radius.circular(5)),
                                 ),
-                              ),
-                              onTap: () {
-                                quickLoginStore.login(widget.users[index].user.username, widget.users[index].password,
-                                    widget.users[index].user.companyId);
-                              },
-                            );
-                          else
-                            return Container(
-                              decoration: BoxDecoration(border: Border(top: BorderSide())),
-                              margin: EdgeInsets.only(top: 20),
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(context, Constants.login_screen);
-                                },
-                                child: Container(
-                                  height: 50,
-                                  child: Row(
-                                    children: <Widget>[
-                                      SizedBox(
-                                        width: 30,
+                                margin: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+                                child: Material(
+                                  child: InkWell(
+                                    child: Container(
+                                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                                      height: 70,
+                                      child: Row(
+                                        children: <Widget>[
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Container(
+                                            width: 40,
+                                            height: 40,
+                                            child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(100.0),
+                                                child: FadeInImage.assetNetwork(
+                                                  placeholder: 'assets/gif/loading.gif',
+                                                  image: widget.users[index].user.avatar,
+                                                  fit: BoxFit.cover,
+                                                )),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.only(top: 20, bottom: 20),
+                                            color: Colors.grey,
+                                            width: 1,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            widget.users[index].user.companyId,
+                                            style: TextStyle(
+                                                color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                          ),
+                                          Spacer(),
+                                          _buildPopupMenu(widget.users[index]),
+                                          SizedBox(
+                                            width: 10,
+                                          )
+                                        ],
                                       ),
-                                      Icon(
-                                        Icons.add_box,
-                                        color: Colors.blue,
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        "Đăng nhập bằng tài khoản khác",
-                                        style: TextStyle(color: Colors.black),
-                                      ),
-                                    ],
+                                    ),
+                                    onTap: () {
+                                      quickLoginStore.login(widget.users[index].user.username,
+                                          widget.users[index].password, widget.users[index].user.companyId);
+                                    },
+                                  ),
+                                  color: Colors.transparent,
+                                ),
+                              );
+                            else
+                              return Container(
+                                decoration: BoxDecoration(border: Border(top: BorderSide())),
+                                margin: EdgeInsets.only(top: 20),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, Constants.login_screen);
+                                  },
+                                  child: Container(
+                                    height: 50,
+                                    child: Row(
+                                      children: <Widget>[
+                                        SizedBox(
+                                          width: 30,
+                                        ),
+                                        Icon(
+                                          Icons.add_box,
+                                          color: Colors.blue,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          "Đăng nhập bằng tài khoản khác",
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                        },
+                              );
+                          },
+                        ),
                       ),
                     )
                   ],
@@ -214,22 +261,23 @@ class _QuickLoginState extends State<QuickLogin> {
             }
             return showDialog<bool>(
               context: context,
-              builder: (c) => AlertDialog(
-                title: Text('Thông báo'),
-                content: Text('Bạn có muốn thoát khỏi ứng dụng?'),
-                actions: [
-                  FlatButton(
-                    child: Text('Có'),
-                    onPressed: () => exit(0),
+              builder: (c) =>
+                  AlertDialog(
+                    title: Text('Thông báo'),
+                    content: Text('Bạn có muốn thoát khỏi ứng dụng?'),
+                    actions: [
+                      FlatButton(
+                        child: Text('Có'),
+                        onPressed: () => exit(0),
+                      ),
+                      FlatButton(
+                        child: Text('Không'),
+                        onPressed: () {
+                          Navigator.pop(c, false);
+                        },
+                      ),
+                    ],
                   ),
-                  FlatButton(
-                    child: Text('Không'),
-                    onPressed: () {
-                      Navigator.pop(c, false);
-                    },
-                  ),
-                ],
-              ),
             );
           }),
     );
@@ -250,7 +298,8 @@ class _QuickLoginState extends State<QuickLogin> {
           setState(() {});
         }
       },
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+      itemBuilder: (BuildContext context) =>
+      <PopupMenuEntry<int>>[
         const PopupMenuItem<int>(
           value: 1,
           child: Text('Gỡ tài khoản khỏi thiết bị'),

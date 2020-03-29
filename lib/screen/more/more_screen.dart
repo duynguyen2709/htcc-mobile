@@ -201,8 +201,6 @@ class _MoreScreenState extends State<MoreScreen> {
                         else
                           Navigator.pushReplacementNamed(
                               context, Constants.login_screen);
-//                        Navigator.pushNamed(
-//                            context, Constants.account_screen)
                       }),
                 ],
               ),

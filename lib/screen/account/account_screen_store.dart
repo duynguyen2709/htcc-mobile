@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/base/base_model.dart';
@@ -36,28 +37,30 @@ abstract class _AccountScreenStore with Store {
   @observable
   String message;
 
+  @observable
+  File image;
+
   @action
   getAccount() async {
     isLoading = true;
+    image = null;
     try {
       var response = await Injector.accountRepository.getAccount();
+      isLoading = false;
       switch (response.runtimeType) {
         case Success:
           {
             account = (response as Success).data as User;
             log("Success Model");
-            isLoading = false;
             break;
           }
         case Error:
           {
             account = null;
-            isLoading = false;
             message = Constants.MESSAGE_EMPTY;
             break;
           }
       }
-      isLoading = false;
     } catch (error) {
       account = null;
       isLoading = false;
@@ -68,16 +71,17 @@ abstract class _AccountScreenStore with Store {
   @action
   refresh() async {
     isLoading = true;
+    image = null;
     errorAuthenticate = false;
     errorNetwork = false;
     try {
       var response = await Injector.accountRepository.refresh();
+      isLoading = false;
       switch (response.runtimeType) {
         case Success:
           {
             account = (response as Success).data as User;
             log("Success Model");
-            isLoading = false;
             break;
           }
         case Error:
@@ -85,21 +89,18 @@ abstract class _AccountScreenStore with Store {
             switch ((response as Error).status) {
               case Status.ERROR_NETWORK:
                 {
-                  isLoading = false;
                   message = Constants.MESSAGE_NETWORK;
                   errorNetwork = true;
                   break;
                 }
               case Status.ERROR_AUTHENTICATE:
                 {
-                  isLoading = false;
                   message = Constants.MESSAGE_AUTHENTICATE;
                   errorAuthenticate = true;
                   break;
                 }
               default:
                 {
-                  isLoading = false;
                   message = Constants.MESSAGE_NETWORK;
                   errorNetwork = true;
                   break;
@@ -107,7 +108,6 @@ abstract class _AccountScreenStore with Store {
             }
           }
       }
-      isLoading = false;
     } catch (error) {
       isLoading = false;
       message = Constants.MESSAGE_NETWORK;
@@ -119,7 +119,8 @@ abstract class _AccountScreenStore with Store {
   updateAccount() async {
     isLoading = true;
     try {
-      var response = await Injector.accountRepository.updateAccount(account);
+      var response = await Injector.accountRepository.updateAccount(account, image);
+      isLoading = false;
       switch (response.runtimeType) {
         case Success:
           {
@@ -127,8 +128,8 @@ abstract class _AccountScreenStore with Store {
             log("Update Success Model");
             isConfig = false;
             message = Constants.UPDATE_SUCCESSFUL;
-            isLoading = false;
             errorUpdate = false;
+            image = null;
             break;
           }
         case Error:
@@ -136,21 +137,18 @@ abstract class _AccountScreenStore with Store {
             switch ((response as Error).status) {
               case Status.ERROR_NETWORK:
                 {
-                  isLoading = false;
                   message = Constants.UPDATE_FAIL;
                   errorUpdate = true;
                   break;
                 }
               case Status.ERROR_AUTHENTICATE:
                 {
-                  isLoading = false;
                   message = Constants.MESSAGE_AUTHENTICATE;
                   errorAuthenticate = true;
                   break;
                 }
               default:
                 {
-                  isLoading = false;
                   message = Constants.UPDATE_FAIL;
                   errorUpdate = true;
                   break;

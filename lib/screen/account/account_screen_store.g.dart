@@ -146,6 +146,23 @@ mixin _$AccountScreenStore on _AccountScreenStore, Store {
     }, _$messageAtom, name: '${_$messageAtom.name}_set');
   }
 
+  final _$imageAtom = Atom(name: '_AccountScreenStore.image');
+
+  @override
+  File get image {
+    _$imageAtom.context.enforceReadPolicy(_$imageAtom);
+    _$imageAtom.reportObserved();
+    return super.image;
+  }
+
+  @override
+  set image(File value) {
+    _$imageAtom.context.conditionallyRunInAction(() {
+      super.image = value;
+      _$imageAtom.reportChanged();
+    }, _$imageAtom, name: '${_$imageAtom.name}_set');
+  }
+
   final _$getAccountAsyncAction = AsyncAction('getAccount');
 
   @override
@@ -165,12 +182,5 @@ mixin _$AccountScreenStore on _AccountScreenStore, Store {
   @override
   Future updateAccount() {
     return _$updateAccountAsyncAction.run(() => super.updateAccount());
-  }
-
-  @override
-  String toString() {
-    final string =
-        'isLoading: ${isLoading.toString()},account: ${account.toString()},isConfig: ${isConfig.toString()},edit: ${edit.toString()},errorAuthenticate: ${errorAuthenticate.toString()},errorNetwork: ${errorNetwork.toString()},errorUpdate: ${errorUpdate.toString()},message: ${message.toString()}';
-    return '{$string}';
   }
 }

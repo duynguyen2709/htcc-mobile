@@ -5,9 +5,11 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/screen/account/account_screen_store.dart';
+import 'package:hethongchamcong_mobile/screen/widget/circle_icon_button.dart';
 import 'package:hethongchamcong_mobile/screen/widget/empty_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/retry_screen.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 
@@ -126,7 +128,7 @@ class _AccountScreenState extends State<AccountScreen> {
           actions: <Widget>[
             Observer(
               builder: (BuildContext context) {
-                if (accountScreenStore.isConfig)
+                if (accountScreenStore.isConfig && accountScreenStore.isLoading == false)
                   return IconButton(
                     icon: Icon(Icons.check),
                     onPressed: () {
@@ -194,16 +196,40 @@ class _AccountScreenState extends State<AccountScreen> {
         child: Column(
           children: <Widget>[
             Container(
-              margin: EdgeInsets.fromLTRB(0, 10, 0, 20),
-              width: 90,
-              height: 90,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(100.0),
-                  child: FadeInImage.assetNetwork(
-                    placeholder: 'assets/gif/loading.gif',
-                    image: account.avatar,
-                    fit: BoxFit.cover,
-                  )),
+              height: 100,
+              width: 100,
+              child: Stack(
+                children: <Widget>[
+                  Center(
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      padding: EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.grey[200],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(52.0),
+                        child: accountScreenStore.image == null
+                            ? FadeInImage.assetNetwork(
+                                placeholder: 'assets/gif/loading.gif',
+                                image: accountScreenStore.account.avatar,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.file(accountScreenStore.image),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: CircleIconButton(
+                      iconData: Icons.camera_alt,
+                      callBack: choiceAvatar,
+                    ),
+                  )
+                ],
+              ),
             ),
             Padding(
               child: Text(
@@ -236,23 +262,14 @@ class _AccountScreenState extends State<AccountScreen> {
                         accountScreenStore.isConfig = true;
                         accountScreenStore.account.fullName = text;
                       },
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    CustomTextField(
-                      boxDecoration: BoxDecoration(
-                          border: Border.all(color: Colors.black45),
-                          borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                          color: Colors.white),
-                      controller: _controllerTitle,
-                      labelText: "Chức danh",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                      validateCallBack: (String text) => text.isNotEmpty,
+                      errorText: "Họ và tên không được rỗng",
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     CustomSuffixTextField(
+                      validateCallBack: (String text) => true,
                       controller: _controllerBirthDay,
                       labelText: "Ngày sinh",
                       textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
@@ -266,6 +283,9 @@ class _AccountScreenState extends State<AccountScreen> {
                       height: 10,
                     ),
                     CustomSuffixTextField(
+                      validateCallBack: (String text) => text.length >= 9,
+                      errorText: "Tối thiểu 9 chữ số",
+                      textInputType: TextInputType.number,
                       controller: _controllerCMND,
                       labelText: "CMND",
                       textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
@@ -278,8 +298,11 @@ class _AccountScreenState extends State<AccountScreen> {
                       height: 10,
                     ),
                     CustomSuffixTextField(
+                      validateCallBack: (String text) => text.length >= 10,
+                      textInputType: TextInputType.number,
                       controller: _controllerPhone,
                       labelText: "Số điện thoại",
+                      errorText: "Tối thiểu 9 chữ số",
                       textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
                       callbackUpdateStore: (String text) {
                         accountScreenStore.isConfig = true;
@@ -290,6 +313,17 @@ class _AccountScreenState extends State<AccountScreen> {
                       height: 10,
                     ),
                     CustomSuffixTextField(
+                      errorText: "Email không hợp lệ",
+                      textInputType: TextInputType.emailAddress,
+                      validateCallBack: (String text) {
+                        Pattern pattern =
+                            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                        RegExp regex = new RegExp(pattern);
+                        if (!regex.hasMatch(text))
+                          return false;
+                        else
+                          return true;
+                      },
                       controller: _controllerEmail,
                       labelText: "Email",
                       textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
@@ -302,8 +336,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       height: 10,
                     ),
                     CustomSuffixTextField(
+                      validateCallBack: (String text) => text.isNotEmpty,
                       controller: _controllerAddress,
                       labelText: "Địa chỉ",
+                      errorText: "Địa chỉ không được rỗng",
                       textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
                       callbackUpdateStore: (String text) {
                         accountScreenStore.isConfig = true;
@@ -339,13 +375,22 @@ class _AccountScreenState extends State<AccountScreen> {
                       height: 10,
                     ),
                     CustomTextField(
+                      boxDecoration: BoxDecoration(border: Border.all(color: Colors.black45), color: Colors.white),
+                      controller: _controllerDepartment,
+                      labelText: "Phòng ban",
+                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CustomTextField(
                       boxDecoration: BoxDecoration(
                           border: Border.all(color: Colors.black45),
                           borderRadius:
                               BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
                           color: Colors.white),
-                      controller: _controllerDepartment,
-                      labelText: "Phòng ban",
+                      controller: _controllerTitle,
+                      labelText: "Chức danh",
                       textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
                     ),
                   ],
@@ -361,6 +406,15 @@ class _AccountScreenState extends State<AccountScreen> {
 
   Future<void> _refresh() async {
     accountScreenStore.refresh();
+  }
+
+  choiceAvatar() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+
+    setState(() {
+      accountScreenStore.image = image;
+      accountScreenStore.isConfig = true;
+    });
   }
 }
 
@@ -400,13 +454,16 @@ class CustomTextField extends StatelessWidget {
   }
 }
 
-class CustomSuffixTextField extends StatelessWidget {
-  const CustomSuffixTextField(
+class CustomSuffixTextField extends StatefulWidget {
+  CustomSuffixTextField(
       {Key key,
       @required this.controller,
       @required this.labelText,
       @required this.textStyle,
+      @required this.validateCallBack,
+      this.textInputType = TextInputType.text,
       this.isDate = false,
+      this.errorText = "",
       this.callbackUpdateStore,
       this.boxDecoration})
       : super(key: key);
@@ -415,7 +472,13 @@ class CustomSuffixTextField extends StatelessWidget {
 
   final String labelText;
 
+  final String errorText;
+
   final TextStyle textStyle;
+
+  final Function validateCallBack;
+
+  final TextInputType textInputType;
 
   final bool isDate;
 
@@ -424,10 +487,17 @@ class CustomSuffixTextField extends StatelessWidget {
   final BoxDecoration boxDecoration;
 
   @override
+  State<StatefulWidget> createState() {
+    return _CustomSuffixTextFieldState();
+  }
+}
+
+class _CustomSuffixTextFieldState extends State<CustomSuffixTextField> {
+  @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: (boxDecoration != null)
-            ? boxDecoration
+        decoration: (widget.boxDecoration != null)
+            ? widget.boxDecoration
             : BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: Colors.black45),
@@ -442,25 +512,27 @@ class CustomSuffixTextField extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     enabled: false,
-                    style: textStyle,
-                    controller: controller,
+                    style: widget.textStyle,
+                    controller: widget.controller,
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.only(top: 5),
-                        labelText: labelText,
+                        labelText: widget.labelText,
                         labelStyle: TextStyle(color: Colors.black45, fontSize: 16),
                         disabledBorder: InputBorder.none),
                   ),
                 ),
-                isDate
+                widget.isDate
                     ? IconButton(
                         color: Colors.black,
                         icon: Icon(Icons.date_range),
                         onPressed: () {
                           DatePicker.showDatePicker(context, showTitleActions: true, onChanged: (date) {},
                               onConfirm: (date) {
-                            controller.text = DateFormat('yyyy-MM-dd').format(date);
-                            callbackUpdateStore(controller.text);
-                          }, currentTime: DateFormat('yyyy-MM-dd').parse(controller.text), locale: LocaleType.vi);
+                            widget.controller.text = DateFormat('yyyy-MM-dd').format(date);
+                            widget.callbackUpdateStore(widget.controller.text);
+                          },
+                              currentTime: DateFormat('yyyy-MM-dd').parse(widget.controller.text),
+                              locale: LocaleType.vi);
                         })
                     : IconButton(
                         icon: Icon(
@@ -468,68 +540,16 @@ class CustomSuffixTextField extends StatelessWidget {
                           color: Colors.black,
                         ),
                         onPressed: () {
-                          TextEditingController textController = TextEditingController(text: controller.text);
                           showDialog(
                               context: context,
                               child: Dialog(
-                                child: Container(
-                                  height: MediaQuery.of(context).size.height / 3 + 20,
-                                  child: Scaffold(
-                                    appBar: AppBar(
-                                      automaticallyImplyLeading: false,
-                                      title: Text("Chỉnh sửa"),
-                                      centerTitle: true,
-                                    ),
-                                    body: Container(
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: TextField(
-                                                style: textStyle,
-                                                controller: textController,
-                                                decoration: InputDecoration(
-                                                    contentPadding: EdgeInsets.only(top: 5),
-                                                    labelText: labelText,
-                                                    labelStyle: TextStyle(color: Colors.black45, fontSize: 15),
-                                                    disabledBorder: InputBorder.none),
-                                              ),
-                                            ),
-                                            Row(
-                                              children: <Widget>[
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: RaisedButton(
-                                                      child: Text("Hủy bỏ"),
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: RaisedButton(
-                                                      child: Text("Đồng ý"),
-                                                      onPressed: () {
-                                                        callbackUpdateStore(textController.text);
-                                                        controller.text = textController.text;
-                                                        Navigator.pop(context);
-                                                      },
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                child: FormOneTextField(
+                                  validateCallBack: widget.validateCallBack,
+                                  errorText: widget.errorText,
+                                  labelText: widget.labelText,
+                                  controller: widget.controller,
+                                  textInputType: widget.textInputType,
+                                  callbackUpdateStore: widget.callbackUpdateStore,
                                 ),
                               ));
                         },
@@ -538,5 +558,117 @@ class CustomSuffixTextField extends StatelessWidget {
             ),
           ),
         ));
+  }
+}
+
+class FormOneTextField extends StatefulWidget {
+  FormOneTextField(
+      {this.validateCallBack,
+      this.errorText,
+      this.labelText,
+      this.controller,
+      this.textStyle,
+      this.textInputType,
+      this.callbackUpdateStore});
+
+  final TextEditingController controller;
+
+  final String labelText;
+
+  final String errorText;
+
+  final TextStyle textStyle;
+
+  final Function validateCallBack;
+
+  final TextInputType textInputType;
+
+  final Function callbackUpdateStore;
+
+  @override
+  _FormOneTextFieldState createState() => _FormOneTextFieldState();
+}
+
+class _FormOneTextFieldState extends State<FormOneTextField> {
+  bool _validate = true;
+
+  TextEditingController textController;
+
+  @override
+  void initState() {
+    super.initState();
+    textController = TextEditingController(text: widget.controller.text);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height / 3 + 20,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text("Chỉnh sửa"),
+          centerTitle: true,
+        ),
+        body: Container(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    style: widget.textStyle,
+                    controller: textController,
+                    keyboardType: widget.textInputType,
+                    decoration: InputDecoration(
+                        errorText: _validate ? null : widget.errorText,
+                        contentPadding: EdgeInsets.only(top: 5),
+                        labelText: widget.labelText,
+                        labelStyle: TextStyle(color: Colors.black45, fontSize: 15),
+                        disabledBorder: InputBorder.none),
+                  ),
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: RaisedButton(
+                          child: Text("Hủy bỏ"),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: RaisedButton(
+                          child: Text("Đồng ý"),
+                          onPressed: () {
+                            if (widget.validateCallBack(textController.text)) {
+                              _validate = true;
+                              widget.callbackUpdateStore(textController.text);
+                              widget.controller.text = textController.text;
+                              Navigator.pop(context);
+                            } else {
+                              setState(() {
+                                _validate = false;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
