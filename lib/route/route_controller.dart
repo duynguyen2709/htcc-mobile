@@ -1,10 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hethongchamcong_mobile/data/model/login_response.dart';
 import 'package:hethongchamcong_mobile/data/remote/leaving/form_date.dart';
 import 'package:hethongchamcong_mobile/screen/account/account_screen.dart';
 import 'package:hethongchamcong_mobile/screen/cameracheckin/check_in_camera_screen.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen.dart';
-import 'package:hethongchamcong_mobile/screen/complaint/complaint_detail.dart';
 import 'package:hethongchamcong_mobile/screen/complaint/complaint_form.dart';
 import 'package:hethongchamcong_mobile/screen/complaint/complaint_screen.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/detail_leaving/detail_leaving.dart';
@@ -22,26 +22,6 @@ class SlideCustomRoute<T> extends MaterialPageRoute<T> {
   SlideCustomRoute({WidgetBuilder builder, RouteSettings settings, this.routeName})
       : assert(routeName != null),
         super(builder: builder, settings: settings);
-
-  @override
-  Widget buildTransitions(
-      BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-//    if (settings.isInitialRoute) return child;
-
-    return new SlideTransition(
-      position: new Tween(
-        begin: const Offset(1.0, 0.0),
-        end: const Offset(0.0, 0.0),
-      ).animate(new CurvedAnimation(
-        parent: animation,
-        curve: Curves.ease,
-      )),
-      child: child,
-    );
-  }
-
-  @override
-  Duration get transitionDuration => const Duration(milliseconds: 500);
 }
 
 SlideCustomRoute initialSlideRoutes(RouteSettings settings) {
