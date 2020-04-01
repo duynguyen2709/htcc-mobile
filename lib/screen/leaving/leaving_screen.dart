@@ -6,8 +6,6 @@ import 'package:hethongchamcong_mobile/screen/leaving/leaving_store.dart';
 import 'package:hethongchamcong_mobile/screen/widget/empty_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/retry_screen.dart';
-import 'package:wave/config.dart';
-import 'package:wave/wave.dart';
 
 class LeavingScreen extends StatefulWidget {
   LeavingScreen({Key key, this.title}) : super(key: key);

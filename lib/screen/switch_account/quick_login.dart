@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/model/login_response.dart';
+import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
 import 'package:hethongchamcong_mobile/screen/switch_account/quick_login_store.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
 import 'package:mobx/mobx.dart';
@@ -38,8 +40,7 @@ class _QuickLoginState extends State<QuickLogin> {
         SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
         sharedPreferences.setBool(Constants.IS_LOGIN, true);
         Navigator.pushReplacementNamed(context, Constants.home_screen);
-      } else if (quickLoginStore.errorMessage != null && quickLoginStore.errorMessage.isNotEmpty)
-        _showErrorDialog(quickLoginStore.errorMessage);
+      } else if (quickLoginStore.errorMessage != null && quickLoginStore.errorMessage.isNotEmpty) _showErrorDialog(quickLoginStore.errorMessage);
     });
   }
 
@@ -99,16 +100,10 @@ class _QuickLoginState extends State<QuickLogin> {
                       decoration: BoxDecoration(
                         color: Colors.blue,
                         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50)),
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [Colors.blue, Colors.blue[600]]),
+                        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.blue, Colors.blue[600]]),
                       ),
                       width: 200,
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height / 3,
+                      height: MediaQuery.of(context).size.height / 3,
                       child: Stack(
                         children: <Widget>[
                           Center(
@@ -126,11 +121,7 @@ class _QuickLoginState extends State<QuickLogin> {
                               padding: EdgeInsets.all(10),
                               child: Text(
                                 "Danh sách tài khoản",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic),
+                                style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
                               ),
                             ),
                           ),
@@ -187,8 +178,7 @@ class _QuickLoginState extends State<QuickLogin> {
                                           ),
                                           Text(
                                             widget.users[index].user.companyId,
-                                            style: TextStyle(
-                                                color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold),
+                                            style: TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold),
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 1,
                                           ),
@@ -201,8 +191,8 @@ class _QuickLoginState extends State<QuickLogin> {
                                       ),
                                     ),
                                     onTap: () {
-                                      quickLoginStore.login(widget.users[index].user.username,
-                                          widget.users[index].password, widget.users[index].user.companyId);
+                                      quickLoginStore.login(
+                                          widget.users[index].user.username, widget.users[index].password, widget.users[index].user.companyId);
                                     },
                                   ),
                                   color: Colors.transparent,
@@ -261,23 +251,22 @@ class _QuickLoginState extends State<QuickLogin> {
             }
             return showDialog<bool>(
               context: context,
-              builder: (c) =>
-                  AlertDialog(
-                    title: Text('Thông báo'),
-                    content: Text('Bạn có muốn thoát khỏi ứng dụng?'),
-                    actions: [
-                      FlatButton(
-                        child: Text('Có'),
-                        onPressed: () => exit(0),
-                      ),
-                      FlatButton(
-                        child: Text('Không'),
-                        onPressed: () {
-                          Navigator.pop(c, false);
-                        },
-                      ),
-                    ],
+              builder: (c) => AlertDialog(
+                title: Text('Thông báo'),
+                content: Text('Bạn có muốn thoát khỏi ứng dụng?'),
+                actions: [
+                  FlatButton(
+                    child: Text('Có'),
+                    onPressed: () => exit(0),
                   ),
+                  FlatButton(
+                    child: Text('Không'),
+                    onPressed: () {
+                      Navigator.pop(c, false);
+                    },
+                  ),
+                ],
+              ),
             );
           }),
     );
@@ -298,8 +287,7 @@ class _QuickLoginState extends State<QuickLogin> {
           setState(() {});
         }
       },
-      itemBuilder: (BuildContext context) =>
-      <PopupMenuEntry<int>>[
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
         const PopupMenuItem<int>(
           value: 1,
           child: Text('Gỡ tài khoản khỏi thiết bị'),

@@ -124,6 +124,7 @@ class MainScreenState extends State<MainScreen> {
             if (index != 0) {
               Future.delayed(Duration(milliseconds: 100), () {
                 SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                  statusBarBrightness: Brightness.dark,
                   statusBarColor: Colors.blue, // status bar color
                 ));
               });
