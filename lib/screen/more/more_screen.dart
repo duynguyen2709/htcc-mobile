@@ -118,7 +118,7 @@ class _MoreScreenState extends State<MoreScreen> {
                       following: false,
                       onTap: () => {
                             Navigator.pushNamed(
-                                context, Constants.account_screen)
+                                context, Constants.contacts_screen)
                           }),
                   Section(
                       leading: ImageIcon(

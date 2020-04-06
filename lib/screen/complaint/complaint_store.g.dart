@@ -117,6 +117,23 @@ mixin _$ComplaintStore on _ComplaintStore, Store {
     }, _$errorMsgAtom, name: '${_$errorMsgAtom.name}_set');
   }
 
+  final _$monthQueryAtom = Atom(name: '_ComplaintStore.monthQuery');
+
+  @override
+  DateTime get monthQuery {
+    _$monthQueryAtom.context.enforceReadPolicy(_$monthQueryAtom);
+    _$monthQueryAtom.reportObserved();
+    return super.monthQuery;
+  }
+
+  @override
+  set monthQuery(DateTime value) {
+    _$monthQueryAtom.context.conditionallyRunInAction(() {
+      super.monthQuery = value;
+      _$monthQueryAtom.reportChanged();
+    }, _$monthQueryAtom, name: '${_$monthQueryAtom.name}_set');
+  }
+
   final _$postComplaintAsyncAction = AsyncAction('postComplaint');
 
   @override
@@ -131,10 +148,17 @@ mixin _$ComplaintStore on _ComplaintStore, Store {
     return _$getComplaintAsyncAction.run(() => super.getComplaint(month));
   }
 
+  final _$refreshAsyncAction = AsyncAction('refresh');
+
+  @override
+  Future refresh() {
+    return _$refreshAsyncAction.run(() => super.refresh());
+  }
+
   @override
   String toString() {
     final string =
-        'isLoading: ${isLoading.toString()},postComplaintSuccess: ${postComplaintSuccess.toString()},getListComplaintSuccess: ${getListComplaintSuccess.toString()},listComplaint: ${listComplaint.toString()},errorAuth: ${errorAuth.toString()},errorMsg: ${errorMsg.toString()}';
+        'isLoading: ${isLoading.toString()},postComplaintSuccess: ${postComplaintSuccess.toString()},getListComplaintSuccess: ${getListComplaintSuccess.toString()},listComplaint: ${listComplaint.toString()},errorAuth: ${errorAuth.toString()},errorMsg: ${errorMsg.toString()},monthQuery: ${monthQuery.toString()}';
     return '{$string}';
   }
 }

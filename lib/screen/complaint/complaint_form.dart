@@ -127,6 +127,7 @@ class _ComplaintFormState extends State<ComplaintForm> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      resizeToAvoidBottomPadding:false,
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Góp Ý - Khiếu Nại"),
@@ -137,10 +138,10 @@ class _ComplaintFormState extends State<ComplaintForm> {
         onPanDown: (_) {
           FocusScope.of(context).requestFocus(FocusNode());
         },
-        child: SingleChildScrollView(
-          child: Stack(
-            children: <Widget>[
-              Column(
+        child: Stack(
+          children: <Widget>[
+            SingleChildScrollView(
+              child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   Container(
@@ -334,125 +335,130 @@ class _ComplaintFormState extends State<ComplaintForm> {
                   Container(
                     height: 20,
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    alignment: Alignment.bottomCenter,
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(24),
-                            topRight: Radius.circular(24))),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                        AnimatedContainer(
-                          duration: Duration(seconds: _isBack ? 0 : 4),
-                          alignment: _alignment,
-                          child: AnimatedOpacity(
-                            opacity: _opacity,
-                            duration: Duration(seconds: _isBack ? 0 : 3),
-                            child: Icon(
-                              Icons.send,
-                              color: Colors.white,
-                              size: 35,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          height: 64,
-                          width: 64,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: Colors.white),
-                          padding: EdgeInsets.only(left: 6),
-                          alignment: Alignment.center,
-                          child: InkWell(
-                            splashColor: Colors.grey,
-                            onTap: () async {
-                              if(_controller.text.isNotEmpty) {
-                                if (_timer != null) _timer.cancel();
-                                _timer =
-                                new Timer(const Duration(seconds: 5), () {
-                                  if(mounted){setState(() {
-                                    _isBack = true;
-                                    _alignment = Alignment.center;
-                                    _opacity = 1.0;
-                                  });
-                                }});
-                                if(mounted)
-                                  setState(() {
-                                  _isBack = false;
-                                  _alignment = _alignment == Alignment.bottomRight
-                                      ? Alignment.center
-                                      : Alignment.bottomRight;
-                                  _opacity = _opacity == 0.0 ? 1.0 : 0.0;
-                                });
-                                var image1 = await _getMultipartFile(
-                                    _imageKey1.currentState.pickedImage);
-                                var image2 = await _getMultipartFile(
-                                    _imageKey2.currentState.pickedImage);
-                                var image3 = await _getMultipartFile(
-                                    _imageKey3.currentState.pickedImage);
-                                List<MultipartFile> images = List();
-                                if (image1 != null) images.add(image1);
-                                if (image2 != null) images.add(image2);
-                                if (image3 != null) images.add(image3);
-                                SharedPreferences.getInstance().then((pref) {
-                                  String jsonUser = pref.getString(
-                                      Constants.USER);
-                                  if (jsonUser != null && jsonUser.isNotEmpty) {
-                                    User user = User.fromJson(
-                                        json.decode(jsonUser));
-                                    CreateComplaintParam param = CreateComplaintParam(
-                                        companyId: user.companyId,
-                                        username: user.username,
-                                        clientTime: DateTime
-                                            .now()
-                                            .millisecondsSinceEpoch,
-                                        images: [image1, image2, image3],
-                                        complaint: Complaint(
-                                            category: _options[_value],
-                                            content: _controller.text,
-                                            receiverType: _sendTo.indexOf(
-                                                _currentSelectedValue) + 1,
-                                            isAnonymous: isAnonymously ? 1 : 0));
-                                    store.postComplaint(param);
-                                  }
-                                });
-                              }
-                              else{
-                                _showMessage("Nội dung góp ý/ khiếu nại không được để trống.");
-                              }
-
-                            },
-                            child: Icon(
-                              Icons.send,
-                              color: Colors.blue,
-                              size: 40,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
+                  Container(height: 80,)
                 ],
               ),
-              Observer(builder: (_) {
-                if (store.isLoading)
-                  return Container(
-                    width: MediaQuery.of(context).size.width,
-                    height:  MediaQuery.of(context).size.height * 1.5 ,
-                    color: Colors.black45,
-                    child: SpinKitCircle(
-                      color: Colors.blue,
-                      size: 50.0,
+            ),
+            Positioned(
+              bottom: 0,
+              child: Container(
+                height: 80,
+                width: MediaQuery.of(context).size.width,
+                alignment: Alignment.bottomCenter,
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24))),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    AnimatedContainer(
+                      duration: Duration(seconds: _isBack ? 0 : 4),
+                      alignment: _alignment,
+                      child: AnimatedOpacity(
+                        opacity: _opacity,
+                        duration: Duration(seconds: _isBack ? 0 : 3),
+                        child: Icon(
+                          Icons.send,
+                          color: Colors.white,
+                          size: 35,
+                        ),
+                      ),
                     ),
-                  );
-                else
-                  return Center();
-              })
-            ],
-          ),
+                    Container(
+                      height: 64,
+                      width: 64,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.white),
+                      padding: EdgeInsets.only(left: 6),
+                      alignment: Alignment.center,
+                      child: InkWell(
+                        splashColor: Colors.grey,
+                        onTap: () async {
+                          if(_controller.text.isNotEmpty) {
+                            if (_timer != null) _timer.cancel();
+                            _timer =
+                            new Timer(const Duration(seconds: 5), () {
+                              if(mounted){setState(() {
+                                _isBack = true;
+                                _alignment = Alignment.center;
+                                _opacity = 1.0;
+                              });
+                              }});
+                            if(mounted)
+                              setState(() {
+                                _isBack = false;
+                                _alignment = _alignment == Alignment.bottomRight
+                                    ? Alignment.center
+                                    : Alignment.bottomRight;
+                                _opacity = _opacity == 0.0 ? 1.0 : 0.0;
+                              });
+                            var image1 = await _getMultipartFile(
+                                _imageKey1.currentState.pickedImage);
+                            var image2 = await _getMultipartFile(
+                                _imageKey2.currentState.pickedImage);
+                            var image3 = await _getMultipartFile(
+                                _imageKey3.currentState.pickedImage);
+                            List<MultipartFile> images = List();
+                            if (image1 != null) images.add(image1);
+                            if (image2 != null) images.add(image2);
+                            if (image3 != null) images.add(image3);
+                            SharedPreferences.getInstance().then((pref) {
+                              String jsonUser = pref.getString(
+                                  Constants.USER);
+                              if (jsonUser != null && jsonUser.isNotEmpty) {
+                                User user = User.fromJson(
+                                    json.decode(jsonUser));
+                                CreateComplaintParam param = CreateComplaintParam(
+                                    companyId: user.companyId,
+                                    username: user.username,
+                                    clientTime: DateTime
+                                        .now()
+                                        .millisecondsSinceEpoch,
+                                    images: [image1, image2, image3],
+                                    complaint: Complaint(
+                                        category: _options[_value],
+                                        content: _controller.text,
+                                        receiverType: _sendTo.indexOf(
+                                            _currentSelectedValue) + 1,
+                                        isAnonymous: isAnonymously ? 1 : 0));
+                                store.postComplaint(param);
+                              }
+                            });
+                          }
+                          else{
+                            _showMessage("Nội dung góp ý/ khiếu nại không được để trống.");
+                          }
+
+                        },
+                        child: Icon(
+                          Icons.send,
+                          color: Colors.blue,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Observer(builder: (_) {
+              if (store.isLoading)
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  height:  MediaQuery.of(context).size.height * 1.5 ,
+                  color: Colors.black45,
+                  child: SpinKitCircle(
+                    color: Colors.blue,
+                    size: 50.0,
+                  ),
+                );
+              else
+                return Center();
+            })
+          ],
         ),
       ),
     );

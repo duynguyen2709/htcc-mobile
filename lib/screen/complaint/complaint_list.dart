@@ -110,7 +110,12 @@ class ComplaintListState extends State<ComplaintList>
                   .format(store.monthQuery)
                   .compareTo(DateFormat('yyyyMM').format(now)) ==
                   0)
-              ? suggestAddComplaint
+              ? ListView(
+            physics: AlwaysScrollableScrollPhysics(),
+            children: <Widget>[
+              suggestAddComplaint,
+            ],
+              )
               : (!isEmpty)
               ? Column(
             children: <Widget>[
@@ -123,7 +128,12 @@ class ComplaintListState extends State<ComplaintList>
               ),
             ],
           )
-              : emptyPage,
+              : ListView(
+            physics: AlwaysScrollableScrollPhysics(),
+            children: <Widget>[
+              emptyPage,
+            ],
+          ),
         )
         ,
         Observer(builder: (_) {

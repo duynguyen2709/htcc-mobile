@@ -55,11 +55,17 @@ class PagedListViewState extends State<PagedListView> {
       }
     });
   }
+  resetPage(){
+    setState(() {
+      page=0;
+    });
+  }
 
   setCanLoadMore(bool _canLoadMore) {
     setState(() {
       length -= 1;
       canLoadMore = _canLoadMore;
+      isLoading=false;
     });
   }
 
@@ -71,12 +77,21 @@ class PagedListViewState extends State<PagedListView> {
       length = list.length ?? 0;
     });
   }
+  setList(List<dynamic> data){
+    length = data.length;
+    list= data;
+    setState(() {
+      isLoading =false;
+      length = data.length;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
       Expanded(
         child: ListView.builder(
+          physics: AlwaysScrollableScrollPhysics(),
           controller: _scrollController,
           itemBuilder: (context, index) {
             if (index == list.length)

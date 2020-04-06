@@ -13,7 +13,8 @@ class DioManager {
   static const PATH_USER = "api/employee/users";
   static const PATH_CHECK_IN = "api/employee/checkin/";
   static const PATH_COMPLAINT = "api/employee/complaint";
-
+  static const PATH_CONTACTS = "api/employee/contacts";
+  static const PATH_CONTACTS_FILTER = "api/employee/contacts/filter";
   Dio dio;
 
   factory DioManager() {

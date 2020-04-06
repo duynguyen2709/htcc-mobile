@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -70,6 +71,10 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
 
   CheckInStore _checkInStore;
   CheckInInfo checkInInfo;
+  var _connectionStatus = 'Unknow';
+  var wifiIP = '';
+  Connectivity connectivity;
+  StreamSubscription<ConnectivityResult> subscription;
 
   _CheckInLocationPageState(this.parent);
 
@@ -235,6 +240,17 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     Timer.periodic(Duration(seconds: 1), (timer) {
       _getTime();
     });
+
+    connectivity = Connectivity();
+    subscription = connectivity.onConnectivityChanged.listen((ConnectivityResult result) async {
+      if(result == ConnectivityResult.wifi){
+         wifiIP = await (Connectivity().getWifiIP());
+         _connectionStatus="wifi";
+      }
+      else if(result == ConnectivityResult.mobile){
+        _connectionStatus="mobile";
+      }
+    });
     _checkInStore = CheckInStore();
     Pref.getInstance().then((pref) {
       User user = User.fromJson(json.decode(pref.getString(Constants.USER)));
@@ -310,6 +326,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
   @override
   void dispose() {
     _timer.cancel();
+    subscription.cancel();
     super.dispose();
   }
 
@@ -623,11 +640,16 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
               CheckInParam param = new CheckInParam(
                   username: user.username,
                   companyId: user.companyId,
-                  clientTime: DateTime.now().millisecondsSinceEpoch,
+                  clientTime: DateTime
+                      .now()
+                      .millisecondsSinceEpoch,
                   latitude: _curPosition.latitude,
                   longitude: _curPosition.longitude,
                   type: (info.hasCheckedIn) ? 2 : 1,
-                  usedWifi: false);
+                  usedWifi: _connectionStatus.compareTo("wifi") == 0
+                      ? true
+                      : false,
+                  ip: _connectionStatus.compareTo("wifi") == 0 ? wifiIP : '');
               TimeOfDay _startTime;
               if (!info.hasCheckedIn) {
                 _startTime = TimeOfDay(

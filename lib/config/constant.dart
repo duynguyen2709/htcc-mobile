@@ -16,6 +16,7 @@ class Constants {
   static const String complaint_form = "/complaint/new";
   static const String complaint_detail = "/complaint/detail";
   static const String quick_login = "/quicklogin";
+  static const String contacts_screen = "/contacts";
 
   //Shared preference
   static const String IS_LOGIN = "islogin";
