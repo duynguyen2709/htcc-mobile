@@ -13,14 +13,6 @@ class LoadingScreen extends StatelessWidget {
             color: Colors.blue,
             size: 50.0,
           ),
-//          Text(
-//            'Đang xử lý',
-//            style: TextStyle(
-//              fontSize: 20,
-//              color: Colors.white,
-//              fontWeight: FontWeight.bold
-//            ),
-//          )
         ],
       ),
     );

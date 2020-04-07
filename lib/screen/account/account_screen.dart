@@ -9,6 +9,7 @@ import 'package:hethongchamcong_mobile/screen/widget/circle_icon_button.dart';
 import 'package:hethongchamcong_mobile/screen/widget/empty_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/retry_screen.dart';
+import 'package:hethongchamcong_mobile/utils/validation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
@@ -255,6 +256,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       height: 10,
                     ),
                     CustomSuffixTextField(
+                      validateCallBack: Validation.validateEmpty,
                       controller: _controllerFullName,
                       labelText: "Họ và tên",
                       textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
@@ -262,7 +264,6 @@ class _AccountScreenState extends State<AccountScreen> {
                         accountScreenStore.isConfig = true;
                         accountScreenStore.account.fullName = text;
                       },
-                      validateCallBack: (String text) => text.isNotEmpty,
                       errorText: "Họ và tên không được rỗng",
                     ),
                     SizedBox(
@@ -283,7 +284,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       height: 10,
                     ),
                     CustomSuffixTextField(
-                      validateCallBack: (String text) => text.length >= 9,
+                      validateCallBack: Validation.validateCMND,
                       errorText: "Tối thiểu 9 chữ số",
                       textInputType: TextInputType.number,
                       controller: _controllerCMND,
@@ -298,7 +299,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       height: 10,
                     ),
                     CustomSuffixTextField(
-                      validateCallBack: (String text) => text.length >= 10,
+                      validateCallBack: Validation.validatePhone,
                       textInputType: TextInputType.number,
                       controller: _controllerPhone,
                       labelText: "Số điện thoại",
@@ -315,15 +316,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     CustomSuffixTextField(
                       errorText: "Email không hợp lệ",
                       textInputType: TextInputType.emailAddress,
-                      validateCallBack: (String text) {
-                        Pattern pattern =
-                            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                        RegExp regex = new RegExp(pattern);
-                        if (!regex.hasMatch(text))
-                          return false;
-                        else
-                          return true;
-                      },
+                      validateCallBack: Validation.validateEmail,
                       controller: _controllerEmail,
                       labelText: "Email",
                       textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
@@ -336,7 +329,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       height: 10,
                     ),
                     CustomSuffixTextField(
-                      validateCallBack: (String text) => text.isNotEmpty,
+                      validateCallBack: Validation.validateEmpty,
                       controller: _controllerAddress,
                       labelText: "Địa chỉ",
                       errorText: "Địa chỉ không được rỗng",

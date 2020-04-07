@@ -12,6 +12,12 @@ abstract class _LeavingFormStore with Store {
   bool isLoading = false;
 
   @observable
+  List<String> listCategories;
+
+  @observable
+  String category;
+
+  @observable
   List<DateTime> listBooking = List<DateTime>();
 
   @observable

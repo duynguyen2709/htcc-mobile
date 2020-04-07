@@ -13,7 +13,7 @@ import 'package:hethongchamcong_mobile/screen/leaving/leaving_form/leaving_form.
 import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
 import 'package:hethongchamcong_mobile/screen/main_screen.dart';
 import 'package:hethongchamcong_mobile/screen/password/password_screen.dart';
-import 'package:hethongchamcong_mobile/screen/switch_account/quick_login.dart';
+import 'package:hethongchamcong_mobile/screen/quick_login/quick_login.dart';
 
 import '../config/constant.dart';
 
@@ -52,7 +52,7 @@ SlideCustomRoute initialSlideRoutes(RouteSettings settings) {
           builder: (_) => new PasswordScreen(), settings: settings, routeName: Constants.password_screen);
     case Constants.leaving_form_screen:
       return new SlideCustomRoute(
-          builder: (_) => new LeavingFormScreen(), settings: settings, routeName: Constants.leaving_form_screen);
+          builder: (_) => new LeavingFormScreen(listCategories: settings.arguments as List<String>,), settings: settings, routeName: Constants.leaving_form_screen);
     case Constants.complaint_screen:
       return new SlideCustomRoute(
           builder: (_) => new ComplaintScreen(), settings: settings, routeName: Constants.complaint_screen);
@@ -65,7 +65,7 @@ SlideCustomRoute initialSlideRoutes(RouteSettings settings) {
     case Constants.detail_leaving_screen:
       return new SlideCustomRoute(
           builder: (_) => new DetailLeavingScreen(
-                listFormDate: settings.arguments as List<FormDate>,
+                formLeaving: settings.arguments as FormLeaving,
               ),
           settings: settings,
           routeName: Constants.leaving_form_screen);

@@ -60,21 +60,55 @@ mixin _$LeavingStore on _LeavingStore, Store {
     }, _$eventsAtom, name: '${_$eventsAtom.name}_set');
   }
 
-  final _$infoLeavingAtom = Atom(name: '_LeavingStore.infoLeaving');
+  final _$errorMsgAtom = Atom(name: '_LeavingStore.errorMsg');
 
   @override
-  InfoLeaving get infoLeaving {
-    _$infoLeavingAtom.context.enforceReadPolicy(_$infoLeavingAtom);
-    _$infoLeavingAtom.reportObserved();
-    return super.infoLeaving;
+  String get errorMsg {
+    _$errorMsgAtom.context.enforceReadPolicy(_$errorMsgAtom);
+    _$errorMsgAtom.reportObserved();
+    return super.errorMsg;
   }
 
   @override
-  set infoLeaving(InfoLeaving value) {
-    _$infoLeavingAtom.context.conditionallyRunInAction(() {
-      super.infoLeaving = value;
-      _$infoLeavingAtom.reportChanged();
-    }, _$infoLeavingAtom, name: '${_$infoLeavingAtom.name}_set');
+  set errorMsg(String value) {
+    _$errorMsgAtom.context.conditionallyRunInAction(() {
+      super.errorMsg = value;
+      _$errorMsgAtom.reportChanged();
+    }, _$errorMsgAtom, name: '${_$errorMsgAtom.name}_set');
+  }
+
+  final _$leavingDataAtom = Atom(name: '_LeavingStore.leavingData');
+
+  @override
+  LeavingData get leavingData {
+    _$leavingDataAtom.context.enforceReadPolicy(_$leavingDataAtom);
+    _$leavingDataAtom.reportObserved();
+    return super.leavingData;
+  }
+
+  @override
+  set leavingData(LeavingData value) {
+    _$leavingDataAtom.context.conditionallyRunInAction(() {
+      super.leavingData = value;
+      _$leavingDataAtom.reportChanged();
+    }, _$leavingDataAtom, name: '${_$leavingDataAtom.name}_set');
+  }
+
+  final _$listRequestAtom = Atom(name: '_LeavingStore.listRequest');
+
+  @override
+  List<ListRequest> get listRequest {
+    _$listRequestAtom.context.enforceReadPolicy(_$listRequestAtom);
+    _$listRequestAtom.reportObserved();
+    return super.listRequest;
+  }
+
+  @override
+  set listRequest(List<ListRequest> value) {
+    _$listRequestAtom.context.conditionallyRunInAction(() {
+      super.listRequest = value;
+      _$listRequestAtom.reportChanged();
+    }, _$listRequestAtom, name: '${_$listRequestAtom.name}_set');
   }
 
   final _$dataMapAtom = Atom(name: '_LeavingStore.dataMap');
@@ -94,10 +128,57 @@ mixin _$LeavingStore on _LeavingStore, Store {
     }, _$dataMapAtom, name: '${_$dataMapAtom.name}_set');
   }
 
+  final _$statusAtom = Atom(name: '_LeavingStore.status');
+
   @override
-  String toString() {
-    final string =
-        'isLoading: ${isLoading.toString()},shouldRetry: ${shouldRetry.toString()},events: ${events.toString()},infoLeaving: ${infoLeaving.toString()},dataMap: ${dataMap.toString()}';
-    return '{$string}';
+  Pair get status {
+    _$statusAtom.context.enforceReadPolicy(_$statusAtom);
+    _$statusAtom.reportObserved();
+    return super.status;
+  }
+
+  @override
+  set status(Pair value) {
+    _$statusAtom.context.conditionallyRunInAction(() {
+      super.status = value;
+      _$statusAtom.reportChanged();
+    }, _$statusAtom, name: '${_$statusAtom.name}_set');
+  }
+
+  final _$yearAtom = Atom(name: '_LeavingStore.year');
+
+  @override
+  int get year {
+    _$yearAtom.context.enforceReadPolicy(_$yearAtom);
+    _$yearAtom.reportObserved();
+    return super.year;
+  }
+
+  @override
+  set year(int value) {
+    _$yearAtom.context.conditionallyRunInAction(() {
+      super.year = value;
+      _$yearAtom.reportChanged();
+    }, _$yearAtom, name: '${_$yearAtom.name}_set');
+  }
+
+  final _$loadDataAsyncAction = AsyncAction('loadData');
+
+  @override
+  Future loadData() {
+    return _$loadDataAsyncAction.run(() => super.loadData());
+  }
+
+  final _$_LeavingStoreActionController =
+      ActionController(name: '_LeavingStore');
+
+  @override
+  dynamic filter(Pair pair) {
+    final _$actionInfo = _$_LeavingStoreActionController.startAction();
+    try {
+      return super.filter(pair);
+    } finally {
+      _$_LeavingStoreActionController.endAction(_$actionInfo);
+    }
   }
 }
