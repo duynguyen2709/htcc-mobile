@@ -15,6 +15,7 @@ class DioManager {
   static const PATH_COMPLAINT = "api/employee/complaint";
   static const PATH_CONTACTS = "api/employee/contacts";
   static const PATH_CONTACTS_FILTER = "api/employee/contacts/filter";
+  static const PATH_LEAVING = "/api/employee/leaving";
   Dio dio;
 
   factory DioManager() {

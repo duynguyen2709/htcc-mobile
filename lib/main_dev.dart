@@ -5,13 +5,13 @@ import 'package:hethongchamcong_mobile/data/remote/dio.dart';
 import 'package:hethongchamcong_mobile/route/route_controller.dart';
 import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
 import 'package:hethongchamcong_mobile/screen/main_screen.dart';
-import 'package:hethongchamcong_mobile/screen/switch_account/quick_login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'config/config.dart';
 import 'config/inheritage_config.dart';
 import 'data/model/login_response.dart';
 import 'env/dev.dart';
+import 'screen/quick_login/quick_login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -43,6 +43,40 @@ mixin _$LeavingFormStore on _LeavingFormStore, Store {
     }, _$isLoadingAtom, name: '${_$isLoadingAtom.name}_set');
   }
 
+  final _$listCategoriesAtom = Atom(name: '_LeavingFormStore.listCategories');
+
+  @override
+  List<String> get listCategories {
+    _$listCategoriesAtom.context.enforceReadPolicy(_$listCategoriesAtom);
+    _$listCategoriesAtom.reportObserved();
+    return super.listCategories;
+  }
+
+  @override
+  set listCategories(List<String> value) {
+    _$listCategoriesAtom.context.conditionallyRunInAction(() {
+      super.listCategories = value;
+      _$listCategoriesAtom.reportChanged();
+    }, _$listCategoriesAtom, name: '${_$listCategoriesAtom.name}_set');
+  }
+
+  final _$categoryAtom = Atom(name: '_LeavingFormStore.category');
+
+  @override
+  String get category {
+    _$categoryAtom.context.enforceReadPolicy(_$categoryAtom);
+    _$categoryAtom.reportObserved();
+    return super.category;
+  }
+
+  @override
+  set category(String value) {
+    _$categoryAtom.context.conditionallyRunInAction(() {
+      super.category = value;
+      _$categoryAtom.reportChanged();
+    }, _$categoryAtom, name: '${_$categoryAtom.name}_set');
+  }
+
   final _$listBookingAtom = Atom(name: '_LeavingFormStore.listBooking');
 
   @override
@@ -75,12 +109,5 @@ mixin _$LeavingFormStore on _LeavingFormStore, Store {
       super.events = value;
       _$eventsAtom.reportChanged();
     }, _$eventsAtom, name: '${_$eventsAtom.name}_set');
-  }
-
-  @override
-  String toString() {
-    final string =
-        'isBooking: ${isBooking.toString()},isLoading: ${isLoading.toString()},listBooking: ${listBooking.toString()},events: ${events.toString()}';
-    return '{$string}';
   }
 }

@@ -1,17 +1,74 @@
-class FormDate {
-  DateTime dateTime;
+import 'dart:convert';
 
-  int flag;
+import 'package:hethongchamcong_mobile/utils/convert.dart';
 
-  bool isCheck;
+FormLeaving userDataFromJson(String str) => FormLeaving.fromJson(json.decode(str));
 
-  FormDate({this.dateTime, this.flag, this.isCheck = true});
+String userDataToJson(FormLeaving data) => json.encode(data.toJson());
 
-  factory FormDate.convert(DateTime time) {
-    DateTime dateTime = DateTime(time.year, time.month, time.day);
+class FormLeaving {
+  String category;
+  int clientTime;
+  String companyId;
+  List<Detail> detail;
+  String reason;
+  String username;
 
-    FormDate formDate = FormDate(dateTime: dateTime, flag: 0);
+  FormLeaving({
+    this.category,
+    this.clientTime,
+    this.companyId,
+    this.detail,
+    this.reason,
+    this.username,
+  });
 
-    return formDate;
+  factory FormLeaving.fromJson(Map<String, dynamic> json) => FormLeaving(
+        category: json["category"],
+        clientTime: json["clientTime"],
+        companyId: json["companyId"],
+        detail: List<Detail>.from(json["detail"].map((x) => Detail.fromJson(x))),
+        reason: json["reason"],
+        username: json["username"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "category": category,
+        "clientTime": clientTime,
+        "companyId": companyId,
+        "detail": List<dynamic>.from(detail.map((x) => x.toJson())),
+        "reason": reason,
+        "username": username,
+      };
+}
+
+class Detail {
+  int dateInt;
+  DateTime date;
+  int session;
+  bool isCheck = true;
+
+  Detail.int({
+    this.dateInt,
+    this.session,
+  }) {
+    this.date = Convert.convertIntToDate(this.dateInt);
   }
+
+  Detail.dateTime({
+    this.date,
+    this.session,
+  }) {
+    this.dateInt = Convert.convertDateToInt(this.date);
+  }
+
+  factory Detail.fromJson(Map<String, dynamic> json) => Detail.int(
+        dateInt: json["date"],
+        session: json["session"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "date": Convert.convertDateToInt(date),
+        "session": session,
+      };
 }

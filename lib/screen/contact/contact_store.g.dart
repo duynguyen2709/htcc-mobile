@@ -231,11 +231,4 @@ mixin _$ContactStore on _ContactStore, Store {
         page: page,
         perPage: perPage));
   }
-
-  @override
-  String toString() {
-    final string =
-        'isLoading: ${isLoading.toString()},getListContactSuccess: ${getListContactSuccess.toString()},getListFilterSuccess: ${getListFilterSuccess.toString()},getMoreSuccess: ${getMoreSuccess.toString()},listContact: ${listContact.toString()},listFilter: ${listFilter.toString()},errorAuth: ${errorAuth.toString()},errorMsg: ${errorMsg.toString()},perPage: ${perPage.toString()},canLoadMore: ${canLoadMore.toString()}';
-    return '{$string}';
-  }
 }

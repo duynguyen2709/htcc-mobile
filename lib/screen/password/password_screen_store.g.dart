@@ -84,11 +84,4 @@ mixin _$PasswordScreenStore on _PasswordScreenStore, Store {
     return _$changePasswordAsyncAction
         .run(() => super.changePassword(newPassword, oldPassword));
   }
-
-  @override
-  String toString() {
-    final string =
-        'isLoading: ${isLoading.toString()},isSuccess: ${isSuccess.toString()},errorMessage: ${errorMessage.toString()},errorAuth: ${errorAuth.toString()}';
-    return '{$string}';
-  }
 }

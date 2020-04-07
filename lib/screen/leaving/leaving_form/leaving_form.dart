@@ -3,11 +3,16 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/remote/leaving/form_date.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/leaving_form/calendar.dart';
+import 'package:hethongchamcong_mobile/utils/validation.dart';
 import 'package:intl/intl.dart';
 
 import 'leaving_form_store.dart';
 
 class LeavingFormScreen extends StatefulWidget {
+  final List<String> listCategories;
+
+  LeavingFormScreen({this.listCategories});
+
   @override
   _LeavingFormScreenState createState() => _LeavingFormScreenState();
 }
@@ -31,6 +36,8 @@ class _LeavingFormScreenState extends State<LeavingFormScreen> {
   void initState() {
     super.initState();
     _leavingFormStore = LeavingFormStore();
+    _leavingFormStore.listCategories = widget.listCategories;
+    _leavingFormStore.category = (_leavingFormStore.listCategories[0] != null) ? _leavingFormStore.listCategories[0]:"";
     _leavingFormStore.init();
     _reasonController = TextEditingController();
     _fromController = TextEditingController();
@@ -91,83 +98,80 @@ class _LeavingFormScreenState extends State<LeavingFormScreen> {
                   child: AnimatedOpacity(
                     opacity: visibleDate ? 1 : 0,
                     duration: Duration(milliseconds: 500),
-                    child: Form(
-                      key: _formKey,
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Padding(
-                                padding: const EdgeInsets.only(left: 10, right: 10),
-                                child: Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: TextFormField(
-                                        enableInteractiveSelection: false,
-                                        controller: _fromController,
-                                        validator: _validate,
-                                        enabled: false,
-                                        decoration: InputDecoration(labelText: "Từ"),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.date_range),
-                                      onPressed: (visibleDate)
-                                          ? () {
-                                              {
-                                                DatePicker.showDatePicker(context,
-                                                    showTitleActions: true, onChanged: (date) {}, onConfirm: (date) {
-                                                  minTime = date;
-                                                  _fromController.text = DateFormat('dd-MM-yyyy').format(date);
-                                                  _toController.text = "";
-                                                  _fromDateTime = date;
-                                                },
-                                                    currentTime: DateTime.now(),
-                                                    locale: LocaleType.vi,
-                                                    minTime: DateTime.now());
-                                              }
-                                            }
-                                          : null,
-                                    ),
-                                  ],
-                                )),
-                          ),
-                          Expanded(
-                            child: Padding(
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Padding(
                               padding: const EdgeInsets.only(left: 10, right: 10),
                               child: Row(
                                 children: <Widget>[
                                   Expanded(
                                     child: TextFormField(
-                                      controller: _toController,
+                                      enableInteractiveSelection: false,
+                                      controller: _fromController,
                                       validator: _validate,
                                       enabled: false,
-                                      decoration: InputDecoration(labelText: "Đến"),
+                                      decoration: InputDecoration(labelText: "Từ"),
                                     ),
                                   ),
                                   IconButton(
                                     icon: Icon(Icons.date_range),
                                     onPressed: (visibleDate)
                                         ? () {
-                                            DatePicker.showDatePicker(context,
-                                                showTitleActions: true, onChanged: (date) {}, onConfirm: (date) {
-                                              _toController.text = DateFormat('dd-MM-yyyy').format(date);
-                                              _toDateTime = date;
-                                            },
-                                                currentTime: DateTime.now(),
-                                                locale: LocaleType.vi,
-                                                minTime: minTime ?? DateTime.now(),
-                                                maxTime: (minTime != null)
-                                                    ? minTime.add(Duration(days: num - 1))
-                                                    : DateTime.now().add(Duration(days: num - 1)));
+                                            {
+                                              DatePicker.showDatePicker(context,
+                                                  showTitleActions: true, onChanged: (date) {}, onConfirm: (date) {
+                                                minTime = date;
+                                                _fromController.text = DateFormat('dd-MM-yyyy').format(date);
+                                                _toController.text = "";
+                                                _fromDateTime = date;
+                                              },
+                                                  currentTime: DateTime.now(),
+                                                  locale: LocaleType.vi,
+                                                  minTime: DateTime.now());
+                                            }
                                           }
                                         : null,
                                   ),
                                 ],
-                              ),
+                              )),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: _toController,
+                                    validator: _validate,
+                                    enabled: false,
+                                    decoration: InputDecoration(labelText: "Đến"),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.date_range),
+                                  onPressed: (visibleDate)
+                                      ? () {
+                                          DatePicker.showDatePicker(context,
+                                              showTitleActions: true, onChanged: (date) {}, onConfirm: (date) {
+                                            _toController.text = DateFormat('dd-MM-yyyy').format(date);
+                                            _toDateTime = date;
+                                          },
+                                              currentTime: DateTime.now(),
+                                              locale: LocaleType.vi,
+                                              minTime: minTime ?? DateTime.now(),
+                                              maxTime: (minTime != null)
+                                                  ? minTime.add(Duration(days: num - 1))
+                                                  : DateTime.now().add(Duration(days: num - 1)));
+                                        }
+                                      : null,
+                                ),
+                              ],
                             ),
-                          )
-                        ],
-                      ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                   duration: Duration(milliseconds: 500),
@@ -210,51 +214,89 @@ class _LeavingFormScreenState extends State<LeavingFormScreen> {
               Container(
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: TextField(
-                    controller: _reasonController,
-                    maxLines: 5,
-                    decoration: InputDecoration(
-                      labelStyle: TextStyle(fontSize: 20),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black45),
+                  child: Form(
+                    key: _formKey,
+                    child: TextFormField(
+                      controller: _reasonController,
+                      validator: (String text) {
+                        return Validation.validateEmpty(text) ? null : "Lý do không được rỗng";
+                      },
+                      maxLines: 5,
+                      decoration: InputDecoration(
+                        labelStyle: TextStyle(fontSize: 20),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black45),
+                        ),
+                        hintText: 'Lí do',
                       ),
-                      hintText: 'Lí do',
                     ),
                   ),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
-                width: double.infinity,
-                child: RaisedButton(
-                  color: Colors.blue,
-                  child: Text(
-                    "Tiếp tục",
-                    style: TextStyle(color: Colors.white),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: DropdownButton<String>(
+                    items: _leavingFormStore.listCategories
+                        .map((String item) => DropdownMenuItem(
+                              child: Text(item),
+                              value: item,
+                            ))
+                        .toList(),
+                    value: _leavingFormStore.category,
+                    onChanged: (String value) {
+                      _leavingFormStore.category = value;
+                    },
                   ),
-                  onPressed: () {
-                    switch (_groupValue) {
-                      case 0:
-                        {
-                          if (_formKey.currentState.validate()) {
-                            List<FormDate> listFormDate = List();
-                            calculateDaysInterval(_fromDateTime, _toDateTime).forEach((value) {
-                              listFormDate.add(FormDate(dateTime: value, flag: 0));
-                            });
-                            Navigator.of(context).pushNamed(Constants.detail_leaving_screen, arguments: listFormDate);
-                          }
-                          break;
+                ),
+              ),
+              Container(
+                height: 100,
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width - 32,
+                  child: RaisedButton(
+                    color: Colors.lightBlue,
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        List<Detail> listDetail = List();
+                        FormLeaving formLeaving = FormLeaving(
+                            category: _leavingFormStore.category,
+                            clientTime: 0,
+                            companyId: "",
+                            detail: listDetail,
+                            reason: _reasonController.text,
+                            username: "");
+                        switch (_groupValue) {
+                          case 0:
+                            {
+                              calculateDaysInterval(_fromDateTime, _toDateTime).forEach((value) {
+                                listDetail.add(Detail.dateTime(date: value, session: 0));
+                              });
+                              break;
+                            }
+                          case 1:
+                            {
+                              _leavingFormStore.listBooking.forEach((value) {
+                                listDetail.add(Detail.dateTime(date: value, session: 0));
+                              });
+                              break;
+                            }
                         }
-                      case 1:
-                        {
-                          List<FormDate> listFormDate = List();
-                          _leavingFormStore.listBooking.forEach((value) {
-                            listFormDate.add(FormDate.convert(value));
-                          });
-                          Navigator.of(context).pushNamed(Constants.detail_leaving_screen, arguments: listFormDate);
-                        }
-                    }
-                  },
+                        if (listDetail.length > 0)
+                          Navigator.of(context).pushNamed(Constants.detail_leaving_screen, arguments: formLeaving);
+                      }
+                    },
+                    textColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(10.0), side: BorderSide(color: Colors.white)),
+                    child: Text(
+                      "Tiếp tục",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
                 ),
               )
             ],
