@@ -7,7 +7,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/model/complaint.dart';
-import 'package:hethongchamcong_mobile/screen/complaint/complaint_detail.dart';
+import 'package:hethongchamcong_mobile/screen/complaint/complaint_detail/complaint_detail.dart';
 import 'package:hethongchamcong_mobile/screen/widget/image_picker.dart';
 import 'package:hethongchamcong_mobile/screen/widget/paged_list_view.dart';
 import 'package:intl/intl.dart';
@@ -39,7 +39,6 @@ class ComplaintListState extends State<ComplaintList>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if(store.listComplaint!=null) {
       if (store.listComplaint.length == 0) {
@@ -98,7 +97,6 @@ class ComplaintListState extends State<ComplaintList>
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     super.build(context);
     DateTime now = DateTime.now();
     return Stack(
@@ -232,7 +230,7 @@ class ComplaintListState extends State<ComplaintList>
                                   padding:
                                       const EdgeInsets.fromLTRB(4, 2, 4, 8),
                                   child: Text(
-                                    model.content,
+                                    model.content.last,
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                     style: TextStyle(color: Colors.black54),
@@ -274,9 +272,7 @@ class ComplaintListState extends State<ComplaintList>
                             ),
                           ),
                         ),
-                        IconButton(
-                          icon: Icon(Icons.navigate_next, color: Colors.black),
-                        )
+                        Icon(Icons.navigate_next, color: Colors.black),
                       ],
                     ),
                   ),

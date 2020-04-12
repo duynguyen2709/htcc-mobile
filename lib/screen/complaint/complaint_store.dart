@@ -135,7 +135,6 @@ abstract class _ComplaintStore with Store {
     }
   }
 
-
   @action
   refresh() async{
     getListComplaintSuccess = null;

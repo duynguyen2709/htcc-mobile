@@ -9,6 +9,7 @@ import 'package:hethongchamcong_mobile/screen/widget/circle_icon_button.dart';
 import 'package:hethongchamcong_mobile/screen/widget/empty_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/retry_screen.dart';
+import 'package:hethongchamcong_mobile/utils/file.dart';
 import 'package:hethongchamcong_mobile/utils/validation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -155,7 +156,113 @@ class _AccountScreenState extends State<AccountScreen> {
                     refresh: _refresh,
                   );
                 else
-                  return buildSuccess(accountScreenStore.account);
+                  return buildSuccess(accountScreenStore.account, () {
+                    showModalBottomSheet(
+                      backgroundColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                      ),
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            height: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.black54,
+                              borderRadius:
+                                  BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Center(
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(vertical: 20),
+                                      child: Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                                          onTap: () async {
+                                            Navigator.pop(context);
+                                            await getAvatar(ImageSource.camera);
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 25),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.camera_enhance,
+                                                  size: 40,
+                                                  color: Colors.red,
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text(
+                                                  "Camera",
+                                                  style: TextStyle(color: Colors.white, fontSize: 20),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: 2,
+                                  margin: EdgeInsets.only(top: 10, bottom: 10),
+                                  color: Colors.grey,
+                                ),
+                                Expanded(
+                                  child: Center(
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(vertical: 20),
+                                      child: Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                                          onTap: () async {
+                                            Navigator.pop(context);
+                                            await getAvatar(ImageSource.gallery);
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 25),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.photo_album,
+                                                  size: 40,
+                                                  color: Colors.purple,
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text(
+                                                  "Kho ảnh",
+                                                  style: TextStyle(color: Colors.white, fontSize: 20),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  });
               },
             ),
             Observer(
@@ -170,7 +277,7 @@ class _AccountScreenState extends State<AccountScreen> {
         ));
   }
 
-  Widget buildSuccess(User account) {
+  Widget buildSuccess(User account, Function showBottomSheet) {
     _controllerId.text = account.employeeId;
 
     _controllerFullName.text = account.fullName;
@@ -218,7 +325,10 @@ class _AccountScreenState extends State<AccountScreen> {
                                 image: accountScreenStore.account.avatar,
                                 fit: BoxFit.cover,
                               )
-                            : Image.file(accountScreenStore.image),
+                            : Image.file(
+                                accountScreenStore.image,
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                   ),
@@ -226,7 +336,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     alignment: Alignment.bottomRight,
                     child: CircleIconButton(
                       iconData: Icons.camera_alt,
-                      callBack: choiceAvatar,
+                      callBack: showBottomSheet,
                     ),
                   )
                 ],
@@ -401,13 +511,24 @@ class _AccountScreenState extends State<AccountScreen> {
     accountScreenStore.refresh();
   }
 
-  choiceAvatar() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+  getAvatar(ImageSource imageSource) async {
+    try {
+      accountScreenStore.isLoading = true;
+      var image = await ImagePicker.pickImage(source: imageSource);
 
-    setState(() {
-      accountScreenStore.image = image;
-      accountScreenStore.isConfig = true;
-    });
+      if (image != null) image = await FileUtil.crop(image);
+
+      if (image != null) image = await FileUtil.compress(image, 80);
+
+      if (image != null)
+        setState(() {
+          accountScreenStore.image = image;
+          accountScreenStore.isConfig = true;
+        });
+      accountScreenStore.isLoading = false;
+    } catch (error) {
+      accountScreenStore.isLoading = false;
+    }
   }
 }
 

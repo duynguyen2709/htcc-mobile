@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +15,7 @@ class DioManager {
   static const PATH_USER = "api/employee/users";
   static const PATH_CHECK_IN = "api/employee/checkin/";
   static const PATH_COMPLAINT = "api/employee/complaint";
+  static const PATH_RE_COMPLAINT = "api/employee/complaint/resubmit";
   static const PATH_CONTACTS = "api/employee/contacts";
   static const PATH_CONTACTS_FILTER = "api/employee/contacts/filter";
   static const PATH_LEAVING = "/api/employee/leaving";
