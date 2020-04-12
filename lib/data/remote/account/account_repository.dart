@@ -2,11 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/base/api_response.dart';
-import 'package:hethongchamcong_mobile/data/base/base_model.dart';
 import 'package:hethongchamcong_mobile/data/base/base_repository.dart';
+import 'package:hethongchamcong_mobile/data/base/exception/custom_exception.dart';
 import 'package:hethongchamcong_mobile/data/base/result.dart';
 import 'package:hethongchamcong_mobile/data/model/login_response.dart';
 import 'package:hethongchamcong_mobile/data/remote/dio.dart';
@@ -29,7 +28,7 @@ class AccountRepository extends BaseRepository {
       User account = User.fromJson(json.decode(sharedPreference.getString(Constants.USER)));
       return Success(msg: "", data: account);
     } catch (error) {
-      return Error(msg: "Đã xảy ra lỗi trong quá trình thực hiện", status: Status.FAIL);
+      return handleError(error);
     }
   }
 
@@ -46,24 +45,17 @@ class AccountRepository extends BaseRepository {
         await updateUserData(sharedPreference, account);
         return Success(msg: getUserResponse.returnMessage, data: getUserResponse.data);
       }
-
-      if (response.data["returnCode"] == 401 || response.data["returnCode"] == -8)
-        return Error(status: Status.ERROR_AUTHENTICATE);
-
-      return Error(status: Status.FAIL, msg: getUserResponse.returnMessage);
-    } on DioError catch (error) {
-      if (error.response.statusCode == 401 || error.response.statusCode == -8)
-        return Error(status: Status.ERROR_AUTHENTICATE);
-      return Error(status: Status.ERROR_NETWORK);
+      throw UnValidResponseException(response: getUserResponse);
+    } catch (error) {
+      return handleError(error);
     }
   }
 
   Future<Result> updateAccount(User account, File image) async {
     try {
-      FormData map = FormData.fromMap({
+      var map = FormData.fromMap({
         "address": account.address,
-        "avatar":
-        (image != null) ? await MultipartFile.fromFile(image.path, filename: image.path.split('/').last) : "",
+        "avatar": (image != null) ? await MultipartFile.fromFile(image.path, filename: image.path.split('/').last) : "",
         "birthDate": account.birthDate,
         "companyId": account.companyId,
         "department": account.department,
@@ -82,20 +74,17 @@ class AccountRepository extends BaseRepository {
       var response = await dio.post(realPath, data: map);
 
       ApiResponse<User> getUserResponse = ApiResponse.fromJson(response.data, (json) => User.fromJson(json));
+
       if (getUserResponse.returnCode == 1) {
         var sharedPreference = await SharedPreferences.getInstance();
         sharedPreference.setString(Constants.USER, json.encode(getUserResponse.data.toJson()));
         await updateUserData(sharedPreference, getUserResponse.data);
         return Success(data: getUserResponse.data, msg: getUserResponse.returnMessage);
       }
-      if (response.data["returnCode"] == 401 || response.data["returnCode"] == -8)
-        return Error(status: Status.ERROR_AUTHENTICATE);
 
-      return Error(status: Status.FAIL, msg: getUserResponse.returnMessage);
-    } on DioError catch (error) {
-      if (error.response.statusCode == 401 || error.response.statusCode == -8)
-        return Error(status: Status.ERROR_AUTHENTICATE);
-      return Error(status: Status.ERROR_NETWORK);
+      throw UnValidResponseException(response: getUserResponse);
+    } catch (error) {
+      return handleError(error);
     }
   }
 }

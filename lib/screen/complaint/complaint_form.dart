@@ -411,6 +411,12 @@ class _ComplaintFormState extends State<ComplaintForm> {
                               if (jsonUser != null && jsonUser.isNotEmpty) {
                                 User user = User.fromJson(
                                     json.decode(jsonUser));
+                                Complaint complaint = Complaint(
+                                    category: _options[_value],
+                                    receiverType: _sendTo.indexOf(
+                                        _currentSelectedValue) + 1,
+                                    isAnonymous: isAnonymously ? 1 : 0);
+                                complaint.contentPost = _controller.text;
                                 CreateComplaintParam param = CreateComplaintParam(
                                     companyId: user.companyId,
                                     username: user.username,
@@ -418,12 +424,7 @@ class _ComplaintFormState extends State<ComplaintForm> {
                                         .now()
                                         .millisecondsSinceEpoch,
                                     images: [image1, image2, image3],
-                                    complaint: Complaint(
-                                        category: _options[_value],
-                                        content: _controller.text,
-                                        receiverType: _sendTo.indexOf(
-                                            _currentSelectedValue) + 1,
-                                        isAnonymous: isAnonymously ? 1 : 0));
+                                    complaint: complaint);
                                 store.postComplaint(param);
                               }
                             });

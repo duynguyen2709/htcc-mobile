@@ -3,67 +3,76 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:hethongchamcong_mobile/data/base/base_model.dart';
 
-String listComplaintToJson(List<Complaint> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+Complaint userDataFromJson(String str) => Complaint.fromJson(json.decode(str));
+
+String userDataToJson(Complaint data) => json.encode(data.toJson());
+
 class Complaint extends BaseModel {
-  String category;
   String complaintId;
-  String content;
   String date;
-  List<String> images;
-  int isAnonymous;
-  int receiverType;
-  String response;
-  int status;
   String time;
+  int receiverType;
+  int isAnonymous;
+  String sender;
+  String category;
+  List<String> content;
+  List<String> images;
+  int status;
+  List<String> response;
+  String contentPost;
 
-  Complaint(
-      {this.category,
-        this.complaintId,
-        this.content,
-        this.date,
-        this.images,
-        this.isAnonymous,
-        this.receiverType,
-        this.response,
-        this.status,
-        this.time});
+  Complaint({
+    this.complaintId,
+    this.date,
+    this.time,
+    this.receiverType,
+    this.isAnonymous,
+    this.sender,
+    this.category,
+    this.content,
+    this.images,
+    this.status,
+    this.response,
+  });
 
-  Complaint.fromJson(Map<String, dynamic> json)  : super.fromJson(json){
-    category = json['category'];
-    complaintId = json['complaintId'];
-    content = json['content'];
-    date = json['date'];
-    images = json['images'].cast<String>();
-    isAnonymous = json['isAnonymous'];
-    receiverType = json['receiverType'];
-    response = json['response'];
-    status = json['status'];
-    time = json['time'];
-  }
+  factory Complaint.fromJson(Map<String, dynamic> json) => Complaint(
+        complaintId: json["complaintId"],
+        date: json["date"],
+        time: json["time"],
+        receiverType: json["receiverType"],
+        isAnonymous: json["isAnonymous"],
+        sender: json["sender"],
+        category: json["category"],
+        content: List<String>.from(json["content"].map((x) => x)),
+        images: List<String>.from(json["images"].map((x) => x)),
+        status: json["status"],
+        response: List<String>.from(json["response"].map((x) => x)),
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['category'] = this.category;
-    data['complaintId'] = this.complaintId;
-    data['content'] = this.content;
-    data['date'] = this.date;
-    data['images'] = this.images;
-    data['isAnonymous'] = this.isAnonymous;
-    data['receiverType'] = this.receiverType;
-    data['response'] = this.response;
-    data['status'] = this.status;
-    data['time'] = this.time;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "complaintId": complaintId,
+        "date": date,
+        "time": time,
+        "receiverType": receiverType,
+        "isAnonymous": isAnonymous,
+        "sender": sender,
+        "category": category,
+        "content": List<String>.from(content.map((x) => x)),
+        "images": List<String>.from(images.map((x) => x)),
+        "status": status,
+        "response": List<String>.from(response.map((x) => x)),
+      };
 }
 
-class CreateComplaintParam{
+class CreateComplaintParam {
   String username;
   String companyId;
   int clientTime;
   Complaint complaint;
   List<MultipartFile> images;
-  CreateComplaintParam({this.username, this.companyId,this.clientTime, this.complaint, this.images});
+
+  CreateComplaintParam({this.username, this.companyId, this.clientTime, this.complaint, this.images});
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['username'] = this.username;
@@ -75,4 +84,12 @@ class CreateComplaintParam{
     data['receiverType'] = this.complaint.receiverType;
     return data;
   }
+}
+
+class RePostComplaintParam {
+  String complaintId;
+  String content;
+  String date;
+
+  RePostComplaintParam({this.complaintId, this.content, this.date});
 }

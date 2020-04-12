@@ -89,23 +89,24 @@ abstract class _AccountScreenStore with Store {
             switch ((response as Error).status) {
               case Status.ERROR_NETWORK:
                 {
-                  message = Constants.MESSAGE_NETWORK;
+                  //message = Constants.MESSAGE_NETWORK;
                   errorNetwork = true;
                   break;
                 }
               case Status.ERROR_AUTHENTICATE:
                 {
-                  message = Constants.MESSAGE_AUTHENTICATE;
+                  //message = Constants.MESSAGE_AUTHENTICATE;
                   errorAuthenticate = true;
                   break;
                 }
               default:
                 {
-                  message = Constants.MESSAGE_NETWORK;
+                  //message = Constants.MESSAGE_NETWORK;
                   errorNetwork = true;
                   break;
                 }
             }
+            message = (response as Error).msg;
           }
       }
     } catch (error) {
@@ -127,7 +128,8 @@ abstract class _AccountScreenStore with Store {
             account = (response as Success).data as User;
             log("Update Success Model");
             isConfig = false;
-            message = Constants.UPDATE_SUCCESSFUL;
+            //message = Constants.UPDATE_SUCCESSFUL;
+            message = (response as Success).msg;
             errorUpdate = false;
             image = null;
             break;
@@ -137,23 +139,24 @@ abstract class _AccountScreenStore with Store {
             switch ((response as Error).status) {
               case Status.ERROR_NETWORK:
                 {
-                  message = Constants.UPDATE_FAIL;
+                  //message = Constants.UPDATE_FAIL;
                   errorUpdate = true;
                   break;
                 }
               case Status.ERROR_AUTHENTICATE:
                 {
-                  message = Constants.MESSAGE_AUTHENTICATE;
+                  //message = Constants.MESSAGE_AUTHENTICATE;
                   errorAuthenticate = true;
                   break;
                 }
               default:
                 {
-                  message = Constants.UPDATE_FAIL;
+                  //message = Constants.UPDATE_FAIL;
                   errorUpdate = true;
                   break;
                 }
             }
+            message = (response as Error).msg;
           }
       }
     } catch (error) {

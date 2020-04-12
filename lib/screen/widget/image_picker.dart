@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:hethongchamcong_mobile/utils/file.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PickImageWidget extends StatefulWidget {
@@ -41,7 +42,12 @@ class PickImageWidgetState extends State<PickImageWidget> {
         ));
 
     if (imageSource != null) {
-      final file = await ImagePicker.pickImage(source: imageSource, imageQuality: 80, );
+      var file = await ImagePicker.pickImage(source: imageSource,);
+
+      if (file != null) file = await FileUtil.crop(file);
+
+      if (file != null) file = await FileUtil.compress(file, 80);
+
       if (file != null) {
         setState(() => pickedImage = file);
       }
