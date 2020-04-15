@@ -10,7 +10,7 @@ class FormLeaving {
   String category;
   int clientTime;
   String companyId;
-  List<Detail> detail;
+  List<DetailSubmitLeaving> detail;
   String reason;
   String username;
 
@@ -27,7 +27,7 @@ class FormLeaving {
         category: json["category"],
         clientTime: json["clientTime"],
         companyId: json["companyId"],
-        detail: List<Detail>.from(json["detail"].map((x) => Detail.fromJson(x))),
+        detail: List<DetailSubmitLeaving>.from(json["detail"].map((x) => DetailSubmitLeaving.fromJson(x))),
         reason: json["reason"],
         username: json["username"],
       );
@@ -42,27 +42,28 @@ class FormLeaving {
       };
 }
 
-class Detail {
+class DetailSubmitLeaving {
   int dateInt;
   DateTime date;
   int session;
   bool isCheck = true;
+  DetailSubmitLeaving({this.dateInt,this.date,this.session});
 
-  Detail.int({
+  DetailSubmitLeaving.int({
     this.dateInt,
     this.session,
   }) {
     this.date = Convert.convertIntToDate(this.dateInt);
   }
 
-  Detail.dateTime({
+  DetailSubmitLeaving.dateTime({
     this.date,
     this.session,
   }) {
     this.dateInt = Convert.convertDateToInt(this.date);
   }
 
-  factory Detail.fromJson(Map<String, dynamic> json) => Detail.int(
+  factory DetailSubmitLeaving.fromJson(Map<String, dynamic> json) => DetailSubmitLeaving.int(
         dateInt: json["date"],
         session: json["session"],
       );

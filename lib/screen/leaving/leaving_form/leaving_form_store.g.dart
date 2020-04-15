@@ -9,89 +9,58 @@ part of 'leaving_form_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$LeavingFormStore on _LeavingFormStore, Store {
-  final _$isBookingAtom = Atom(name: '_LeavingFormStore.isBooking');
+  final _$isLoadingSubmitFormAtom =
+      Atom(name: '_LeavingFormStore.isLoadingSubmitForm');
 
   @override
-  bool get isBooking {
-    _$isBookingAtom.context.enforceReadPolicy(_$isBookingAtom);
-    _$isBookingAtom.reportObserved();
-    return super.isBooking;
+  bool get isLoadingSubmitForm {
+    _$isLoadingSubmitFormAtom.context
+        .enforceReadPolicy(_$isLoadingSubmitFormAtom);
+    _$isLoadingSubmitFormAtom.reportObserved();
+    return super.isLoadingSubmitForm;
   }
 
   @override
-  set isBooking(bool value) {
-    _$isBookingAtom.context.conditionallyRunInAction(() {
-      super.isBooking = value;
-      _$isBookingAtom.reportChanged();
-    }, _$isBookingAtom, name: '${_$isBookingAtom.name}_set');
+  set isLoadingSubmitForm(bool value) {
+    _$isLoadingSubmitFormAtom.context.conditionallyRunInAction(() {
+      super.isLoadingSubmitForm = value;
+      _$isLoadingSubmitFormAtom.reportChanged();
+    }, _$isLoadingSubmitFormAtom,
+        name: '${_$isLoadingSubmitFormAtom.name}_set');
   }
 
-  final _$isLoadingAtom = Atom(name: '_LeavingFormStore.isLoading');
+  final _$msgAtom = Atom(name: '_LeavingFormStore.msg');
 
   @override
-  bool get isLoading {
-    _$isLoadingAtom.context.enforceReadPolicy(_$isLoadingAtom);
-    _$isLoadingAtom.reportObserved();
-    return super.isLoading;
-  }
-
-  @override
-  set isLoading(bool value) {
-    _$isLoadingAtom.context.conditionallyRunInAction(() {
-      super.isLoading = value;
-      _$isLoadingAtom.reportChanged();
-    }, _$isLoadingAtom, name: '${_$isLoadingAtom.name}_set');
-  }
-
-  final _$listCategoriesAtom = Atom(name: '_LeavingFormStore.listCategories');
-
-  @override
-  List<String> get listCategories {
-    _$listCategoriesAtom.context.enforceReadPolicy(_$listCategoriesAtom);
-    _$listCategoriesAtom.reportObserved();
-    return super.listCategories;
+  String get msg {
+    _$msgAtom.context.enforceReadPolicy(_$msgAtom);
+    _$msgAtom.reportObserved();
+    return super.msg;
   }
 
   @override
-  set listCategories(List<String> value) {
-    _$listCategoriesAtom.context.conditionallyRunInAction(() {
-      super.listCategories = value;
-      _$listCategoriesAtom.reportChanged();
-    }, _$listCategoriesAtom, name: '${_$listCategoriesAtom.name}_set');
+  set msg(String value) {
+    _$msgAtom.context.conditionallyRunInAction(() {
+      super.msg = value;
+      _$msgAtom.reportChanged();
+    }, _$msgAtom, name: '${_$msgAtom.name}_set');
   }
 
-  final _$categoryAtom = Atom(name: '_LeavingFormStore.category');
+  final _$isSubmitSuccessAtom = Atom(name: '_LeavingFormStore.isSubmitSuccess');
 
   @override
-  String get category {
-    _$categoryAtom.context.enforceReadPolicy(_$categoryAtom);
-    _$categoryAtom.reportObserved();
-    return super.category;
-  }
-
-  @override
-  set category(String value) {
-    _$categoryAtom.context.conditionallyRunInAction(() {
-      super.category = value;
-      _$categoryAtom.reportChanged();
-    }, _$categoryAtom, name: '${_$categoryAtom.name}_set');
-  }
-
-  final _$listBookingAtom = Atom(name: '_LeavingFormStore.listBooking');
-
-  @override
-  List<DateTime> get listBooking {
-    _$listBookingAtom.context.enforceReadPolicy(_$listBookingAtom);
-    _$listBookingAtom.reportObserved();
-    return super.listBooking;
+  bool get isSubmitSuccess {
+    _$isSubmitSuccessAtom.context.enforceReadPolicy(_$isSubmitSuccessAtom);
+    _$isSubmitSuccessAtom.reportObserved();
+    return super.isSubmitSuccess;
   }
 
   @override
-  set listBooking(List<DateTime> value) {
-    _$listBookingAtom.context.conditionallyRunInAction(() {
-      super.listBooking = value;
-      _$listBookingAtom.reportChanged();
-    }, _$listBookingAtom, name: '${_$listBookingAtom.name}_set');
+  set isSubmitSuccess(bool value) {
+    _$isSubmitSuccessAtom.context.conditionallyRunInAction(() {
+      super.isSubmitSuccess = value;
+      _$isSubmitSuccessAtom.reportChanged();
+    }, _$isSubmitSuccessAtom, name: '${_$isSubmitSuccessAtom.name}_set');
   }
 
   final _$eventsAtom = Atom(name: '_LeavingFormStore.events');
@@ -109,5 +78,19 @@ mixin _$LeavingFormStore on _LeavingFormStore, Store {
       super.events = value;
       _$eventsAtom.reportChanged();
     }, _$eventsAtom, name: '${_$eventsAtom.name}_set');
+  }
+
+  final _$submitAsyncAction = AsyncAction('submit');
+
+  @override
+  Future submit(FormLeaving formLeaving) {
+    return _$submitAsyncAction.run(() => super.submit(formLeaving));
+  }
+
+  @override
+  String toString() {
+    final string =
+        'isLoadingSubmitForm: ${isLoadingSubmitForm.toString()},msg: ${msg.toString()},isSubmitSuccess: ${isSubmitSuccess.toString()},events: ${events.toString()}';
+    return '{$string}';
   }
 }

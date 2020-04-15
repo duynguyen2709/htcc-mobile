@@ -67,4 +67,11 @@ mixin _$LoginScreenStore on _LoginScreenStore, Store {
     return _$loginAsyncAction
         .run(() => super.login(userName, password, companyId));
   }
+
+  @override
+  String toString() {
+    final string =
+        'isLoading: ${isLoading.toString()},checkLogin: ${checkLogin.toString()},errorMessage: ${errorMessage.toString()}';
+    return '{$string}';
+  }
 }

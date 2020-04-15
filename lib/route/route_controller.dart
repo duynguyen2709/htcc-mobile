@@ -10,6 +10,7 @@ import 'package:hethongchamcong_mobile/screen/complaint/complaint_screen.dart';
 import 'package:hethongchamcong_mobile/screen/contact/contact_list.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/detail_leaving/detail_leaving.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/leaving_form/leaving_form.dart';
+import 'package:hethongchamcong_mobile/screen/leaving/leaving_store.dart';
 import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
 import 'package:hethongchamcong_mobile/screen/main_screen.dart';
 import 'package:hethongchamcong_mobile/screen/password/password_screen.dart';
@@ -52,7 +53,7 @@ SlideCustomRoute initialSlideRoutes(RouteSettings settings) {
           builder: (_) => new PasswordScreen(), settings: settings, routeName: Constants.password_screen);
     case Constants.leaving_form_screen:
       return new SlideCustomRoute(
-          builder: (_) => new LeavingFormScreen(listCategories: settings.arguments as List<String>,), settings: settings, routeName: Constants.leaving_form_screen);
+          builder: (_) => new LeavingFormScreen(store: settings.arguments as LeavingStore), settings: settings, routeName: Constants.leaving_form_screen);
     case Constants.complaint_screen:
       return new SlideCustomRoute(
           builder: (_) => new ComplaintScreen(), settings: settings, routeName: Constants.complaint_screen);

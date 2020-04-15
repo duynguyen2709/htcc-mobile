@@ -1,54 +1,68 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
+import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/data/remote/leaving/form_date.dart';
-import 'package:hethongchamcong_mobile/screen/leaving/leaving_form/calendar.dart';
-import 'package:hethongchamcong_mobile/utils/validation.dart';
+import 'package:hethongchamcong_mobile/screen/leaving/leaving_form/leaving_form_store.dart';
+import 'package:hethongchamcong_mobile/screen/leaving/leaving_store.dart';
+import 'package:hethongchamcong_mobile/screen/widget/custom_expansion_tile.dart';
 import 'package:intl/intl.dart';
-
-import 'leaving_form_store.dart';
+import 'package:mobx/mobx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LeavingFormScreen extends StatefulWidget {
-  final List<String> listCategories;
+  final LeavingStore store;
 
-  LeavingFormScreen({this.listCategories});
+  LeavingFormScreen({this.store});
 
   @override
-  _LeavingFormScreenState createState() => _LeavingFormScreenState();
+  _LeavingFormScreenState createState() => _LeavingFormScreenState(store);
 }
 
 class _LeavingFormScreenState extends State<LeavingFormScreen> {
-  LeavingFormStore _leavingFormStore;
-  TextEditingController _reasonController;
-  TextEditingController _fromController;
-  TextEditingController _toController;
-  DateTime _fromDateTime;
-  DateTime _toDateTime;
-  int _groupValue = 0;
+  DateTime _fromDateTime = DateTime.now();
+  DateTime _toDateTime = DateTime.now();
   int num = 5;
-  final _formKey = GlobalKey<FormState>();
-  DateTime minTime;
+  DateTime minTime = DateTime.now();
   bool visibleDate = true;
-  bool visibleCalendar = false;
   FocusScopeNode currentFocus;
+  String typeLeaving = "";
+  List<DetailSubmitLeaving> detailSubmits;
+  TextEditingController controller;
+  LeavingFormStore formStore;
+
+  final LeavingStore store;
+
+  _LeavingFormScreenState(this.store);
 
   @override
   void initState() {
     super.initState();
-    _leavingFormStore = LeavingFormStore();
-    _leavingFormStore.listCategories = widget.listCategories;
-    _leavingFormStore.category = (_leavingFormStore.listCategories[0] != null) ? _leavingFormStore.listCategories[0]:"";
-    _leavingFormStore.init();
-    _reasonController = TextEditingController();
-    _fromController = TextEditingController();
-    _toController = TextEditingController();
     minTime = DateTime.now();
+    controller = TextEditingController();
+    formStore = LeavingFormStore();
+    detailSubmits = calculateDaysInterval(_fromDateTime, _toDateTime);
+    reaction((_) => formStore.isSubmitSuccess, (isSuccess) async {
+      if(isSuccess!=null)
+        if (isSuccess) {
+        _showDialog(formStore.msg, isPopBack: true);
+        } else {
+        _showDialog(formStore.msg);
+        }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     currentFocus = FocusScope.of(context);
+//
     return Scaffold(
+      backgroundColor: Color(0xEEEEEEEE),
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
@@ -67,237 +81,379 @@ class _LeavingFormScreenState extends State<LeavingFormScreen> {
         },
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
-          child: Column(
+          child: Stack(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(left: 10, right: 10),
-                decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: Colors.black45))),
-                child: ListTile(
-                  title: Text(
-                    "Chọn ngày liên tục",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  leading: Radio(
-                    activeColor: Colors.blue,
-                    groupValue: _groupValue,
-                    onChanged: (value) {
-                      setState(() {
-                        _groupValue = value;
-                        visibleDate = !visibleDate;
-                        visibleCalendar = !visibleCalendar;
-                      });
-                    },
-                    value: 0,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: AnimatedContainer(
-                  height: visibleDate ? 100 : 1,
-                  child: AnimatedOpacity(
-                    opacity: visibleDate ? 1 : 0,
-                    duration: Duration(milliseconds: 500),
-                    child: Row(
+                padding: EdgeInsets.symmetric(vertical: 24, horizontal: 8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Wrap(
                       children: <Widget>[
-                        Expanded(
-                          child: Padding(
-                              padding: const EdgeInsets.only(left: 10, right: 10),
-                              child: Row(
-                                children: <Widget>[
-                                  Expanded(
-                                    child: TextFormField(
-                                      enableInteractiveSelection: false,
-                                      controller: _fromController,
-                                      validator: _validate,
-                                      enabled: false,
-                                      decoration: InputDecoration(labelText: "Từ"),
-                                    ),
+                        Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 24),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: RichText(
+                                      textAlign: TextAlign.start,
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Loại nghỉ phép ',
+                                            style: TextStyle(
+                                                color: Colors.black54,
+                                                fontSize: 17),
+                                          ),
+                                          TextSpan(
+                                            text: '*',
+                                            style: TextStyle(
+                                                color: Colors.blue, fontSize: 17),
+                                          ),
+                                        ],
+                                      )),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(top: 4),
+                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                  width: MediaQuery.of(context).size.width,
+                                  child: DropdownButton<String>(
+                                    isExpanded: true,
+                                    items: store.leavingData.categories
+                                        .map((String val) {
+                                      return DropdownMenuItem<String>(
+                                        value: val,
+                                        child: new Text(val,
+                                            style: TextStyle(fontSize: 17)),
+                                      );
+                                    }).toList(),
+                                    value:
+                                        typeLeaving == '' || typeLeaving == null
+                                            ? null
+                                            : typeLeaving,
+                                    isDense: true,
+                                    onChanged: (String newValue) {
+                                      setState(() {
+                                        typeLeaving = newValue;
+                                      });
+                                    },
                                   ),
-                                  IconButton(
-                                    icon: Icon(Icons.date_range),
-                                    onPressed: (visibleDate)
-                                        ? () {
-                                            {
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: RichText(
+                                      textAlign: TextAlign.start,
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Thời gian ',
+                                            style: TextStyle(
+                                                color: Colors.black54,
+                                                fontSize: 17),
+                                          ),
+                                          TextSpan(
+                                            text: '*',
+                                            style: TextStyle(
+                                                color: Colors.blue, fontSize: 17),
+                                          ),
+                                        ],
+                                      )),
+                                ),
+                                Container(
+                                    margin: EdgeInsets.only(top: 4),
+                                    padding: EdgeInsets.symmetric(vertical: 12),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: InkWell(
+                                            child: Card(
+                                                child: Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 16, horizontal: 8),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.calendar_today,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  Expanded(
+                                                      child: Text(
+                                                    "${DateFormat('dd-MM-yyyy').format(_fromDateTime)}",
+                                                    textAlign: TextAlign.center,
+                                                    style:
+                                                        TextStyle(fontSize: 16),
+                                                  )),
+                                                ],
+                                              ),
+                                            )),
+                                            onTap: () {
                                               DatePicker.showDatePicker(context,
-                                                  showTitleActions: true, onChanged: (date) {}, onConfirm: (date) {
+                                                  showTitleActions: true,
+                                                  onChanged: (date) {},
+                                                  onConfirm: (date) {
                                                 minTime = date;
-                                                _fromController.text = DateFormat('dd-MM-yyyy').format(date);
-                                                _toController.text = "";
                                                 _fromDateTime = date;
+                                                _toDateTime
+                                                        .isBefore(_fromDateTime)
+                                                    ? _toDateTime = _fromDateTime
+                                                    : _toDateTime = _toDateTime;
+                                                detailSubmits =
+                                                    calculateDaysInterval(
+                                                        _fromDateTime,
+                                                        _toDateTime);
                                               },
                                                   currentTime: DateTime.now(),
                                                   locale: LocaleType.vi,
                                                   minTime: DateTime.now());
-                                            }
-                                          }
-                                        : null,
-                                  ),
-                                ],
-                              )),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 10, right: 10),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _toController,
-                                    validator: _validate,
-                                    enabled: false,
-                                    decoration: InputDecoration(labelText: "Đến"),
+                                            },
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: InkWell(
+                                            child: Card(
+                                                child: Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 16, horizontal: 8),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.calendar_today,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  Expanded(
+                                                      child: Text(
+                                                    "${DateFormat('dd-MM-yyyy').format(_toDateTime)}",
+                                                    textAlign: TextAlign.center,
+                                                    style:
+                                                        TextStyle(fontSize: 16),
+                                                  )),
+                                                ],
+                                              ),
+                                            )),
+                                            onTap: () {
+                                              DatePicker.showDatePicker(context,
+                                                  showTitleActions: true,
+                                                  onChanged: (date) {},
+                                                  onConfirm: (date) {
+                                                _toDateTime = date;
+                                                detailSubmits =
+                                                    calculateDaysInterval(
+                                                        _fromDateTime,
+                                                        _toDateTime);
+                                              },
+                                                  currentTime: DateTime.now(),
+                                                  locale: LocaleType.vi,
+                                                  minTime:
+                                                      minTime ?? DateTime.now(),
+                                                  maxTime: (minTime != null)
+                                                      ? minTime.add(
+                                                          Duration(days: num - 1))
+                                                      : DateTime.now().add(
+                                                          Duration(
+                                                              days: num - 1)));
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: RichText(
+                                      textAlign: TextAlign.start,
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Lý do ',
+                                            style: TextStyle(
+                                                color: Colors.black54,
+                                                fontSize: 17),
+                                          ),
+                                          TextSpan(
+                                            text: '*',
+                                            style: TextStyle(
+                                                color: Colors.blue, fontSize: 17),
+                                          ),
+                                        ],
+                                      )),
+                                ),
+                                TextField(
+                                  minLines: 2,
+                                  maxLines: 50,
+                                  textAlign: TextAlign.left,
+                                  controller: controller,
+                                  decoration: new InputDecoration(
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Color(0xEED5D5D5)),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Color(0xEED5D5D5)),
+                                    ),
                                   ),
                                 ),
-                                IconButton(
-                                  icon: Icon(Icons.date_range),
-                                  onPressed: (visibleDate)
-                                      ? () {
-                                          DatePicker.showDatePicker(context,
-                                              showTitleActions: true, onChanged: (date) {}, onConfirm: (date) {
-                                            _toController.text = DateFormat('dd-MM-yyyy').format(date);
-                                            _toDateTime = date;
-                                          },
-                                              currentTime: DateTime.now(),
-                                              locale: LocaleType.vi,
-                                              minTime: minTime ?? DateTime.now(),
-                                              maxTime: (minTime != null)
-                                                  ? minTime.add(Duration(days: num - 1))
-                                                  : DateTime.now().add(Duration(days: num - 1)));
-                                        }
-                                      : null,
+                                ListTileTheme(
+                                  contentPadding: EdgeInsets.all(0),
+                                  child: CustomExpansionTile(
+                                    title: Text("Chi tiết"),
+                                    children: <Widget>[
+                                      Container(
+                                        width: double.infinity,
+                                        child:DataTable(
+                                          horizontalMargin: 10,
+                                          columnSpacing: 10,
+                                          columns: <DataColumn>[
+                                            DataColumn(
+                                                label: Text(
+                                                  "Ngày",
+                                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black),
+                                                )),
+                                            DataColumn(
+                                                label: Text(
+                                                  "Thời gian nghỉ",
+                                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black),
+                                                )),
+                                            DataColumn(
+                                                label: Text(
+                                                  "",
+                                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                                ))
+                                          ],
+                                          rows: detailSubmits.map((value) {
+                                            return DataRow(
+                                                key: Key(
+                                                    value.date.toIso8601String()),
+                                                cells: <DataCell>[
+                                                  DataCell(Text(
+                                                    DateFormat('dd-MM-yyyy')
+                                                        .format(value.date),
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                    decoration: value.isCheck ? TextDecoration.none : TextDecoration.lineThrough
+                                                    ),
+                                                  )),
+                                                  DataCell(
+                                                      Text(
+                                                        getStateByFlag(
+                                                            value.session),
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                            decoration: value.isCheck ? TextDecoration.none : TextDecoration.lineThrough),
+                                                      ),
+                                                      showEditIcon: true,
+                                                      onTap: () async {
+                                                    if (value.isCheck)
+                                                      displayDialog(
+                                                              context,
+                                                              value.session,
+                                                              value)
+                                                          .then((_) {
+                                                        setState(() {});
+                                                      });
+                                                  }),
+                                                  DataCell(Center(
+                                                    child: IconButton(
+                                                      icon: value.isCheck
+                                                          ? Icon(
+                                                        Icons.remove_circle,
+                                                        color: Colors.red,
+                                                      )
+                                                          : Icon(
+                                                        Icons.check,
+                                                        color: Colors.green,
+                                                      ),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          value.isCheck = !value.isCheck;
+                                                        });
+                                                      },
+                                                    ),
+                                                  ))
+                                                ]);
+                                          }).toList(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                Container(
+                                  height: 24,
+                                )
                               ],
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
-                  ),
-                  duration: Duration(milliseconds: 500),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 10, right: 10),
-                decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: Colors.black45))),
-                child: ListTile(
-                  title: Text(
-                    "Chọn ngày theo lịch",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  leading: Radio(
-                    activeColor: Colors.blue,
-                    groupValue: _groupValue,
-                    onChanged: (value) {
-                      setState(() {
-                        _groupValue = value;
-                        visibleDate = !visibleDate;
-                        visibleCalendar = !visibleCalendar;
-                      });
-                    },
-                    value: 1,
-                  ),
-                ),
-              ),
-              AnimatedContainer(
-                height: visibleCalendar ? MediaQuery.of(context).size.height * 2 / 5 : 1,
-                child: AnimatedOpacity(
-                  child: Container(
-                    margin: EdgeInsets.only(left: 10, right: 10),
-                    child: _buildTableCalendarWithBuilders(),
-                  ),
-                  duration: Duration(milliseconds: 500),
-                  opacity: visibleCalendar ? 1 : 0,
-                ),
-                duration: Duration(milliseconds: 500),
-              ),
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Form(
-                    key: _formKey,
-                    child: TextFormField(
-                      controller: _reasonController,
-                      validator: (String text) {
-                        return Validation.validateEmpty(text) ? null : "Lý do không được rỗng";
-                      },
-                      maxLines: 5,
-                      decoration: InputDecoration(
-                        labelStyle: TextStyle(fontSize: 20),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black45),
-                        ),
-                        hintText: 'Lí do',
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 16),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: RaisedButton(
+                            color: Colors.blue,
+                            onPressed: () {
+                              if (controller.text.isEmpty) {
+                                _showDialog(
+                                    "Vui lòng điền lý do xin nghỉ phép để tiếp tục.");
+                              } else if (typeLeaving == null ||
+                                  typeLeaving.compareTo("") == 0) {
+                                _showDialog(
+                                    "Vui lòng chọn loại nghỉ phép để tiếp tục");
+                              } else {
+                                SharedPreferences.getInstance().then((pref) {
+                                  String jsonUser =
+                                      pref.getString(Constants.USER);
+                                  if (jsonUser != null && jsonUser.isNotEmpty) {
+                                    User user =
+                                        User.fromJson(json.decode(jsonUser));
+                                    FormLeaving formLeaving = FormLeaving(
+                                        category: typeLeaving,
+                                        clientTime:
+                                            DateTime.now().millisecondsSinceEpoch,
+                                        companyId: user.companyId,
+                                        detail: detailSubmits,
+                                        reason: controller.text,
+                                        username: user.username);
+                                    formStore.submit(formLeaving);
+                                  }
+                                });
+                              }
+                            },
+                            textColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(5.0)),
+                            child: Text(
+                              "Gửi đơn",
+                              style: TextStyle(fontSize: 18),
+                            )),
                       ),
-                    ),
-                  ),
+                    )
+                  ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: DropdownButton<String>(
-                    items: _leavingFormStore.listCategories
-                        .map((String item) => DropdownMenuItem(
-                              child: Text(item),
-                              value: item,
-                            ))
-                        .toList(),
-                    value: _leavingFormStore.category,
-                    onChanged: (String value) {
-                      _leavingFormStore.category = value;
-                    },
-                  ),
-                ),
-              ),
-              Container(
-                height: 100,
-                alignment: Alignment.center,
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width - 32,
-                  child: RaisedButton(
-                    color: Colors.lightBlue,
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        List<Detail> listDetail = List();
-                        FormLeaving formLeaving = FormLeaving(
-                            category: _leavingFormStore.category,
-                            clientTime: 0,
-                            companyId: "",
-                            detail: listDetail,
-                            reason: _reasonController.text,
-                            username: "");
-                        switch (_groupValue) {
-                          case 0:
-                            {
-                              calculateDaysInterval(_fromDateTime, _toDateTime).forEach((value) {
-                                listDetail.add(Detail.dateTime(date: value, session: 0));
-                              });
-                              break;
-                            }
-                          case 1:
-                            {
-                              _leavingFormStore.listBooking.forEach((value) {
-                                listDetail.add(Detail.dateTime(date: value, session: 0));
-                              });
-                              break;
-                            }
-                        }
-                        if (listDetail.length > 0)
-                          Navigator.of(context).pushNamed(Constants.detail_leaving_screen, arguments: formLeaving);
-                      }
-                    },
-                    textColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(10.0), side: BorderSide(color: Colors.white)),
-                    child: Text(
-                      "Tiếp tục",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
-                ),
+              Observer(
+                builder: (_) {
+                  if (formStore.isLoadingSubmitForm)
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      color: Colors.black45,
+                      child: SpinKitCircle(
+                        color: Colors.blue,
+                        size: 50.0,
+                      ),
+                    );
+                  else
+                    return Container();
+                },
               )
             ],
           ),
@@ -306,46 +462,131 @@ class _LeavingFormScreenState extends State<LeavingFormScreen> {
     );
   }
 
-  Widget _buildTableCalendarWithBuilders() {
-    return SingleChildScrollView(
-      physics: visibleCalendar ? ClampingScrollPhysics() : NeverScrollableScrollPhysics(),
-      child: Calendar(
-        leavingFormStore: _leavingFormStore,
-        num: num,
-      ),
+  void _showDialog(String message, {bool isPopBack = false}) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(""),
+          content: new Text(message),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("OK"),
+              onPressed: () {
+                Navigator.pop(context);
+                if(isPopBack)  Navigator.pop(context,'Success');
+              },
+            ),
+          ],
+        );
+      },
     );
+
+
   }
 
-  String _validate(value) {
-    try {
-      DateTime formDate;
-      DateTime toDate;
-      formDate = DateFormat('dd-MM-yyyy').parse(_fromController.text);
-      toDate = DateFormat('dd-MM-yyyy').parse(_toController.text);
-      if (toDate.difference(formDate).inDays > num - 1) return "Nghỉ quá nhiều";
-      return null;
-    } catch (error) {
-      return "Sai định dạng ngày";
+  String getStateByFlag(int session) {
+    switch (session) {
+      case 0:
+        return "Cả ngày";
+      case 1:
+        return "Buổi sáng";
+      case 2:
+        return "Buổi chiều";
+      default:
+        return "Cả ngày";
     }
   }
 
-  List<DateTime> calculateDaysInterval(DateTime startDate, DateTime endDate) {
-    List<DateTime> days = [];
-    if (startDate.day == endDate.day && startDate.year == endDate.year && startDate.month == endDate.month) {
-      days.add(startDate);
-      return days;
+  Future<void> displayDialog(BuildContext context, int _currentIndex,
+      DetailSubmitLeaving detail) async {
+    int saveFlag = detail.session;
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(15))),
+            title: Text('Chọn buổi'),
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      RadioListTile(
+                        title: Text("Cả ngày"),
+                        groupValue: _currentIndex,
+                        value: 0,
+                        onChanged: (value) {
+                          setState(() {
+                            _currentIndex = value;
+                            detail.session = value;
+                          });
+                        },
+                      ),
+                      RadioListTile(
+                        title: Text("Buổi sáng"),
+                        groupValue: _currentIndex,
+                        value: 1,
+                        onChanged: (value) {
+                          setState(() {
+                            _currentIndex = value;
+                            detail.session = value;
+                          });
+                        },
+                      ),
+                      RadioListTile(
+                        title: Text("Buổi chiều"),
+                        groupValue: _currentIndex,
+                        value: 2,
+                        onChanged: (value) {
+                          setState(() {
+                            _currentIndex = value;
+                            detail.session = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Cancel'),
+                onPressed: () {
+                  detail.session = saveFlag;
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  List<DetailSubmitLeaving> calculateDaysInterval(
+      DateTime startDate, DateTime endDate) {
+    List<DetailSubmitLeaving> result = [];
+    if (startDate.day == endDate.day &&
+        startDate.year == endDate.year &&
+        startDate.month == endDate.month) {
+      result.add(DetailSubmitLeaving(date: startDate, session: 0));
+      return result;
     }
-    int tmp = 0;
-    if (startDate.hour > 0 ||
-        startDate.minute > 0 ||
-        startDate.second > 0 ||
-        startDate.millisecond > 0 ||
-        startDate.microsecond > 0) {
-      tmp = 1;
+    var count = endDate.difference(startDate).inDays;
+    for (int i = 0; i <= count; i++) {
+      result.add(DetailSubmitLeaving(
+          date: startDate.add(Duration(days: i)), session: 0));
     }
-    for (int i = 0; i <= endDate.difference(startDate).inDays + tmp; i++) {
-      days.add(startDate.add(Duration(days: i)));
-    }
-    return days;
+    return result;
   }
 }

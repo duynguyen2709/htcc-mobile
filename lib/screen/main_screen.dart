@@ -17,6 +17,7 @@ class MainScreen extends StatefulWidget {
 
 class MainScreenState extends State<MainScreen> {
   int _selectedPage = 0;
+  bool isHide = false;
 
 //  final _pageOptions = [
 //    CheckInLocationPage(
@@ -51,7 +52,7 @@ class MainScreenState extends State<MainScreen> {
         key: PageStorageKey('CheckInScreen'),
         parent: this,
       ),
-      LeavingScreen(key: PageStorageKey('Leaving')),
+      LeavingScreen(key: PageStorageKey('Leaving'), parent: this,),
       StatisticScreen(),
       NotificationScreen(),
       MoreScreen()
@@ -63,16 +64,32 @@ class MainScreenState extends State<MainScreen> {
               index: _selectedPage,
               children: _pageOptions,
             ),
-            Positioned(
+            !_keyboardIsVisible() ? Positioned(
               left: 0,
               right: 0,
               bottom: 0,
               child: bottomNavigationBar,
-            ),
+            ): Container(),
           ],
         )
 //      bottomNavigationBar: bottomNavigationBar, // This trailing comma makes auto-formatting nicer for build methods.
         );
+  }
+
+  bool _keyboardIsVisible() {
+    return !(MediaQuery.of(context).viewInsets.bottom == 0.0);
+  }
+
+  void hideBottomNavigation(){
+    setState(() {
+      isHide=true;
+    });
+  }
+
+  void showBottomNavigation(){
+    setState(() {
+      isHide=false;
+    });
   }
 
   Widget get bottomNavigationBar {

@@ -183,4 +183,11 @@ mixin _$AccountScreenStore on _AccountScreenStore, Store {
   Future updateAccount() {
     return _$updateAccountAsyncAction.run(() => super.updateAccount());
   }
+
+  @override
+  String toString() {
+    final string =
+        'isLoading: ${isLoading.toString()},account: ${account.toString()},isConfig: ${isConfig.toString()},edit: ${edit.toString()},errorAuthenticate: ${errorAuthenticate.toString()},errorNetwork: ${errorNetwork.toString()},errorUpdate: ${errorUpdate.toString()},message: ${message.toString()},image: ${image.toString()}';
+    return '{$string}';
+  }
 }

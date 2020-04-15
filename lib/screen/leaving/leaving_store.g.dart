@@ -111,6 +111,23 @@ mixin _$LeavingStore on _LeavingStore, Store {
     }, _$listRequestAtom, name: '${_$listRequestAtom.name}_set');
   }
 
+  final _$listEventAtom = Atom(name: '_LeavingStore.listEvent');
+
+  @override
+  Map<DateTime, List<EventDetail>> get listEvent {
+    _$listEventAtom.context.enforceReadPolicy(_$listEventAtom);
+    _$listEventAtom.reportObserved();
+    return super.listEvent;
+  }
+
+  @override
+  set listEvent(Map<DateTime, List<EventDetail>> value) {
+    _$listEventAtom.context.conditionallyRunInAction(() {
+      super.listEvent = value;
+      _$listEventAtom.reportChanged();
+    }, _$listEventAtom, name: '${_$listEventAtom.name}_set');
+  }
+
   final _$dataMapAtom = Atom(name: '_LeavingStore.dataMap');
 
   @override
@@ -162,11 +179,113 @@ mixin _$LeavingStore on _LeavingStore, Store {
     }, _$yearAtom, name: '${_$yearAtom.name}_set');
   }
 
+  final _$isSubmitSuccessAtom = Atom(name: '_LeavingStore.isSubmitSuccess');
+
+  @override
+  bool get isSubmitSuccess {
+    _$isSubmitSuccessAtom.context.enforceReadPolicy(_$isSubmitSuccessAtom);
+    _$isSubmitSuccessAtom.reportObserved();
+    return super.isSubmitSuccess;
+  }
+
+  @override
+  set isSubmitSuccess(bool value) {
+    _$isSubmitSuccessAtom.context.conditionallyRunInAction(() {
+      super.isSubmitSuccess = value;
+      _$isSubmitSuccessAtom.reportChanged();
+    }, _$isSubmitSuccessAtom, name: '${_$isSubmitSuccessAtom.name}_set');
+  }
+
+  final _$msgAtom = Atom(name: '_LeavingStore.msg');
+
+  @override
+  String get msg {
+    _$msgAtom.context.enforceReadPolicy(_$msgAtom);
+    _$msgAtom.reportObserved();
+    return super.msg;
+  }
+
+  @override
+  set msg(String value) {
+    _$msgAtom.context.conditionallyRunInAction(() {
+      super.msg = value;
+      _$msgAtom.reportChanged();
+    }, _$msgAtom, name: '${_$msgAtom.name}_set');
+  }
+
+  final _$isLoadingSubmitFormAtom =
+      Atom(name: '_LeavingStore.isLoadingSubmitForm');
+
+  @override
+  bool get isLoadingSubmitForm {
+    _$isLoadingSubmitFormAtom.context
+        .enforceReadPolicy(_$isLoadingSubmitFormAtom);
+    _$isLoadingSubmitFormAtom.reportObserved();
+    return super.isLoadingSubmitForm;
+  }
+
+  @override
+  set isLoadingSubmitForm(bool value) {
+    _$isLoadingSubmitFormAtom.context.conditionallyRunInAction(() {
+      super.isLoadingSubmitForm = value;
+      _$isLoadingSubmitFormAtom.reportChanged();
+    }, _$isLoadingSubmitFormAtom,
+        name: '${_$isLoadingSubmitFormAtom.name}_set');
+  }
+
+  final _$isLoadingCancelAtom = Atom(name: '_LeavingStore.isLoadingCancel');
+
+  @override
+  bool get isLoadingCancel {
+    _$isLoadingCancelAtom.context.enforceReadPolicy(_$isLoadingCancelAtom);
+    _$isLoadingCancelAtom.reportObserved();
+    return super.isLoadingCancel;
+  }
+
+  @override
+  set isLoadingCancel(bool value) {
+    _$isLoadingCancelAtom.context.conditionallyRunInAction(() {
+      super.isLoadingCancel = value;
+      _$isLoadingCancelAtom.reportChanged();
+    }, _$isLoadingCancelAtom, name: '${_$isLoadingCancelAtom.name}_set');
+  }
+
+  final _$isCancelSuccessAtom = Atom(name: '_LeavingStore.isCancelSuccess');
+
+  @override
+  bool get isCancelSuccess {
+    _$isCancelSuccessAtom.context.enforceReadPolicy(_$isCancelSuccessAtom);
+    _$isCancelSuccessAtom.reportObserved();
+    return super.isCancelSuccess;
+  }
+
+  @override
+  set isCancelSuccess(bool value) {
+    _$isCancelSuccessAtom.context.conditionallyRunInAction(() {
+      super.isCancelSuccess = value;
+      _$isCancelSuccessAtom.reportChanged();
+    }, _$isCancelSuccessAtom, name: '${_$isCancelSuccessAtom.name}_set');
+  }
+
   final _$loadDataAsyncAction = AsyncAction('loadData');
 
   @override
   Future loadData() {
     return _$loadDataAsyncAction.run(() => super.loadData());
+  }
+
+  final _$submitAsyncAction = AsyncAction('submit');
+
+  @override
+  Future submit(FormLeaving formLeaving) {
+    return _$submitAsyncAction.run(() => super.submit(formLeaving));
+  }
+
+  final _$cancelAsyncAction = AsyncAction('cancel');
+
+  @override
+  Future cancel(String leavingRequestId, String date) {
+    return _$cancelAsyncAction.run(() => super.cancel(leavingRequestId, date));
   }
 
   final _$_LeavingStoreActionController =
@@ -180,5 +299,12 @@ mixin _$LeavingStore on _LeavingStore, Store {
     } finally {
       _$_LeavingStoreActionController.endAction(_$actionInfo);
     }
+  }
+
+  @override
+  String toString() {
+    final string =
+        'isLoading: ${isLoading.toString()},shouldRetry: ${shouldRetry.toString()},events: ${events.toString()},errorMsg: ${errorMsg.toString()},leavingData: ${leavingData.toString()},listRequest: ${listRequest.toString()},listEvent: ${listEvent.toString()},dataMap: ${dataMap.toString()},status: ${status.toString()},year: ${year.toString()},isSubmitSuccess: ${isSubmitSuccess.toString()},msg: ${msg.toString()},isLoadingSubmitForm: ${isLoadingSubmitForm.toString()},isLoadingCancel: ${isLoadingCancel.toString()},isCancelSuccess: ${isCancelSuccess.toString()}';
+    return '{$string}';
   }
 }

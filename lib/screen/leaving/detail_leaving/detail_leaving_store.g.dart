@@ -49,4 +49,10 @@ mixin _$DetailLeavingStore on _DetailLeavingStore, Store {
   Future submit(FormLeaving formLeaving) {
     return _$submitAsyncAction.run(() => super.submit(formLeaving));
   }
+
+  @override
+  String toString() {
+    final string = 'isLoading: ${isLoading.toString()},msg: ${msg.toString()}';
+    return '{$string}';
+  }
 }

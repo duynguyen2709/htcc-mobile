@@ -55,6 +55,8 @@ dependencies:
   json_annotation:
   flutter_slidable:
   url_launcher:
+  flutter_screenutil:
+  auto_size_text:
 
 dev_dependencies:
   flutter_test:

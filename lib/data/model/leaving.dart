@@ -12,10 +12,11 @@ String userDataToJson(LeavingData data) => json.encode(data.toJson());
 
 class LeavingData extends BaseModel {
   List<String> categories;
-  double leftDays;
+  double leftDays =0;
   List<ListRequest> listRequest;
-  double totalDays;
-  double usedDays;
+  double totalDays =0;
+  double usedDays= 0;
+  double externalDaysOff = 0;
 
   LeavingData({
     this.categories,
@@ -23,6 +24,7 @@ class LeavingData extends BaseModel {
     this.listRequest,
     this.totalDays,
     this.usedDays,
+    this.externalDaysOff,
   });
 
   factory LeavingData.fromJson(Map<String, dynamic> json) => LeavingData(
@@ -31,6 +33,7 @@ class LeavingData extends BaseModel {
         listRequest: List<ListRequest>.from(json["listRequest"].map((x) => ListRequest.fromJson(x))),
         totalDays: json["totalDays"].toDouble(),
         usedDays: json["usedDays"].toDouble(),
+        externalDaysOff: json["externalDaysOff"].toDouble()
       );
 
   Map<String, dynamic> toJson() => {
@@ -39,6 +42,7 @@ class LeavingData extends BaseModel {
         "listRequest": List<dynamic>.from(listRequest.map((x) => x.toJson())),
         "totalDays": totalDays,
         "usedDays": usedDays,
+    "externalDaysOff" : externalDaysOff,
       };
 }
 
@@ -49,6 +53,7 @@ class ListRequest {
   DateTime dateTo;
   List<Detail> detail;
   String leavingRequestId;
+  DateTime submitDate;
   String reason;
   String response;
   int status;
@@ -63,6 +68,7 @@ class ListRequest {
     this.reason,
     this.response,
     this.status,
+    this.submitDate
   });
 
   factory ListRequest.fromJson(Map<String, dynamic> json) => ListRequest(
@@ -75,6 +81,7 @@ class ListRequest {
         reason: json["reason"],
         response: json["response"],
         status: json["status"],
+        submitDate: DateTime.parse(json["dateSubmit"])
       );
 
   Map<String, dynamic> toJson() => {
@@ -89,6 +96,7 @@ class ListRequest {
         "reason": reason,
         "response": response,
         "status": status,
+        "submitDate":  "${submitDate.year.toString().padLeft(4, '0')}-${submitDate.month.toString().padLeft(2, '0')}-${submitDate.day.toString().padLeft(2, '0')}",
       };
 }
 

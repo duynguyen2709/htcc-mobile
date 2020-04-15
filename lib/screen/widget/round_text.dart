@@ -12,16 +12,17 @@ class RoundText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(3),
+      padding: EdgeInsets.all(6),
       decoration: BoxDecoration(
         color: colorBackground,
         shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.all(Radius.circular(5)),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       child: Center(
         child: Text(title, style: TextStyle(
           color: colorText,
-          fontSize: 12
+          fontSize: 12,
+          fontWeight: FontWeight.bold
         ),),
       ),
     );

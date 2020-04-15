@@ -111,4 +111,11 @@ mixin _$CheckInStore on _CheckInStore, Store {
   Future checkIn(CheckInParam param) {
     return _$checkInAsyncAction.run(() => super.checkIn(param));
   }
+
+  @override
+  String toString() {
+    final string =
+        'isLoading: ${isLoading.toString()},getInfoCheckInSuccess: ${getInfoCheckInSuccess.toString()},checkInSuccess: ${checkInSuccess.toString()},errorMsg: ${errorMsg.toString()},errorAuth: ${errorAuth.toString()}';
+    return '{$string}';
+  }
 }

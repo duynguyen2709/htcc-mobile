@@ -2,23 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/info_leaving/info_leaving_screen.dart';
+import 'package:hethongchamcong_mobile/screen/leaving/leaving_form/leaving_form.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/leaving_store.dart';
+import 'package:hethongchamcong_mobile/screen/main_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/empty_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/retry_screen.dart';
 import 'package:mobx/mobx.dart';
 
 class LeavingScreen extends StatefulWidget {
-  LeavingScreen({Key key, this.title}) : super(key: key);
+  final MainScreenState parent;
+
+  LeavingScreen({Key key, this.title, this.parent}) : super(key: key);
 
   final String title;
 
   @override
-  _LeavingScreenState createState() => _LeavingScreenState();
+  _LeavingScreenState createState() => _LeavingScreenState(parent);
 }
 
 class _LeavingScreenState extends State<LeavingScreen> {
   LeavingStore leavingStore;
+  final MainScreenState parent;
+
+  _LeavingScreenState(this.parent);
 
   @override
   void initState() {
@@ -66,40 +73,28 @@ class _LeavingScreenState extends State<LeavingScreen> {
       appBar: AppBar(
         title: Text("Xem lịch"),
         centerTitle: true,
+        elevation: 0,
         actions: <Widget>[
-          Observer(
-            builder: (BuildContext context) {
-              return (leavingStore.leavingData != null)
-                  ? IconButton(
-                      icon: Icon(Icons.assignment),
-                      onPressed: () {
-                        Navigator.pushNamed(context, Constants.leaving_form_screen,
-                            arguments: leavingStore.leavingData.categories);
-                      },
-                    )
-                  : Center();
+          IconButton(
+            icon: Icon(Icons.assignment),
+            onPressed: () async {
+              var res = await Navigator.pushNamed(context, Constants.leaving_form_screen,
+                  arguments: leavingStore);
+              if (res!=null) leavingStore.loadData();
             },
           )
         ],
       ),
       body: Stack(
         children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            color: Colors.white,
+          InfoLeavingScreen(
+            leavingStore: leavingStore,
+            mainScreenInstance: parent,
           ),
           Observer(
             builder: (BuildContext context) {
               if (leavingStore.isLoading) return LoadingScreen();
-              if (leavingStore.leavingData != null) {
-                return InfoLeavingScreen(
-                  leavingStore: leavingStore,
-                );
-              } else {
-                if (leavingStore.shouldRetry) return RetryScreen(refresh: _refresh);
-                return EmptyScreen(refresh: _refresh);
-              }
+              else return Container();
             },
           )
         ],

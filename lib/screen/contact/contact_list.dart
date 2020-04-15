@@ -261,75 +261,6 @@ class ContactListState extends State<ContactList> {
     );
   }
 
-  Widget get suggestAddComplaint {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15))),
-              child: Image.asset(
-                "./assets/empty_complaint.png",
-                height: 300,
-                width: MediaQuery.of(context).size.width - 50,
-                fit: BoxFit.contain,
-              ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width - 50,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(15),
-                      bottomRight: Radius.circular(15))),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 16),
-                    child: Text(
-                      "Bạn cần hỗ trợ hoặc góp ý ?",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 20,
-                          color: Colors.black),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(16),
-                    child: RaisedButton.icon(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(Constants.complaint_form);
-                      },
-                      icon: Icon(
-                        Icons.note_add,
-                        color: Colors.white,
-                      ),
-                      label: Text(
-                        "TẠO YÊU CẦU/ GÓP Ý",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      color: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(10.0),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
 
 }
 
@@ -347,6 +278,7 @@ class _ContactItemState extends State<ContactItem> with AutomaticKeepAliveClient
   _ContactItemState(this.contact);
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,

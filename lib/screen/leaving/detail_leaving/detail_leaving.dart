@@ -50,6 +50,7 @@ class _DetailLeavingScreenState extends State<DetailLeavingScreen> {
               onPressed: () {
                 //Chưa xử lý pop ra main_screen
                 Navigator.of(context).pop();
+                Navigator.pop(context,'Error');
               },
             ),
           ],
@@ -166,7 +167,7 @@ class _DetailLeavingScreenState extends State<DetailLeavingScreen> {
     );
   }
 
-  Future<void> displayDialog(BuildContext context, int _currentIndex, Detail detail) async {
+  Future<void> displayDialog(BuildContext context, int _currentIndex, DetailSubmitLeaving detail) async {
     int saveFlag = detail.session;
     return showDialog(
         context: context,
