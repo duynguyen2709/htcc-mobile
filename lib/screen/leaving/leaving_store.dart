@@ -50,9 +50,6 @@ abstract class _LeavingStore with Store {
   bool isSubmitSuccess;
 
   @observable
-  String msg;
-
-  @observable
   bool isLoadingSubmitForm = false;
 
   @observable
@@ -60,6 +57,9 @@ abstract class _LeavingStore with Store {
 
   @observable
   bool isCancelSuccess;
+
+  @observable
+  bool errAuth;
 
   @action
   loadData() async {
@@ -71,6 +71,8 @@ abstract class _LeavingStore with Store {
       var response = await Injector.leavingRepository.loadData(year);
 
       isLoading = false;
+
+      errAuth =false;
 
       switch (response.runtimeType) {
         case Success:
@@ -91,6 +93,7 @@ abstract class _LeavingStore with Store {
               case Status.ERROR_AUTHENTICATE:
                 {
                   errorMsg = Constants.MESSAGE_AUTHENTICATE;
+                  errAuth = true;
                   break;
                 }
               default:
@@ -152,7 +155,8 @@ abstract class _LeavingStore with Store {
   submit(FormLeaving formLeaving) async {
     isLoadingSubmitForm = true;
     isSubmitSuccess = null;
-    msg = null;
+    errorMsg = null;
+    errAuth =false;
     try {
       formLeaving.detail =
           formLeaving.detail.where((value) => value.isCheck).toList();
@@ -163,7 +167,7 @@ abstract class _LeavingStore with Store {
           case Success:
             {
               isSubmitSuccess = true;
-              msg = (response as Success).msg;
+              errorMsg = (response as Success).msg;
               break;
             }
           case Error:
@@ -172,17 +176,18 @@ abstract class _LeavingStore with Store {
               switch ((response as Error).status) {
                 case Status.ERROR_NETWORK:
                   {
-                    msg = (response as Error).msg;
+                    errorMsg = (response as Error).msg;
                     break;
                   }
                 case Status.ERROR_AUTHENTICATE:
                   {
-                    msg = (response as Error).msg;
+                    errorMsg = (response as Error).msg;
+                    errAuth = true;
                     break;
                   }
                 default:
                   {
-                    msg = (response as Error).msg;
+                    errorMsg = (response as Error).msg;
                     break;
                   }
               }
@@ -192,7 +197,7 @@ abstract class _LeavingStore with Store {
     } catch (error) {
       isLoadingSubmitForm = false;
       isSubmitSuccess = false;
-      msg = error.toString();
+      errorMsg = error.toString();
     }
   }
 
@@ -200,7 +205,8 @@ abstract class _LeavingStore with Store {
   cancel(String leavingRequestId, String date) async {
     isLoadingCancel = true;
     isCancelSuccess = null;
-    msg = null;
+    errorMsg = null;
+    errAuth =false;
     try {
       var response = await Injector.leavingRepository
           .cancelLeavingRequest(leavingRequestId, date);
@@ -209,7 +215,7 @@ abstract class _LeavingStore with Store {
         case Success:
           {
             isCancelSuccess = true;
-            msg = (response as Success).msg;
+            errorMsg = (response as Success).msg;
             break;
           }
         case Error:
@@ -218,17 +224,18 @@ abstract class _LeavingStore with Store {
             switch ((response as Error).status) {
               case Status.ERROR_NETWORK:
                 {
-                  msg = (response as Error).msg;
+                  errorMsg = (response as Error).msg;
                   break;
                 }
               case Status.ERROR_AUTHENTICATE:
                 {
-                  msg = (response as Error).msg;
+                  errorMsg = (response as Error).msg;
+                  errAuth = true;
                   break;
                 }
               default:
                 {
-                  msg = (response as Error).msg;
+                  errorMsg = (response as Error).msg;
                   break;
                 }
             }
@@ -237,7 +244,7 @@ abstract class _LeavingStore with Store {
     } catch (error) {
       isLoadingCancel = false;
       isCancelSuccess = false;
-      msg = error.toString();
+      errorMsg = error.toString();
     }
   }
 }

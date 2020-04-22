@@ -1,6 +1,12 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:camera/camera.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 class CheckInCameraPage extends StatefulWidget {
   CheckInCameraPage({Key key, this.title}) : super(key: key);
@@ -27,7 +33,7 @@ class _CheckInCameraPageState extends State<CheckInCameraPage>
   bool isCameraReady = false;
   bool showCapturedPhoto = false;
   int currentType = 0;
-  var ImagePath;
+  var imagePath;
 
   @override
   void initState() {
@@ -43,7 +49,8 @@ class _CheckInCameraPageState extends State<CheckInCameraPage>
   Future<void> _initializeCamera() async {
     final cameras = await availableCameras();
     final frontCamera = cameras[currentType];
-    _controller = CameraController(frontCamera, ResolutionPreset.high);
+    _controller = CameraController(frontCamera, ResolutionPreset.high,
+        enableAudio: false);
     _initializeControllerFuture = _controller.initialize();
     if (!this.mounted) {
       return;
@@ -100,7 +107,7 @@ class _CheckInCameraPageState extends State<CheckInCameraPage>
                   } else {
                     return Center(
                         child:
-                        CircularProgressIndicator()); // Otherwise, display a loading indicator.
+                            CircularProgressIndicator()); // Otherwise, display a loading indicator.
                   }
                 },
               ),
@@ -113,10 +120,42 @@ class _CheckInCameraPageState extends State<CheckInCameraPage>
                     width: 20,
                     height: 20,
                   ),
-                  Image(
-                    image: AssetImage("./assets/camera_capture.png"),
-                    width: 80,
-                    height: 80,
+                  InkWell(
+                    child: Image(
+                      image: AssetImage("./assets/camera_capture.png"),
+                      width: 80,
+                      height: 80,
+                    ),
+                    onTap: () async {
+                      // Take the Picture in a try / catch block. If anything goes wrong,
+                      // catch the error.
+                      try {
+                        // Ensure that the camera is initialized.
+                        await _initializeControllerFuture;
+
+                        // Construct the path where the image should be saved using the path
+                        // package.
+                        imagePath = join(
+                          // Store the picture in the temp directory.
+                          // Find the temp directory using the `path_provider` plugin.
+                          (await getTemporaryDirectory()).path,
+                          '${DateTime.now()}.png',
+                        );
+
+                        // Attempt to take a picture and log where it's been saved.
+                        await _controller.takePicture(imagePath);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                DisplayImageScreen(imagePath: imagePath),
+                          ),
+                        );
+                      } catch (e) {
+                        // If an error occurs, log the error to the console.
+                        print(e);
+                      }
+                    },
                   ),
                   InkWell(
                     child: Padding(
@@ -142,5 +181,131 @@ class _CheckInCameraPageState extends State<CheckInCameraPage>
     else
       currentType = 1;
     _initializeCamera();
+  }
+}
+
+class DisplayImageScreen extends StatefulWidget {
+  final String imagePath;
+
+  const DisplayImageScreen({Key key, this.imagePath}) : super(key: key);
+
+  @override
+  _DisplayImageScreenState createState() => _DisplayImageScreenState(imagePath);
+}
+
+class _DisplayImageScreenState extends State<DisplayImageScreen> {
+  final String imagePath;
+  var _opacity = 1.0;
+  var _alignment = Alignment.center;
+  var _isBack = false;
+  var _timer;
+
+  _DisplayImageScreenState(this.imagePath);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('')),
+      // The image is stored as a file on the device. Use the `Image.file`
+      // constructor with the given path to display the image.
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Stack(
+          children: <Widget>[
+            Positioned.fill(child: Image.file(File(imagePath), width: MediaQuery.of(context).size.width,)),
+            Positioned(
+              bottom: 0,
+              child: Container(
+                height: 80,
+                width: MediaQuery.of(context).size.width,
+                alignment: Alignment.bottomCenter,
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24))),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    AnimatedContainer(
+                      duration: Duration(seconds: _isBack ? 0 : 4),
+                      alignment: _alignment,
+                      child: AnimatedOpacity(
+                        opacity: _opacity,
+                        duration: Duration(seconds: _isBack ? 0 : 3),
+                        child: Icon(
+                          Icons.send,
+                          color: Colors.white,
+                          size: 35,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 64,
+                      width: 64,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.white),
+                      padding: EdgeInsets.only(left: 6),
+                      alignment: Alignment.center,
+                      child: InkWell(
+                        splashColor: Colors.grey,
+                        onTap: () async {
+                          if (_timer != null) _timer.cancel();
+                          _timer = new Timer(const Duration(seconds: 5), () {
+                            if (mounted) {
+                              setState(() {
+                                _isBack = true;
+                                _alignment = Alignment.center;
+                                _opacity = 1.0;
+                              });
+                            }
+                          });
+                          if (mounted)
+                            setState(() {
+                              _isBack = false;
+                              _alignment = _alignment == Alignment.bottomRight
+                                  ? Alignment.center
+                                  : Alignment.bottomRight;
+                              _opacity = _opacity == 0.0 ? 1.0 : 0.0;
+                            });
+
+                          //send to server
+                          
+                        },
+                        child: Icon(
+                          Icons.send,
+                          color: Colors.blue,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<MultipartFile> _getMultipartFile(File file) async {
+    if(file!=null) {
+      String fileName = file.path.split('/').last;
+      var res = await MultipartFile.fromFile(
+        file.path,
+        filename: fileName,
+      );
+      return res;
+    }
+    else return null;
   }
 }

@@ -46,13 +46,13 @@ abstract class _LoginScreenStore with Store {
               case Status.ERROR_NETWORK:
                 {
                   log("Error Model");
-                  errorMessage = "Lỗi kết nối!";
+                  errorMessage = (response as Error).msg;
                   checkLogin = false;
                   break;
                 }
               default:
                 {
-                  errorMessage = "Thông tin đăng nhập không chính xác!";
+                  errorMessage = (response as Error).msg;
                   log("Error Model");
                   checkLogin = false;
                   break;

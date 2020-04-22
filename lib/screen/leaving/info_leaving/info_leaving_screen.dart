@@ -83,7 +83,7 @@ class _InfoLeavingScreenState extends State<InfoLeavingScreen> {
     controller = TextEditingController();
     var formatter = new DateFormat('yyyy-MM-dd');
     reaction((_) => _leavingStore.isSubmitSuccess, (isSuccess) {
-      if (isSuccess != null && mounted) _showDialog(_leavingStore.msg);
+      if (isSuccess != null && mounted) _showDialog(_leavingStore.errorMsg);
       if (isSuccess == true) {
         _leavingStore.loadData();
       }
@@ -134,8 +134,8 @@ class _InfoLeavingScreenState extends State<InfoLeavingScreen> {
     });
 
     reaction((_) => _leavingStore.isCancelSuccess, (isSuccess) {
-      _showDialog(_leavingStore.msg);
-      _leavingStore.loadData();
+      if(isSuccess!=null) {_showDialog(_leavingStore.errorMsg);}
+      if(isSuccess==true) _leavingStore.loadData();
     });
   }
 
@@ -153,6 +153,10 @@ class _InfoLeavingScreenState extends State<InfoLeavingScreen> {
               child: Text("Ok"),
               onPressed: () {
                 Navigator.of(context).pop();
+                if(_leavingStore.errAuth){
+                  Navigator.pushReplacementNamed(
+                      context, Constants.login_screen);
+                }
               },
             ),
           ],
@@ -244,9 +248,9 @@ class _InfoLeavingScreenState extends State<InfoLeavingScreen> {
                               ),
                             ),
                             onTap: () {
-                              onContinue();
                               Navigator.of(context, rootNavigator: true)
                                   .pop('dialog');
+                              onContinue();
                             },
                             hoverColor: Colors.transparent,
                             splashColor: Colors.transparent,

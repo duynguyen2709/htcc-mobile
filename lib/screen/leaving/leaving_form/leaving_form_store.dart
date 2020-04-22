@@ -21,11 +21,15 @@ abstract class _LeavingFormStore with Store {
 
   @observable
   Map<DateTime, List> events;
+
+  @observable
+  bool errAuth;
   @action
   submit(FormLeaving formLeaving) async {
     isLoadingSubmitForm = true;
     isSubmitSuccess =null;
     msg = null;
+    errAuth=false;
     try {
       formLeaving.detail = formLeaving.detail.where((value) => value.isCheck).toList();
       if (formLeaving.detail.length > 0) {
@@ -50,6 +54,7 @@ abstract class _LeavingFormStore with Store {
                 case Status.ERROR_AUTHENTICATE:
                   {
                     msg = (response as Error).msg;
+                    errAuth=true;
                     break;
                   }
                 default:

@@ -26,11 +26,11 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
     setState(() {
       month = DateFormat('TM/yyyy').format(now);
     });
+    store.getComplaint(currentMonth);
   }
 
   @override
   Widget build(BuildContext context) {
-    store.getComplaint(currentMonth);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -86,7 +86,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
               ),
               onPressed: () async  {
                 final res= await Navigator.push(context,  MaterialPageRoute(builder: (context) => ComplaintForm(store: store,)),);
-                if(res!=null){
+                if(res.toString().compareTo('Success')==0){
                   store.getComplaint(currentMonth);
                 }
               },

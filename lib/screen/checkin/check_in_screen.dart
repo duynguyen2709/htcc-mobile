@@ -273,9 +273,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
             doneCheckIn = false;
         });
       } else if (isSuccess != null)
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(_checkInStore.errorMsg),
-        ));
+        if(_checkInStore.errorAuth == true) _showErrorDialog(true); else  _showErrorDialog(false);
     });
 
     reaction((_) => _checkInStore.checkInSuccess, (isSuccess) async {
@@ -286,13 +284,11 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
           _checkInStore.getCheckInInfo(user.companyId, user.username, null);
         });
       } else if (isSuccess != null)
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(_checkInStore.errorMsg),
-        ));
+        if(_checkInStore.errorAuth == true) _showErrorDialog(true); else  _showErrorDialog(false);
     });
 
     reaction((_) => _checkInStore.errorAuth, (errorAuthenticate) async {
-      if (errorAuthenticate) {
+      if (errorAuthenticate ==true) {
         _showErrorDialog(true);
       }
     });
@@ -401,6 +397,16 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                   size: Size(MediaQuery.of(context).size.width,
                       MediaQuery.of(context).size.height / 3.125),
                 ),
+//                Positioned(
+//                  top: 0,
+//                  right: 0,
+//                  child: IconButton(
+//                    icon: Icon(Icons.camera_alt, color: Colors.white,),
+//                    onPressed: (){
+//                      Navigator.pushNamed(context, Constants.check_in_camera_screen);
+//                    },
+//                  ),
+//                ),
                 Column(
                   children: <Widget>[
                     Container(
@@ -582,7 +588,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                               )
                             ],
                           )
-                        : _dayOffPage,
+                        : (checkInInfo==null) ?  Center(child: CircularProgressIndicator(),) :_dayOffPage,
                   ],
                 ),
                 Observer(builder: (_) {

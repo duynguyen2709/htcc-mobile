@@ -38,6 +38,10 @@ class _LeavingScreenState extends State<LeavingScreen> {
     reaction((_) => leavingStore.errorMsg, (String errorMsg) {
       _showErrorDialog(errorMsg);
     });
+
+    reaction((_) => leavingStore.errAuth, (errAuth) {
+     if(errAuth==true) _showErrorDialog(leavingStore.errorMsg);
+    });
   }
 
   void _showErrorDialog(String errorMessage) {
@@ -54,6 +58,10 @@ class _LeavingScreenState extends State<LeavingScreen> {
               child: Text(Constants.buttonErrorDialog),
               onPressed: () {
                 Navigator.of(context).pop();
+                if(leavingStore.errAuth){
+                  Navigator.pushReplacementNamed(
+                      context, Constants.login_screen);
+                }
               },
             ),
           ],

@@ -196,23 +196,6 @@ mixin _$LeavingStore on _LeavingStore, Store {
     }, _$isSubmitSuccessAtom, name: '${_$isSubmitSuccessAtom.name}_set');
   }
 
-  final _$msgAtom = Atom(name: '_LeavingStore.msg');
-
-  @override
-  String get msg {
-    _$msgAtom.context.enforceReadPolicy(_$msgAtom);
-    _$msgAtom.reportObserved();
-    return super.msg;
-  }
-
-  @override
-  set msg(String value) {
-    _$msgAtom.context.conditionallyRunInAction(() {
-      super.msg = value;
-      _$msgAtom.reportChanged();
-    }, _$msgAtom, name: '${_$msgAtom.name}_set');
-  }
-
   final _$isLoadingSubmitFormAtom =
       Atom(name: '_LeavingStore.isLoadingSubmitForm');
 
@@ -267,6 +250,23 @@ mixin _$LeavingStore on _LeavingStore, Store {
     }, _$isCancelSuccessAtom, name: '${_$isCancelSuccessAtom.name}_set');
   }
 
+  final _$errAuthAtom = Atom(name: '_LeavingStore.errAuth');
+
+  @override
+  bool get errAuth {
+    _$errAuthAtom.context.enforceReadPolicy(_$errAuthAtom);
+    _$errAuthAtom.reportObserved();
+    return super.errAuth;
+  }
+
+  @override
+  set errAuth(bool value) {
+    _$errAuthAtom.context.conditionallyRunInAction(() {
+      super.errAuth = value;
+      _$errAuthAtom.reportChanged();
+    }, _$errAuthAtom, name: '${_$errAuthAtom.name}_set');
+  }
+
   final _$loadDataAsyncAction = AsyncAction('loadData');
 
   @override
@@ -304,7 +304,7 @@ mixin _$LeavingStore on _LeavingStore, Store {
   @override
   String toString() {
     final string =
-        'isLoading: ${isLoading.toString()},shouldRetry: ${shouldRetry.toString()},events: ${events.toString()},errorMsg: ${errorMsg.toString()},leavingData: ${leavingData.toString()},listRequest: ${listRequest.toString()},listEvent: ${listEvent.toString()},dataMap: ${dataMap.toString()},status: ${status.toString()},year: ${year.toString()},isSubmitSuccess: ${isSubmitSuccess.toString()},msg: ${msg.toString()},isLoadingSubmitForm: ${isLoadingSubmitForm.toString()},isLoadingCancel: ${isLoadingCancel.toString()},isCancelSuccess: ${isCancelSuccess.toString()}';
+        'isLoading: ${isLoading.toString()},shouldRetry: ${shouldRetry.toString()},events: ${events.toString()},errorMsg: ${errorMsg.toString()},leavingData: ${leavingData.toString()},listRequest: ${listRequest.toString()},listEvent: ${listEvent.toString()},dataMap: ${dataMap.toString()},status: ${status.toString()},year: ${year.toString()},isSubmitSuccess: ${isSubmitSuccess.toString()},isLoadingSubmitForm: ${isLoadingSubmitForm.toString()},isLoadingCancel: ${isLoadingCancel.toString()},isCancelSuccess: ${isCancelSuccess.toString()},errAuth: ${errAuth.toString()}';
     return '{$string}';
   }
 }

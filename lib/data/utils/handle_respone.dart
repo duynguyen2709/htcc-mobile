@@ -11,11 +11,11 @@ Result handleResponse<T extends BaseModel>(
   try {
     if (response.data["returnCode"] == 401 || response.data["returnCode"] == -8)
       return Error(status: Status.ERROR_AUTHENTICATE);
-    ApiResponse<T> res = ApiResponse.fromJson(response.data, func);
-    if (res.returnCode == 1) {
+    if (response.data["returnCode"] == 1) {
+      ApiResponse<T> res = ApiResponse.fromJson(response.data, func);
       return Success(data: res.data, msg: res.returnMessage);
     } else {
-      return Error(status: Status.FAIL, msg: res.returnMessage);
+      return Error(status: Status.FAIL, msg: response.data["returnMessage"]);
     }
   } catch (error) {
     if (response.data["returnCode"] == 401 || response.data["returnCode"] == -8)
@@ -30,11 +30,12 @@ Result handleListResponse<T extends BaseModel>(
   try {
     if (response.data["returnCode"] == 401 || response.data["returnCode"] == -8)
       return Error(status: Status.ERROR_AUTHENTICATE);
-    var res = ListApiResponse<T>.fromJson(response.data, func);
-    if (res.returnCode == 1) {
+
+    if (response.data["returnCode"] == 1) {
+      var res = ListApiResponse<T>.fromJson(response.data, func);
       return Success(data: res.data, msg: res.returnMessage);
     } else {
-      return Error(status: Status.FAIL, msg: res.returnMessage);
+      return Error(status: Status.FAIL, msg: response.data["returnMessage"]);
     }
   } catch (error) {
     if (response.data["returnCode"] == 401 || response.data["returnCode"] == -8)

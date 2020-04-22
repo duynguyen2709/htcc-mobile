@@ -476,7 +476,11 @@ class _LeavingFormScreenState extends State<LeavingFormScreen> {
               child: new Text("OK"),
               onPressed: () {
                 Navigator.pop(context);
-                if(isPopBack)  Navigator.pop(context,'Success');
+                if(formStore.errAuth) {
+                  Navigator.pushReplacementNamed(
+                      context, Constants.login_screen);
+                }
+                else if(isPopBack)  Navigator.pop(context,'Success');
               },
             ),
           ],

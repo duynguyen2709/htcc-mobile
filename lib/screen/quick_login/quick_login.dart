@@ -175,11 +175,30 @@ class _QuickLoginState extends State<QuickLogin> {
                                           SizedBox(
                                             width: 10,
                                           ),
-                                          Text(
-                                            widget.users[index].user.companyId,
-                                            style: TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold),
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
+                                          Expanded(
+                                            child: Container(
+                                              margin: EdgeInsets.only(left: 24),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text(
+                                                    widget.users[index].user.companyId,
+                                                    style: TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold),
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                  Text(
+                                                    widget.users[index].user.username,
+                                                    style: TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold),
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                           ),
                                           Spacer(),
                                           _buildPopupMenu(widget.users[index]),

@@ -98,8 +98,8 @@ class _ComplaintDetailState extends State<ComplaintDetail> {
             new FlatButton(
               child: new Text(Constants.buttonErrorDialog),
               onPressed: () {
-                Navigator.of(context).pop('Success');
-                if (store.postComplaintSuccess) Navigator.pop(context, 'Success');
+                Navigator.of(context).pop();
+                if (store.postComplaintSuccess==true) Navigator.pop(context, 'Success');
               },
             ),
           ],
@@ -182,16 +182,13 @@ class _ComplaintDetailState extends State<ComplaintDetail> {
                                               )));
                                     },
                                     child: Container(
-                                      margin: EdgeInsets.all(10),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                        child: FadeInImage.assetNetwork(
-                                            placeholder: 'assets/gif/loading.gif',
-                                            image: element,
-                                            fit: BoxFit.cover,
-                                            width: MediaQuery.of(context).size.width / 3.5,
-                                            height: MediaQuery.of(context).size.width / 3.5),
-                                      ),
+                                      margin: EdgeInsets.all(4),
+                                      child: FadeInImage.assetNetwork(
+                                          placeholder: 'assets/gif/loading.gif',
+                                          image: element,
+                                          fit: BoxFit.cover,
+                                          width: MediaQuery.of(context).size.width / 3.5,
+                                          height: MediaQuery.of(context).size.width / 3.5),
                                     ),
                                   ),
                                 );
@@ -228,7 +225,7 @@ class _ComplaintDetailState extends State<ComplaintDetail> {
                                   textAlign: TextAlign.left,
                                   controller: _controller,
                                   decoration: InputDecoration(
-                                    hintText: "Nhập lí do",
+                                    hintText: "Phản hồi/ khiếu nại thêm ...",
                                     focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.all(Radius.circular(5)),
                                         borderSide: BorderSide(color: Color(0xff00b0e3))),
@@ -250,7 +247,7 @@ class _ComplaintDetailState extends State<ComplaintDetail> {
             ),
             (complaint.status != 2)
                 ? Positioned(
-                    bottom: 0,
+                    bottom: -4,
                     child: Container(
                       height: 80,
                       width: MediaQuery.of(context).size.width,
