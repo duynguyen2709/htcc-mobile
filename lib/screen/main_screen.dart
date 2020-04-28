@@ -4,6 +4,8 @@ import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/leaving_screen.dart';
 import 'package:hethongchamcong_mobile/screen/more/more_screen.dart';
 import 'package:hethongchamcong_mobile/screen/notification/notification_screen.dart';
+import 'package:hethongchamcong_mobile/utils/firebase_notifications.dart';
+
 import 'statistic/statisic_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -37,6 +39,7 @@ class MainScreenState extends State<MainScreen> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    FireBaseNotifications.getInstance().firebaseCloudMessagingListeners(context);
   }
 
   @override
@@ -52,26 +55,31 @@ class MainScreenState extends State<MainScreen> {
         key: PageStorageKey('CheckInScreen'),
         parent: this,
       ),
-      LeavingScreen(key: PageStorageKey('Leaving'), parent: this,),
+      LeavingScreen(
+        key: PageStorageKey('Leaving'),
+        parent: this,
+      ),
       StatisticScreen(),
       NotificationScreen(),
       MoreScreen()
     ];
     return Scaffold(
         body: Stack(
-          children: <Widget>[
-            IndexedStack(
-              index: _selectedPage,
-              children: _pageOptions,
-            ),
-            !_keyboardIsVisible() ? Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: bottomNavigationBar,
-            ): Container(),
-          ],
-        )
+      children: <Widget>[
+        IndexedStack(
+          index: _selectedPage,
+          children: _pageOptions,
+        ),
+        !_keyboardIsVisible()
+            ? Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: bottomNavigationBar,
+              )
+            : Container(),
+      ],
+    )
 //      bottomNavigationBar: bottomNavigationBar, // This trailing comma makes auto-formatting nicer for build methods.
         );
   }
@@ -80,15 +88,15 @@ class MainScreenState extends State<MainScreen> {
     return !(MediaQuery.of(context).viewInsets.bottom == 0.0);
   }
 
-  void hideBottomNavigation(){
+  void hideBottomNavigation() {
     setState(() {
-      isHide=true;
+      isHide = true;
     });
   }
 
-  void showBottomNavigation(){
+  void showBottomNavigation() {
     setState(() {
-      isHide=false;
+      isHide = false;
     });
   }
 
@@ -96,9 +104,8 @@ class MainScreenState extends State<MainScreen> {
     return Container(
       decoration: BoxDecoration(
         color: Color(0xEef7f7f7).withBlue(130),
-        borderRadius: new BorderRadius.only(
-            topLeft: const Radius.circular(20.0),
-            topRight: const Radius.circular(20.0)),
+        borderRadius:
+            new BorderRadius.only(topLeft: const Radius.circular(20.0), topRight: const Radius.circular(20.0)),
         boxShadow: [
           BoxShadow(
             color: Colors.grey,
@@ -112,27 +119,16 @@ class MainScreenState extends State<MainScreen> {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(20.0),
-            topRight: const Radius.circular(20.0)),
+        borderRadius: BorderRadius.only(topLeft: const Radius.circular(20.0), topRight: const Radius.circular(20.0)),
         child: BottomNavigationBar(
           elevation: 100,
           type: BottomNavigationBarType.shifting,
           items: [
-            BottomNavigationBarItem(
-                icon: ImageIcon(AssetImage("./assets/checkin.png")),
-                title: Text('Điểm danh')),
-            BottomNavigationBarItem(
-                icon: ImageIcon(AssetImage("./assets/leaving.png")),
-                title: Text('Xin nghỉ phép')),
-            BottomNavigationBarItem(
-                icon: ImageIcon(AssetImage("./assets/statistics.png")),
-                title: Text('Thống kê')),
-            BottomNavigationBarItem(
-                icon: ImageIcon(AssetImage("./assets/noti.png")),
-                title: Text('Thông báo')),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.more_horiz), title: Text('Thêm')),
+            BottomNavigationBarItem(icon: ImageIcon(AssetImage("./assets/checkin.png")), title: Text('Điểm danh')),
+            BottomNavigationBarItem(icon: ImageIcon(AssetImage("./assets/leaving.png")), title: Text('Xin nghỉ phép')),
+            BottomNavigationBarItem(icon: ImageIcon(AssetImage("./assets/statistics.png")), title: Text('Thống kê')),
+            BottomNavigationBarItem(icon: ImageIcon(AssetImage("./assets/noti.png")), title: Text('Thông báo')),
+            BottomNavigationBarItem(icon: Icon(Icons.more_horiz), title: Text('Thêm')),
           ],
           selectedItemColor: Colors.lightBlue,
           unselectedItemColor: Colors.grey,

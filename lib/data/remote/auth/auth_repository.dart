@@ -10,6 +10,7 @@ import 'package:hethongchamcong_mobile/data/model/login_response.dart';
 import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/data/remote/dio.dart';
 import 'package:hethongchamcong_mobile/data/utils/handle_respone.dart';
+import 'package:hethongchamcong_mobile/utils/firebase_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepository extends BaseRepository {
@@ -17,7 +18,13 @@ class AuthRepository extends BaseRepository {
 
   Future<Result> login(String userName, String password, String companyId) async {
     Map<String, dynamic> map = Map();
-    map.addAll({"clientId": "1", "companyId": companyId.trim(), "password": password, "username": userName.trim()});
+    map.addAll({
+      "clientId": "1",
+      "companyId": companyId.trim(),
+      "password": password,
+      "username": userName.trim(),
+      'tokenPush': await FireBaseNotifications.getInstance().fireBaseMessaging.getToken(),
+    });
     try {
       var response = await dio.post(DioManager.PATH_LOGIN, data: map);
 
@@ -87,7 +94,7 @@ class AuthRepository extends BaseRepository {
         "username": user.username
       });
       var response = await dio.put(DioManager.PATH_CHANGE_PASSWORD, data: map);
-      var result  = handleResponse(response, (json) => Empty.fromJson(json));
+      var result = handleResponse(response, (json) => Empty.fromJson(json));
       if (result is Success) {
         updatePassword(
             sharedPreferences, User.fromJson(jsonDecode(sharedPreferences.getString(Constants.USER))), newPassword);
