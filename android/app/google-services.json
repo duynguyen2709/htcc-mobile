@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "564331282358",
+    "firebase_url": "https://checkinapp-9eac2.firebaseio.com",
+    "project_id": "checkinapp-9eac2",
+    "storage_bucket": "checkinapp-9eac2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:564331282358:android:1578ecfba81a2918070b17",
+        "android_client_info": {
+          "package_name": "hethongchamcongmobile.com.example.hethongchamcong_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "564331282358-jr4a2g1f6vbpu7e07qm1s8ic17buogb8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "hethongchamcongmobile.com.example.hethongchamcong_mobile",
+            "certificate_hash": "fa5bb2830ed3609358b3979ab1a9159d22720f53"
+          }
+        },
+        {
+          "client_id": "564331282358-ir6va3iq82mk06gkbqbub37740laagm6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBf-PnhkPRPAf_GcXL0wvlr1fYzLzwKaRc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "564331282358-ir6va3iq82mk06gkbqbub37740laagm6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

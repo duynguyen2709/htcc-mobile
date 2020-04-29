@@ -5,6 +5,7 @@ import 'package:hethongchamcong_mobile/data/remote/dio.dart';
 import 'package:hethongchamcong_mobile/route/route_controller.dart';
 import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
 import 'package:hethongchamcong_mobile/screen/main_screen.dart';
+import 'package:hethongchamcong_mobile/utils/firebase_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'config/config.dart';
@@ -23,6 +24,8 @@ void main() async {
   String usersJson = sharedPreferences.getString(Constants.USERS);
 
   List<UserData> users;
+
+  await FireBaseNotifications.getInstance().setUpFirebase();
 
   if (usersJson != null && usersJson.isNotEmpty) {
     users = userDataFromJson(usersJson);

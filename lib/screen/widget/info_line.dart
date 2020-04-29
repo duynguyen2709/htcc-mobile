@@ -184,7 +184,7 @@ class ChatLine extends StatelessWidget {
                           ),
                           Text(
                             content,
-                            textAlign: TextAlign.start,
+                            textAlign: TextAlign.right,
                           )
                         ],
                       ),

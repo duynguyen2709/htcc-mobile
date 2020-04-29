@@ -1,4 +1,5 @@
-import 'dart:developer';
+import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/screen/login/login_screen_store.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
+import 'package:hethongchamcong_mobile/utils/firebase_notifications.dart';
 import 'package:mobx/mobx.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,6 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+
     loginScreenStore = LoginScreenStore();
 
     reaction((_) => loginScreenStore.checkLogin, (checkLogin) async {
@@ -51,8 +54,15 @@ class _LoginScreenState extends State<LoginScreen> {
         SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
         sharedPreferences.setBool(Constants.IS_LOGIN, true);
         Navigator.pushReplacementNamed(context, Constants.home_screen);
-      } else if (loginScreenStore.errorMessage != null && loginScreenStore.errorMessage.isNotEmpty) _showErrorDialog(loginScreenStore.errorMessage);
+      } else if (loginScreenStore.errorMessage != null && loginScreenStore.errorMessage.isNotEmpty)
+        _showErrorDialog(loginScreenStore.errorMessage);
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    FireBaseNotifications.getInstance().firebaseCloudMessagingListeners(context);
   }
 
   void _login() async {
@@ -123,7 +133,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: BoxDecoration(
                         color: Colors.blue,
                         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50)),
-                        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.blue, Colors.blue[700]]),
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.blue, Colors.blue[700]]),
                       ),
                       width: 200,
                       height: MediaQuery.of(context).size.height / 3,
@@ -144,7 +155,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               padding: const EdgeInsets.all(20),
                               child: Text(
                                 "Đăng nhập",
-                                style: TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                                style:
+                                    TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
                               ),
                             ),
                           )
@@ -166,13 +178,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                 fillColor: Colors.white,
                                 prefixIcon: Icon(Icons.business_center),
                                 focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)), borderSide: BorderSide(color: Colors.red, width: 2)),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    borderSide: BorderSide(color: Colors.red, width: 2)),
                                 errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)), borderSide: BorderSide(color: Colors.red, width: 2)),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    borderSide: BorderSide(color: Colors.red, width: 2)),
                                 focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)), borderSide: BorderSide(color: Colors.blue, width: 2)),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    borderSide: BorderSide(color: Colors.blue, width: 2)),
                                 enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)), borderSide: BorderSide(color: Colors.black, width: 2)),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    borderSide: BorderSide(color: Colors.black, width: 2)),
                                 contentPadding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                                 labelText: Constants.code,
                                 hintStyle: focusNodeCode.hasFocus ? TextStyle(color: Colors.blue) : TextStyle(),
@@ -196,13 +212,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                 fillColor: Colors.white,
                                 prefixIcon: Icon(Icons.mail),
                                 focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)), borderSide: BorderSide(color: Colors.red, width: 2)),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    borderSide: BorderSide(color: Colors.red, width: 2)),
                                 errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)), borderSide: BorderSide(color: Colors.red, width: 2)),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    borderSide: BorderSide(color: Colors.red, width: 2)),
                                 focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)), borderSide: BorderSide(color: Colors.blue, width: 2)),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    borderSide: BorderSide(color: Colors.blue, width: 2)),
                                 enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)), borderSide: BorderSide(color: Colors.black, width: 2)),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    borderSide: BorderSide(color: Colors.black, width: 2)),
                                 contentPadding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                                 labelText: Constants.hintUserName,
                                 hintStyle: focusNodeUserName.hasFocus ? TextStyle(color: Color(0x78b9eb)) : TextStyle(),
@@ -244,13 +264,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                         },
                                       ),
                                 focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)), borderSide: BorderSide(color: Colors.red, width: 2)),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    borderSide: BorderSide(color: Colors.red, width: 2)),
                                 errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)), borderSide: BorderSide(color: Colors.red, width: 2)),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    borderSide: BorderSide(color: Colors.red, width: 2)),
                                 focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)), borderSide: BorderSide(color: Colors.blue, width: 2)),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    borderSide: BorderSide(color: Colors.blue, width: 2)),
                                 enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)), borderSide: BorderSide(color: Colors.black, width: 2)),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    borderSide: BorderSide(color: Colors.black, width: 2)),
                                 contentPadding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                                 labelText: Constants.hintPassword,
                                 hintStyle: focusNodePassword.hasFocus ? TextStyle(color: Colors.blue) : TextStyle(),
