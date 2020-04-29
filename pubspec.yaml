@@ -58,8 +58,8 @@ dependencies:
   flutter_screenutil:
   auto_size_text:
   firebase_core: 0.4.4+3
-  firebase_messaging: 6.0.13
-  flutter_local_notifications: 1.2.0+4
+  firebase_messaging: ^6.0.13
+  flutter_local_notifications: ^1.4.2
 
 dev_dependencies:
   flutter_test:

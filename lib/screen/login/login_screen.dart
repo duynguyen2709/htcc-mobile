@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,6 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+
     loginScreenStore = LoginScreenStore();
 
     reaction((_) => loginScreenStore.checkLogin, (checkLogin) async {
@@ -55,8 +59,13 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    FireBaseNotifications.getInstance().firebaseCloudMessagingListeners(context);
+  }
+
   void _login() async {
-    FireBaseNotifications.getInstance().setUpFirebase();
     loginScreenStore.login(userNameController.text, passwordController.text, companyIdController.text);
   }
 
@@ -117,9 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               },
               child: SingleChildScrollView(
-                physics: (MediaQuery.of(context).viewInsets.bottom == 0.0)
-                    ? NeverScrollableScrollPhysics()
-                    : BouncingScrollPhysics(),
+                physics: (MediaQuery.of(context).viewInsets.bottom == 0.0) ? NeverScrollableScrollPhysics() : BouncingScrollPhysics(),
                 child: Column(
                   children: <Widget>[
                     Container(
@@ -127,9 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Colors.blue,
                         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50)),
                         gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [Colors.blue, Colors.blue[700]]),
+                            begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.blue, Colors.blue[700]]),
                       ),
                       width: 200,
                       height: MediaQuery.of(context).size.height / 3,
@@ -150,11 +155,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               padding: const EdgeInsets.all(20),
                               child: Text(
                                 "Đăng nhập",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic),
+                                style:
+                                    TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
                               ),
                             ),
                           )

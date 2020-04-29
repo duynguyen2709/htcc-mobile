@@ -39,7 +39,8 @@ class MainScreenState extends State<MainScreen> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    FireBaseNotifications.getInstance().firebaseCloudMessagingListeners(context);
+
+
   }
 
   @override
