@@ -214,6 +214,7 @@ abstract class _ContactStore with Store {
           }
         case Error:
           {
+            canLoadMore=false;
             switch ((response as Error).status) {
               case Status.ERROR_NETWORK:
                 {

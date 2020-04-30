@@ -97,6 +97,43 @@ mixin _$CheckInStore on _CheckInStore, Store {
     }, _$errorAuthAtom, name: '${_$errorAuthAtom.name}_set');
   }
 
+  final _$checkInInfoAtom = Atom(name: '_CheckInStore.checkInInfo');
+
+  @override
+  CheckInInfo get checkInInfo {
+    _$checkInInfoAtom.context.enforceReadPolicy(_$checkInInfoAtom);
+    _$checkInInfoAtom.reportObserved();
+    return super.checkInInfo;
+  }
+
+  @override
+  set checkInInfo(CheckInInfo value) {
+    _$checkInInfoAtom.context.conditionallyRunInAction(() {
+      super.checkInInfo = value;
+      _$checkInInfoAtom.reportChanged();
+    }, _$checkInInfoAtom, name: '${_$checkInInfoAtom.name}_set');
+  }
+
+  final _$currentCheckInOfficeAtom =
+      Atom(name: '_CheckInStore.currentCheckInOffice');
+
+  @override
+  OfficeDetail get currentCheckInOffice {
+    _$currentCheckInOfficeAtom.context
+        .enforceReadPolicy(_$currentCheckInOfficeAtom);
+    _$currentCheckInOfficeAtom.reportObserved();
+    return super.currentCheckInOffice;
+  }
+
+  @override
+  set currentCheckInOffice(OfficeDetail value) {
+    _$currentCheckInOfficeAtom.context.conditionallyRunInAction(() {
+      super.currentCheckInOffice = value;
+      _$currentCheckInOfficeAtom.reportChanged();
+    }, _$currentCheckInOfficeAtom,
+        name: '${_$currentCheckInOfficeAtom.name}_set');
+  }
+
   final _$getCheckInInfoAsyncAction = AsyncAction('getCheckInInfo');
 
   @override
@@ -112,10 +149,23 @@ mixin _$CheckInStore on _CheckInStore, Store {
     return _$checkInAsyncAction.run(() => super.checkIn(param));
   }
 
+  final _$_CheckInStoreActionController =
+      ActionController(name: '_CheckInStore');
+
+  @override
+  dynamic setLoading(bool isLoading) {
+    final _$actionInfo = _$_CheckInStoreActionController.startAction();
+    try {
+      return super.setLoading(isLoading);
+    } finally {
+      _$_CheckInStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     final string =
-        'isLoading: ${isLoading.toString()},getInfoCheckInSuccess: ${getInfoCheckInSuccess.toString()},checkInSuccess: ${checkInSuccess.toString()},errorMsg: ${errorMsg.toString()},errorAuth: ${errorAuth.toString()}';
+        'isLoading: ${isLoading.toString()},getInfoCheckInSuccess: ${getInfoCheckInSuccess.toString()},checkInSuccess: ${checkInSuccess.toString()},errorMsg: ${errorMsg.toString()},errorAuth: ${errorAuth.toString()},checkInInfo: ${checkInInfo.toString()},currentCheckInOffice: ${currentCheckInOffice.toString()}';
     return '{$string}';
   }
 }

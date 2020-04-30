@@ -80,6 +80,23 @@ mixin _$LeavingFormStore on _LeavingFormStore, Store {
     }, _$eventsAtom, name: '${_$eventsAtom.name}_set');
   }
 
+  final _$errAuthAtom = Atom(name: '_LeavingFormStore.errAuth');
+
+  @override
+  bool get errAuth {
+    _$errAuthAtom.context.enforceReadPolicy(_$errAuthAtom);
+    _$errAuthAtom.reportObserved();
+    return super.errAuth;
+  }
+
+  @override
+  set errAuth(bool value) {
+    _$errAuthAtom.context.conditionallyRunInAction(() {
+      super.errAuth = value;
+      _$errAuthAtom.reportChanged();
+    }, _$errAuthAtom, name: '${_$errAuthAtom.name}_set');
+  }
+
   final _$submitAsyncAction = AsyncAction('submit');
 
   @override
@@ -90,7 +107,7 @@ mixin _$LeavingFormStore on _LeavingFormStore, Store {
   @override
   String toString() {
     final string =
-        'isLoadingSubmitForm: ${isLoadingSubmitForm.toString()},msg: ${msg.toString()},isSubmitSuccess: ${isSubmitSuccess.toString()},events: ${events.toString()}';
+        'isLoadingSubmitForm: ${isLoadingSubmitForm.toString()},msg: ${msg.toString()},isSubmitSuccess: ${isSubmitSuccess.toString()},events: ${events.toString()},errAuth: ${errAuth.toString()}';
     return '{$string}';
   }
 }

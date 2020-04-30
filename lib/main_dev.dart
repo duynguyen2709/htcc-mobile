@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hethongchamcong_mobile/config/app_color.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/remote/dio.dart';
@@ -52,6 +53,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     var config = ConfigWrapper.of(context);
     DioManager.setBaseUrl(config.baseURL);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,

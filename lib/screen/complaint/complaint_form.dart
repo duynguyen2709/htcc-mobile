@@ -33,14 +33,7 @@ class _ComplaintFormState extends State<ComplaintForm> {
   int _value = 1;
   String name = "";
   var _options = [
-    "Food",
-    "Transport",
-    "Personal",
-    "Shopping",
-    "Medical",
-    "Rent",
-    "Movie",
-    "Salary"
+    "Điểm danh", "Ngày nghỉ phép", "Bảng lương", "Thông tin cá nhân", "Lỗi hệ thống", "Khác"
   ];
   var _sendTo = ["Hệ thống", "Công ty"];
   String _currentSelectedValue = 'Hệ thống';

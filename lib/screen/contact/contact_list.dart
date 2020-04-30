@@ -12,6 +12,7 @@ import 'package:hethongchamcong_mobile/screen/contact/contact_store.dart';
 import 'package:hethongchamcong_mobile/screen/widget/contact_line.dart';
 import 'package:hethongchamcong_mobile/screen/widget/paged_list_view.dart';
 import 'package:hethongchamcong_mobile/screen/widget/search_app_bar.dart';
+import 'package:hethongchamcong_mobile/utils/MeasureSize.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
@@ -36,9 +37,10 @@ class ContactListState extends State<ContactList> {
   List<String> _optionsDepartment= List();
   List<String> _optionsOfficeId= List();
   bool doneFilter = false;
+  var screenSize = Size.zero;
 
   void getMoreData(int perPage, int page) {
-    if(query.compareTo("")==0)
+    if(query==null ||query.compareTo("")==0)
       store.getMoreContact(departmentId: (department!=null ) ? department.compareTo("Tất cả")==0 ? null : department : null, officeId: (officeId!=null ) ? officeId.compareTo("Tất cả")==0 ? null : officeId : null,keyword: null, page : page ,perPage: perPage);
     else
       store.getMoreContact(departmentId:null, officeId: null,keyword: query, page : page ,perPage: perPage);
@@ -104,130 +106,135 @@ class ContactListState extends State<ContactList> {
           onTap: () {
             FocusScope.of(context).requestFocus(new FocusNode());
           },
-          child:  Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: FormField<String>(
-                          builder: (FormFieldState<String> state) {
-                            return InputDecorator(
-                              decoration: InputDecoration(
-                                  labelText: "Phòng ban",
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5))),
-                              isEmpty: department == '' || department == null,
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: department == '' || department == null
-                                      ? null
-                                      : department,
-                                  isDense: true,
-                                  onChanged: (String newValue) {
-                                    setState(() {
-                                      department = newValue;
-                                      state.didChange(newValue);
-                                    });
-                                  },
-                                  items: _optionsDepartment.map((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
+          child:  MeasureSize(
+            onChange: (size){
+              screenSize = size;
+            },
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: FormField<String>(
+                            builder: (FormFieldState<String> state) {
+                              return InputDecorator(
+                                decoration: InputDecoration(
+                                    labelText: "Phòng ban",
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5))),
+                                isEmpty: department == '' || department == null,
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    value: department == '' || department == null
+                                        ? null
+                                        : department,
+                                    isDense: true,
+                                    onChanged: (String newValue) {
+                                      setState(() {
+                                        department = newValue;
+                                        state.didChange(newValue);
+                                      });
+                                    },
+                                    items: _optionsDepartment.map((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: FormField<String>(
-                          builder: (FormFieldState<String> state) {
-                            return InputDecorator(
-                              decoration: InputDecoration(
-                                  labelText: "Mã chi nhánh",
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5))),
-                              isEmpty: officeId == ''  || officeId == null,
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: officeId == '' || officeId==null
-                                      ? null
-                                      : officeId,
-                                  isDense: true,
-                                  onChanged: (String newValue) {
-                                    setState(() {
-                                      officeId = newValue;
-                                      state.didChange(newValue);
-                                    });
-                                  },
-                                  items: _optionsOfficeId.map((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.filter_list),
-                      onPressed: (){
-                        query="";
-                        store.getContact(departmentId: (department!=null ) ? department.compareTo("Tất cả")==0 ? null : department : null, officeId: (officeId!=null ) ? officeId.compareTo("Tất cả")==0 ? null : officeId : null, page: 0);
-                      },
-                    )
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Stack(
-                  children: <Widget>[
-                    RefreshIndicator(
-                      onRefresh: _refresh,
-                      child: !isEmpty ?
-                      PagedListView(
-                        key: globalKey,
-                        list: list,
-                        loadMoreDataFunc: (perPage, page) =>
-                            getMoreData(perPage, page),
-                        buildItemViewFunc: (model) =>
-                            ContactItem(contact: model, key: Key((model as Contact).employeeId)),
-                        page: 0,
-                        perPage: 10,
-                      ) : emptyPage,
-
-                    ),
-                    Observer(builder: (_) {
-                      if (store.isLoading == true)
-                        return Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          color: Colors.transparent,
-                          child: SpinKitCircle(
-                            color: Colors.blue,
-                            size: 50.0,
+                              );
+                            },
                           ),
-                        );
-                      else
-                        return Center();
-                    })
-                  ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: FormField<String>(
+                            builder: (FormFieldState<String> state) {
+                              return InputDecorator(
+                                decoration: InputDecoration(
+                                    labelText: "Mã chi nhánh",
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5))),
+                                isEmpty: officeId == ''  || officeId == null,
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    value: officeId == '' || officeId==null
+                                        ? null
+                                        : officeId,
+                                    isDense: true,
+                                    onChanged: (String newValue) {
+                                      setState(() {
+                                        officeId = newValue;
+                                        state.didChange(newValue);
+                                      });
+                                    },
+                                    items: _optionsOfficeId.map((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.filter_list),
+                        onPressed: (){
+                          query="";
+                          store.getContact(departmentId: (department!=null ) ? department.compareTo("Tất cả")==0 ? null : department : null, officeId: (officeId!=null ) ? officeId.compareTo("Tất cả")==0 ? null : officeId : null, page: 0);
+                        },
+                      )
+                    ],
+                  ),
                 ),
-              )
-            ],
+                Expanded(
+                  child: Stack(
+                    children: <Widget>[
+                      RefreshIndicator(
+                        onRefresh: _refresh,
+                        child: !isEmpty ?
+                        PagedListView(
+                          key: globalKey,
+                          list: list,
+                          loadMoreDataFunc: (perPage, page) =>
+                              getMoreData(perPage, page),
+                          buildItemViewFunc: (model) =>
+                              ContactItem(contact: model, key: Key((model as Contact).employeeId)),
+                          page: 0,
+                          perPage: 10,
+                        ) : emptyPage,
+
+                      ),
+                      Observer(builder: (_) {
+                        if (store.isLoading == true)
+                          return Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: screenSize.height,
+                            color: Colors.transparent,
+                            child: SpinKitCircle(
+                              color: Colors.blue,
+                              size: 50.0,
+                            ),
+                          );
+                        else
+                          return Center();
+                      })
+                    ],
+                  ),
+                )
+              ],
+            ),
           )
       )
       ,

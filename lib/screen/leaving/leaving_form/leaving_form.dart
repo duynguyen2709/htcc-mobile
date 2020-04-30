@@ -11,6 +11,7 @@ import 'package:hethongchamcong_mobile/data/remote/leaving/form_date.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/leaving_form/leaving_form_store.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/leaving_store.dart';
 import 'package:hethongchamcong_mobile/screen/widget/custom_expansion_tile.dart';
+import 'package:hethongchamcong_mobile/utils/MeasureSize.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,6 +36,7 @@ class _LeavingFormScreenState extends State<LeavingFormScreen> {
   List<DetailSubmitLeaving> detailSubmits;
   TextEditingController controller;
   LeavingFormStore formStore;
+  var screenSize = Size.zero;
 
   final LeavingStore store;
 
@@ -79,383 +81,389 @@ class _LeavingFormScreenState extends State<LeavingFormScreen> {
             currentFocus.unfocus();
           }
         },
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Stack(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 24, horizontal: 8),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Wrap(
-                      children: <Widget>[
-                        Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 24),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  child: RichText(
-                                      textAlign: TextAlign.start,
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'Loại nghỉ phép ',
-                                            style: TextStyle(
-                                                color: Colors.black54,
-                                                fontSize: 17),
-                                          ),
-                                          TextSpan(
-                                            text: '*',
-                                            style: TextStyle(
-                                                color: Colors.blue, fontSize: 17),
-                                          ),
-                                        ],
-                                      )),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(top: 4),
-                                  padding: EdgeInsets.symmetric(vertical: 12),
-                                  width: MediaQuery.of(context).size.width,
-                                  child: DropdownButton<String>(
-                                    isExpanded: true,
-                                    items: store.leavingData.categories
-                                        .map((String val) {
-                                      return DropdownMenuItem<String>(
-                                        value: val,
-                                        child: new Text(val,
-                                            style: TextStyle(fontSize: 17)),
-                                      );
-                                    }).toList(),
-                                    value:
-                                        typeLeaving == '' || typeLeaving == null
-                                            ? null
-                                            : typeLeaving,
-                                    isDense: true,
-                                    onChanged: (String newValue) {
-                                      setState(() {
-                                        typeLeaving = newValue;
-                                      });
-                                    },
+        child: MeasureSize(
+          onChange: (size){
+            screenSize =size;
+          },
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 24, horizontal: 8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Wrap(
+                        children: <Widget>[
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 24),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: RichText(
+                                        textAlign: TextAlign.start,
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Loại nghỉ phép ',
+                                              style: TextStyle(
+                                                  color: Colors.black54,
+                                                  fontSize: 17),
+                                            ),
+                                            TextSpan(
+                                              text: '*',
+                                              style: TextStyle(
+                                                  color: Colors.blue, fontSize: 17),
+                                            ),
+                                          ],
+                                        )),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  child: RichText(
-                                      textAlign: TextAlign.start,
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'Thời gian ',
-                                            style: TextStyle(
-                                                color: Colors.black54,
-                                                fontSize: 17),
-                                          ),
-                                          TextSpan(
-                                            text: '*',
-                                            style: TextStyle(
-                                                color: Colors.blue, fontSize: 17),
-                                          ),
-                                        ],
-                                      )),
-                                ),
-                                Container(
+                                  Container(
                                     margin: EdgeInsets.only(top: 4),
                                     padding: EdgeInsets.symmetric(vertical: 12),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: InkWell(
-                                            child: Card(
-                                                child: Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 16, horizontal: 8),
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.calendar_today,
-                                                    color: Colors.grey,
-                                                  ),
-                                                  Expanded(
-                                                      child: Text(
-                                                    "${DateFormat('dd-MM-yyyy').format(_fromDateTime)}",
-                                                    textAlign: TextAlign.center,
-                                                    style:
-                                                        TextStyle(fontSize: 16),
-                                                  )),
-                                                ],
-                                              ),
-                                            )),
-                                            onTap: () {
-                                              DatePicker.showDatePicker(context,
-                                                  showTitleActions: true,
-                                                  onChanged: (date) {},
-                                                  onConfirm: (date) {
-                                                minTime = date;
-                                                _fromDateTime = date;
-                                                _toDateTime
-                                                        .isBefore(_fromDateTime)
-                                                    ? _toDateTime = _fromDateTime
-                                                    : _toDateTime = _toDateTime;
-                                                detailSubmits =
-                                                    calculateDaysInterval(
-                                                        _fromDateTime,
-                                                        _toDateTime);
+                                    width: MediaQuery.of(context).size.width,
+                                    child: DropdownButton<String>(
+                                      isExpanded: true,
+                                      items: store.leavingData.categories
+                                          .map((String val) {
+                                        return DropdownMenuItem<String>(
+                                          value: val,
+                                          child: new Text(val,
+                                              style: TextStyle(fontSize: 17)),
+                                        );
+                                      }).toList(),
+                                      value:
+                                          typeLeaving == '' || typeLeaving == null
+                                              ? null
+                                              : typeLeaving,
+                                      isDense: true,
+                                      onChanged: (String newValue) {
+                                        setState(() {
+                                          typeLeaving = newValue;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: RichText(
+                                        textAlign: TextAlign.start,
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Thời gian ',
+                                              style: TextStyle(
+                                                  color: Colors.black54,
+                                                  fontSize: 17),
+                                            ),
+                                            TextSpan(
+                                              text: '*',
+                                              style: TextStyle(
+                                                  color: Colors.blue, fontSize: 17),
+                                            ),
+                                          ],
+                                        )),
+                                  ),
+                                  Container(
+                                      margin: EdgeInsets.only(top: 4),
+                                      padding: EdgeInsets.symmetric(vertical: 12),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: InkWell(
+                                              child: Card(
+                                                  child: Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 16, horizontal: 8),
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.calendar_today,
+                                                      color: Colors.grey,
+                                                    ),
+                                                    Expanded(
+                                                        child: Text(
+                                                      "${DateFormat('dd-MM-yyyy').format(_fromDateTime)}",
+                                                      textAlign: TextAlign.center,
+                                                      style:
+                                                          TextStyle(fontSize: 16),
+                                                    )),
+                                                  ],
+                                                ),
+                                              )),
+                                              onTap: () {
+                                                DatePicker.showDatePicker(context,
+                                                    showTitleActions: true,
+                                                    onChanged: (date) {},
+                                                    onConfirm: (date) {
+                                                  minTime = date;
+                                                  _fromDateTime = date;
+                                                  _toDateTime
+                                                          .isBefore(_fromDateTime)
+                                                      ? _toDateTime = _fromDateTime
+                                                      : _toDateTime = _toDateTime;
+                                                  detailSubmits =
+                                                      calculateDaysInterval(
+                                                          _fromDateTime,
+                                                          _toDateTime);
+                                                },
+                                                    currentTime: DateTime.now(),
+                                                    locale: LocaleType.vi,
+                                                    minTime: DateTime.now());
                                               },
-                                                  currentTime: DateTime.now(),
-                                                  locale: LocaleType.vi,
-                                                  minTime: DateTime.now());
-                                            },
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          child: InkWell(
-                                            child: Card(
-                                                child: Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 16, horizontal: 8),
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.calendar_today,
-                                                    color: Colors.grey,
-                                                  ),
-                                                  Expanded(
-                                                      child: Text(
-                                                    "${DateFormat('dd-MM-yyyy').format(_toDateTime)}",
-                                                    textAlign: TextAlign.center,
-                                                    style:
-                                                        TextStyle(fontSize: 16),
-                                                  )),
-                                                ],
-                                              ),
-                                            )),
-                                            onTap: () {
-                                              DatePicker.showDatePicker(context,
-                                                  showTitleActions: true,
-                                                  onChanged: (date) {},
-                                                  onConfirm: (date) {
-                                                _toDateTime = date;
-                                                detailSubmits =
-                                                    calculateDaysInterval(
-                                                        _fromDateTime,
-                                                        _toDateTime);
+                                          Expanded(
+                                            child: InkWell(
+                                              child: Card(
+                                                  child: Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 16, horizontal: 8),
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.calendar_today,
+                                                      color: Colors.grey,
+                                                    ),
+                                                    Expanded(
+                                                        child: Text(
+                                                      "${DateFormat('dd-MM-yyyy').format(_toDateTime)}",
+                                                      textAlign: TextAlign.center,
+                                                      style:
+                                                          TextStyle(fontSize: 16),
+                                                    )),
+                                                  ],
+                                                ),
+                                              )),
+                                              onTap: () {
+                                                DatePicker.showDatePicker(context,
+                                                    showTitleActions: true,
+                                                    onChanged: (date) {},
+                                                    onConfirm: (date) {
+                                                  _toDateTime = date;
+                                                  detailSubmits =
+                                                      calculateDaysInterval(
+                                                          _fromDateTime,
+                                                          _toDateTime);
+                                                },
+                                                    currentTime: DateTime.now(),
+                                                    locale: LocaleType.vi,
+                                                    minTime:
+                                                        minTime ?? DateTime.now(),
+                                                    maxTime: (minTime != null)
+                                                        ? minTime.add(
+                                                            Duration(days: num - 1))
+                                                        : DateTime.now().add(
+                                                            Duration(
+                                                                days: num - 1)));
                                               },
-                                                  currentTime: DateTime.now(),
-                                                  locale: LocaleType.vi,
-                                                  minTime:
-                                                      minTime ?? DateTime.now(),
-                                                  maxTime: (minTime != null)
-                                                      ? minTime.add(
-                                                          Duration(days: num - 1))
-                                                      : DateTime.now().add(
-                                                          Duration(
-                                                              days: num - 1)));
-                                            },
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: RichText(
+                                        textAlign: TextAlign.start,
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Lý do ',
+                                              style: TextStyle(
+                                                  color: Colors.black54,
+                                                  fontSize: 17),
+                                            ),
+                                            TextSpan(
+                                              text: '*',
+                                              style: TextStyle(
+                                                  color: Colors.blue, fontSize: 17),
+                                            ),
+                                          ],
+                                        )),
+                                  ),
+                                  TextField(
+                                    minLines: 2,
+                                    maxLines: 50,
+                                    textAlign: TextAlign.left,
+                                    controller: controller,
+                                    decoration: new InputDecoration(
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Color(0xEED5D5D5)),
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Color(0xEED5D5D5)),
+                                      ),
+                                    ),
+                                  ),
+                                  ListTileTheme(
+                                    contentPadding: EdgeInsets.all(0),
+                                    child: ExpansionTile(
+                                      initiallyExpanded: true,
+                                      title: Text("Chi tiết"),
+                                      children: <Widget>[
+                                        Container(
+                                          width: double.infinity,
+                                          child:DataTable(
+                                            horizontalMargin: 10,
+                                            columnSpacing: 10,
+                                            columns: <DataColumn>[
+                                              DataColumn(
+                                                  label: Text(
+                                                    "Ngày",
+                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black),
+                                                  )),
+                                              DataColumn(
+                                                  label: Text(
+                                                    "Thời gian nghỉ",
+                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black),
+                                                  )),
+                                              DataColumn(
+                                                  label: Text(
+                                                    "",
+                                                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                                  ))
+                                            ],
+                                            rows: detailSubmits.map((value) {
+                                              return DataRow(
+                                                  key: Key(
+                                                      value.date.toIso8601String()),
+                                                  cells: <DataCell>[
+                                                    DataCell(Text(
+                                                      DateFormat('dd-MM-yyyy')
+                                                          .format(value.date),
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                      decoration: value.isCheck ? TextDecoration.none : TextDecoration.lineThrough
+                                                      ),
+                                                    )),
+                                                    DataCell(
+                                                        Text(
+                                                          getStateByFlag(
+                                                              value.session),
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                              decoration: value.isCheck ? TextDecoration.none : TextDecoration.lineThrough),
+                                                        ),
+                                                        showEditIcon: true,
+                                                        onTap: () async {
+                                                      if (value.isCheck)
+                                                        displayDialog(
+                                                                context,
+                                                                value.session,
+                                                                value)
+                                                            .then((_) {
+                                                          setState(() {});
+                                                        });
+                                                    }),
+                                                    DataCell(Center(
+                                                      child: IconButton(
+                                                        icon: value.isCheck
+                                                            ? Icon(
+                                                          Icons.remove_circle,
+                                                          color: Colors.red,
+                                                        )
+                                                            : Icon(
+                                                          Icons.check,
+                                                          color: Colors.green,
+                                                        ),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            value.isCheck = !value.isCheck;
+                                                          });
+                                                        },
+                                                      ),
+                                                    ))
+                                                  ]);
+                                            }).toList(),
                                           ),
                                         ),
                                       ],
-                                    )),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  child: RichText(
-                                      textAlign: TextAlign.start,
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'Lý do ',
-                                            style: TextStyle(
-                                                color: Colors.black54,
-                                                fontSize: 17),
-                                          ),
-                                          TextSpan(
-                                            text: '*',
-                                            style: TextStyle(
-                                                color: Colors.blue, fontSize: 17),
-                                          ),
-                                        ],
-                                      )),
-                                ),
-                                TextField(
-                                  minLines: 2,
-                                  maxLines: 50,
-                                  textAlign: TextAlign.left,
-                                  controller: controller,
-                                  decoration: new InputDecoration(
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Color(0xEED5D5D5)),
-                                    ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Color(0xEED5D5D5)),
                                     ),
                                   ),
-                                ),
-                                ListTileTheme(
-                                  contentPadding: EdgeInsets.all(0),
-                                  child: CustomExpansionTile(
-                                    title: Text("Chi tiết"),
-                                    children: <Widget>[
-                                      Container(
-                                        width: double.infinity,
-                                        child:DataTable(
-                                          horizontalMargin: 10,
-                                          columnSpacing: 10,
-                                          columns: <DataColumn>[
-                                            DataColumn(
-                                                label: Text(
-                                                  "Ngày",
-                                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black),
-                                                )),
-                                            DataColumn(
-                                                label: Text(
-                                                  "Thời gian nghỉ",
-                                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black),
-                                                )),
-                                            DataColumn(
-                                                label: Text(
-                                                  "",
-                                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                                                ))
-                                          ],
-                                          rows: detailSubmits.map((value) {
-                                            return DataRow(
-                                                key: Key(
-                                                    value.date.toIso8601String()),
-                                                cells: <DataCell>[
-                                                  DataCell(Text(
-                                                    DateFormat('dd-MM-yyyy')
-                                                        .format(value.date),
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                    decoration: value.isCheck ? TextDecoration.none : TextDecoration.lineThrough
-                                                    ),
-                                                  )),
-                                                  DataCell(
-                                                      Text(
-                                                        getStateByFlag(
-                                                            value.session),
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                            decoration: value.isCheck ? TextDecoration.none : TextDecoration.lineThrough),
-                                                      ),
-                                                      showEditIcon: true,
-                                                      onTap: () async {
-                                                    if (value.isCheck)
-                                                      displayDialog(
-                                                              context,
-                                                              value.session,
-                                                              value)
-                                                          .then((_) {
-                                                        setState(() {});
-                                                      });
-                                                  }),
-                                                  DataCell(Center(
-                                                    child: IconButton(
-                                                      icon: value.isCheck
-                                                          ? Icon(
-                                                        Icons.remove_circle,
-                                                        color: Colors.red,
-                                                      )
-                                                          : Icon(
-                                                        Icons.check,
-                                                        color: Colors.green,
-                                                      ),
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          value.isCheck = !value.isCheck;
-                                                        });
-                                                      },
-                                                    ),
-                                                  ))
-                                                ]);
-                                          }).toList(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  height: 24,
-                                )
-                              ],
+                                  Container(
+                                    height: 24,
+                                  )
+                                ],
+                              ),
                             ),
                           ),
+                        ],
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 16),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: RaisedButton(
+                              color: Colors.blue,
+                              onPressed: () {
+                                if (controller.text.isEmpty) {
+                                  _showDialog(
+                                      "Vui lòng điền lý do xin nghỉ phép để tiếp tục.");
+                                } else if (typeLeaving == null ||
+                                    typeLeaving.compareTo("") == 0) {
+                                  _showDialog(
+                                      "Vui lòng chọn loại nghỉ phép để tiếp tục");
+                                } else {
+                                  SharedPreferences.getInstance().then((pref) {
+                                    String jsonUser =
+                                        pref.getString(Constants.USER);
+                                    if (jsonUser != null && jsonUser.isNotEmpty) {
+                                      User user =
+                                          User.fromJson(json.decode(jsonUser));
+                                      FormLeaving formLeaving = FormLeaving(
+                                          category: typeLeaving,
+                                          clientTime:
+                                              DateTime.now().millisecondsSinceEpoch,
+                                          companyId: user.companyId,
+                                          detail: detailSubmits,
+                                          reason: controller.text,
+                                          username: user.username);
+                                      formStore.submit(formLeaving);
+                                    }
+                                  });
+                                }
+                              },
+                              textColor: Colors.white,
+                              padding: EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(5.0)),
+                              child: Text(
+                                "Gửi đơn",
+                                style: TextStyle(fontSize: 18),
+                              )),
                         ),
-                      ],
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: RaisedButton(
-                            color: Colors.blue,
-                            onPressed: () {
-                              if (controller.text.isEmpty) {
-                                _showDialog(
-                                    "Vui lòng điền lý do xin nghỉ phép để tiếp tục.");
-                              } else if (typeLeaving == null ||
-                                  typeLeaving.compareTo("") == 0) {
-                                _showDialog(
-                                    "Vui lòng chọn loại nghỉ phép để tiếp tục");
-                              } else {
-                                SharedPreferences.getInstance().then((pref) {
-                                  String jsonUser =
-                                      pref.getString(Constants.USER);
-                                  if (jsonUser != null && jsonUser.isNotEmpty) {
-                                    User user =
-                                        User.fromJson(json.decode(jsonUser));
-                                    FormLeaving formLeaving = FormLeaving(
-                                        category: typeLeaving,
-                                        clientTime:
-                                            DateTime.now().millisecondsSinceEpoch,
-                                        companyId: user.companyId,
-                                        detail: detailSubmits,
-                                        reason: controller.text,
-                                        username: user.username);
-                                    formStore.submit(formLeaving);
-                                  }
-                                });
-                              }
-                            },
-                            textColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(5.0)),
-                            child: Text(
-                              "Gửi đơn",
-                              style: TextStyle(fontSize: 18),
-                            )),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              Observer(
-                builder: (_) {
-                  if (formStore.isLoadingSubmitForm)
-                    return Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      color: Colors.black45,
-                      child: SpinKitCircle(
-                        color: Colors.blue,
-                        size: 50.0,
-                      ),
-                    );
-                  else
-                    return Container();
-                },
-              )
-            ],
+                Observer(
+                  builder: (_) {
+                    if (formStore.isLoadingSubmitForm)
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: screenSize.height,
+                        color: Colors.black45,
+                        child: SpinKitCircle(
+                          color: Colors.blue,
+                          size: 50.0,
+                        ),
+                      );
+                    else
+                      return Container();
+                  },
+                )
+              ],
+            ),
           ),
         ),
       ),

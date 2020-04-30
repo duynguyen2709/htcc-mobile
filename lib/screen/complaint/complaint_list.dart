@@ -10,6 +10,7 @@ import 'package:hethongchamcong_mobile/data/model/complaint.dart';
 import 'package:hethongchamcong_mobile/screen/complaint/complaint_detail/complaint_detail.dart';
 import 'package:hethongchamcong_mobile/screen/widget/image_picker.dart';
 import 'package:hethongchamcong_mobile/screen/widget/paged_list_view.dart';
+import 'package:hethongchamcong_mobile/utils/MeasureSize.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 
@@ -34,6 +35,7 @@ class ComplaintListState extends State<ComplaintList>
   bool isEmpty = true;
   bool isError = false;
   List<Complaint> list = List();
+  var screenSize = Size.zero;
 
   ComplaintListState(this.store, this.isSuccessList);
 
@@ -103,42 +105,46 @@ class ComplaintListState extends State<ComplaintList>
       children: <Widget>[
         RefreshIndicator(
           onRefresh: _refresh,
-          child: (isEmpty &&
-              DateFormat('yyyyMM')
-                  .format(store.monthQuery)
-                  .compareTo(DateFormat('yyyyMM').format(now)) ==
-                  0)
-              ? ListView(
-            physics: AlwaysScrollableScrollPhysics(),
-            children: <Widget>[
-              suggestAddComplaint,
-            ],
-              )
-              : (!isEmpty)
-              ? Column(
-            children: <Widget>[
-              Expanded(
-                child: ListView.builder(
-                  itemBuilder: (context, index) =>
-                      buildComplaintItem(list[index]),
-                  itemCount: list.length,
+          child: MeasureSize(
+            onChange: (size){
+              screenSize = size;
+            },
+            child: (isEmpty &&
+                DateFormat('yyyyMM')
+                    .format(store.monthQuery)
+                    .compareTo(DateFormat('yyyyMM').format(now)) ==
+                    0)
+                ? ListView(
+              physics: AlwaysScrollableScrollPhysics(),
+              children: <Widget>[
+                suggestAddComplaint,
+              ],
+                )
+                : (!isEmpty)
+                ? Column(
+              children: <Widget>[
+                Expanded(
+                  child: ListView.builder(
+                    itemBuilder: (context, index) =>
+                        buildComplaintItem(list[index]),
+                    itemCount: list.length,
+                  ),
                 ),
-              ),
-            ],
-          )
-              : ListView(
-            physics: AlwaysScrollableScrollPhysics(),
-            children: <Widget>[
-              emptyPage,
-            ],
+              ],
+            )
+                : ListView(
+              physics: AlwaysScrollableScrollPhysics(),
+              children: <Widget>[
+                emptyPage,
+              ],
+            ),
           ),
-        )
-        ,
+        ),
         Observer(builder: (_) {
           if (store.isLoading)
             return Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              height: screenSize.height,
               color: Colors.black45,
               child: SpinKitCircle(
                 color: Colors.blue,

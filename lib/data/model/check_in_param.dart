@@ -7,6 +7,7 @@ class CheckInParam {
   int type;
   bool usedWifi;
   String username;
+  String officeId;
 
   CheckInParam(
       {this.clientTime,
@@ -16,7 +17,7 @@ class CheckInParam {
         this.longitude,
         this.type,
         this.usedWifi,
-        this.username});
+        this.username,this.officeId});
 
   CheckInParam.fromJson(Map<String, dynamic> json) {
     clientTime = json['clientTime'];
@@ -27,6 +28,7 @@ class CheckInParam {
     type = json['type'];
     usedWifi = json['usedWifi'];
     username = json['username'];
+    officeId = json['officeId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -39,6 +41,7 @@ class CheckInParam {
     data['type'] = this.type;
     data['usedWifi'] = this.usedWifi;
     data['username'] = this.username;
+    data['officeId'] = this.officeId;
     return data;
   }
 }
