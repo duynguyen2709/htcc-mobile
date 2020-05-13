@@ -66,6 +66,7 @@ abstract class _LeavingFormStore with Store {
             }
         }
       }
+      else isLoadingSubmitForm = false;
     } catch (error) {
       isLoadingSubmitForm = false;
       isSubmitSuccess = false;

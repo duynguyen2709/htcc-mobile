@@ -31,6 +31,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
 
   @override
   Widget build(BuildContext context) {
+    store.getComplaint(currentMonth);
     return DefaultTabController(
       length: 2,
       child: Scaffold(

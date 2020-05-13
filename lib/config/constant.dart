@@ -9,6 +9,7 @@ class Constants {
   static const String account_screen = "/account";
   static const String check_in_screen = "/checkin";
   static const String check_in_camera_screen = "/checkin/camera";
+  static const String check_in_form = "/checkin/form";
   static const String home_screen = "/home";
   static const String password_screen = "/password";
   static const String leaving_form_screen = "/leavingform";

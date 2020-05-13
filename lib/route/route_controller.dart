@@ -4,6 +4,7 @@ import 'package:hethongchamcong_mobile/data/model/check_in_param.dart';
 import 'package:hethongchamcong_mobile/data/model/login_response.dart';
 import 'package:hethongchamcong_mobile/screen/account/account_screen.dart';
 import 'package:hethongchamcong_mobile/screen/cameracheckin/check_in_camera_screen.dart';
+import 'package:hethongchamcong_mobile/screen/checkin/check_in_form.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen_store.dart';
 import 'package:hethongchamcong_mobile/screen/complaint/complaint_form.dart';
@@ -51,6 +52,9 @@ SlideCustomRoute initialSlideRoutes(RouteSettings settings) {
     case Constants.check_in_camera_screen:
       return new SlideCustomRoute(
           builder: (_) => new CheckInCameraPage(store: settings.arguments as CheckInStore), settings: settings, routeName: Constants.check_in_camera_screen);
+    case Constants.check_in_form:
+      return new SlideCustomRoute(
+          builder: (_) => new CheckInForm(store: settings.arguments as CheckInStore), settings: settings, routeName: Constants.check_in_form);
     case Constants.password_screen:
       return new SlideCustomRoute(
           builder: (_) => new PasswordScreen(), settings: settings, routeName: Constants.password_screen);

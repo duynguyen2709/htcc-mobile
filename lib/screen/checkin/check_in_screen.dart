@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,13 +14,17 @@ import 'package:hethongchamcong_mobile/data/local/shared_preference.dart';
 import 'package:hethongchamcong_mobile/data/model/check_in_info.dart';
 import 'package:hethongchamcong_mobile/data/model/check_in_param.dart';
 import 'package:hethongchamcong_mobile/data/model/user.dart';
+import 'package:hethongchamcong_mobile/screen/checkin/check_in_form.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen_store.dart';
 import 'package:hethongchamcong_mobile/screen/main_screen.dart';
 import 'package:hethongchamcong_mobile/utils/MeasureSize.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
+
+import 'check_in_qr_code.dart';
 
 class CheckInLocationPage extends StatefulWidget {
   final MainScreenState parent;
@@ -92,6 +98,9 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
 
   _CheckInLocationPageState(this.parent);
 
+  var width = 60;
+  var isExpanded = false;
+
   @override
   void initState() {
     super.initState();
@@ -125,13 +134,16 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
 
     //observe change from store
     reaction((_) => _checkInStore.currentCheckInOffice, (office) {
-      if (office != null && curOffice==null) {
+      if (office != null && curOffice == null) {
         curOffice = office;
         _companyPosition = Position(
             longitude: office.validLongitude, latitude: office.validLatitude);
         setState(() {
           if (!office.canCheckIn) isOffDay = true;
         });
+      } else {
+        curOffice = _checkInStore.checkInInfo.officeList
+            .firstWhere((office) => office.officeId == curOffice.officeId);
       }
     });
     reaction((_) => _checkInStore.getInfoCheckInSuccess, (isSuccess) async {
@@ -145,7 +157,8 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
 
     reaction((_) => _checkInStore.checkInSuccess, (isSuccess) async {
       if (isSuccess == true) {
-          _checkInStore.getCheckInInfo(userInfo.companyId, userInfo.username, null);
+        _checkInStore.getCheckInInfo(
+            userInfo.companyId, userInfo.username, null);
       } else if (isSuccess != null) if (_checkInStore.errorAuth == true)
         _showErrorDialog(true);
       else
@@ -224,7 +237,9 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
       });
   }
 
-  var heightScreen =Size.zero;
+  var heightScreen = Size.zero;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -246,7 +261,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                   config: CustomConfig(
                     gradients: _colorGradient,
                     durations: [8000, 5000],
-                    heightPercentages: [0.4, 0.42],
+                    heightPercentages: [0.25, 0.3],
                     gradientBegin: Alignment.topLeft,
                     gradientEnd: Alignment.topRight,
                   ),
@@ -255,24 +270,101 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                   size: Size(MediaQuery.of(context).size.width,
                       MediaQuery.of(context).size.height / 2),
                 ),
+//                Positioned(
+//                  top: 0,
+//                  right: 0,
+//                  child: IconButton(
+//                    icon: Icon(
+//                      Icons.camera_alt,
+//                      color: Colors.white,
+//                    ),
+//                    onPressed: () async {
+//                      var res = await Navigator.pushNamed(
+//                          context, Constants.check_in_camera_screen, arguments: _checkInStore);
+//                      if(res!=null) _checkInStore.getCheckInInfo(userInfo.companyId, userInfo.username, null);
+//                    },
+//                  ),
+//                ),
                 Positioned(
-                  top: 0,
-                  right: 0,
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                    ),
-                    onPressed: () async {
-                      var res = await Navigator.pushNamed(
-                          context, Constants.check_in_camera_screen, arguments: _checkInStore);
-                      if(res!=null) _checkInStore.getCheckInInfo(userInfo.companyId, userInfo.username, null);
-                    },
-                  ),
-                ),
+                    top: 0,
+                    right: -16,
+                    child: AnimatedContainer(
+                        duration: Duration(milliseconds: 500),
+                        width: this.width.toDouble(),
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: Color(0xEEFFFFFF).withOpacity(0.35),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(24))),
+                            child: !isExpanded
+                                ? IconButton(
+                                    icon: Icon(
+                                      Icons.arrow_back_ios,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        isExpanded = !isExpanded;
+                                        width = width == 60 ? 220 : 60;
+                                      });
+                                    },
+                                  )
+                                : Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      IconButton(
+                                        icon: Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            isExpanded = !isExpanded;
+                                            width = width == 60 ? 200 : 60;
+                                          });
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          Icons.camera_alt,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () async {
+                                          var res = await Navigator.pushNamed(
+                                              context,
+                                              Constants.check_in_camera_screen,
+                                              arguments: _checkInStore);
+                                          if (res != null)
+                                            _checkInStore.getCheckInInfo(
+                                                userInfo.companyId,
+                                                userInfo.username,
+                                                null);
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          Icons.scanner,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () => Navigator.push(context,  MaterialPageRoute(builder: (context) => CheckInQRCode()),),
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          Icons.note_add,
+                                          color: Colors.white,
+                                        ),
+                                          onPressed: () => Navigator.pushNamed(
+                                              context,
+                                              Constants.check_in_form,
+                                              arguments: _checkInStore)
+                                      ),
+                                      Container(width: 16),
+                                    ],
+                                  )))),
                 MeasureSize(
-                  onChange: (size){
-                    heightScreen =size;
+                  onChange: (size) {
+                    heightScreen = size;
                   },
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
@@ -284,17 +376,16 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                             Text(now,
                                 style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 60,
+                                    fontSize: 50,
                                     fontWeight: FontWeight.bold)),
                             Text(followingHours == 1 ? " AM" : " PM",
                                 style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 35,
+                                    fontSize: 25,
                                     fontWeight: FontWeight.bold)),
                           ],
                         ),
-                        margin: EdgeInsets.fromLTRB(
-                            0, MediaQuery.of(context).size.height / 9, 0, 0),
+                        margin: EdgeInsets.fromLTRB(0, 56, 0, 0),
                       ),
                       Container(
                         child: Text(
@@ -314,52 +405,55 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                       Container(
                         height: 8,
                       ),
-                      curOffice != null ? Container(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 0, horizontal:0),
-                        margin: EdgeInsets.symmetric(horizontal: 56, vertical: 16),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all( Radius.circular(5))
-                        ),
-                        child: FormField<OfficeDetail>(
-                          builder:
-                              (FormFieldState<OfficeDetail> state) {
-                            return InputDecorator(
-                              decoration: InputDecoration(
-                                  labelText: "Chi nhánh",
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                      BorderRadius.circular(5)),
-                              fillColor: Colors.white,),
-                              isEmpty: curOffice.officeId == '' ||
-                                  curOffice == null,
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<OfficeDetail>(
-                                  value: curOffice,
-                                  isDense: true,
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      curOffice = newValue;
-                                    });
-                                    getUserLocation();
-                                    _checkInStore.setLoading(true);
-                                  },
-                                  items: _checkInStore
-                                      .checkInInfo.officeList
-                                      .map((OfficeDetail value) {
-                                    return DropdownMenuItem<
-                                        OfficeDetail>(
-                                      value: value,
-                                      child: Text(value.officeId),
-                                    );
-                                  }).toList(),
-                                ),
+                      curOffice != null
+                          ? Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 0),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 56, vertical: 8),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
+                              child: FormField<OfficeDetail>(
+                                builder: (FormFieldState<OfficeDetail> state) {
+                                  return InputDecorator(
+                                    decoration: InputDecoration(
+                                      labelText: "Chi nhánh",
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      fillColor: Colors.white,
+                                    ),
+                                    isEmpty: curOffice.officeId == '' ||
+                                        curOffice == null ||
+                                        curOffice.officeId == null,
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<OfficeDetail>(
+                                        value: curOffice,
+                                        isDense: true,
+                                        onChanged: (newValue) {
+                                          setState(() {
+                                            curOffice = newValue;
+                                          });
+                                          getUserLocation();
+                                          _checkInStore.setLoading(true);
+                                        },
+                                        items: _checkInStore
+                                            .checkInInfo.officeList
+                                            .map((OfficeDetail value) {
+                                          return DropdownMenuItem<OfficeDetail>(
+                                            value: value,
+                                            child: Text(value.officeId),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                      ) : Container(),
+                            )
+                          : Container(),
                       Container(
                         width: MediaQuery.of(context).size.width,
                         margin: EdgeInsets.only(top: 8),
@@ -386,7 +480,8 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                                                           .toStringAsFixed(0) +
                                                       " m",
                                                   textAlign: TextAlign.center,
-                                                  style: TextStyle(fontSize: 15)),
+                                                  style:
+                                                      TextStyle(fontSize: 15)),
                                               padding: EdgeInsets.fromLTRB(
                                                   24, 0, 24, 0),
                                             ),
@@ -426,14 +521,15 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                                                             Text(
                                                               "Đã điểm danh ${detailCheckInTimes[index].type == 1 ? "vào ca" : "tan ca"} lúc - ",
                                                               textAlign:
-                                                                  TextAlign.start,
+                                                                  TextAlign
+                                                                      .start,
                                                               style: TextStyle(
                                                                   fontSize: 17),
                                                             ),
                                                             Container(
                                                               padding:
-                                                                  EdgeInsets.all(
-                                                                      4),
+                                                                  EdgeInsets
+                                                                      .all(4),
                                                               decoration:
                                                                   BoxDecoration(
                                                                 border: Border.all(
@@ -446,18 +542,18 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                                                                                 1
                                                                             ? _checkInColor
                                                                             : _checkOutColor),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .all(Radius
-                                                                            .circular(
-                                                                                5)),
+                                                                borderRadius: BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            5)),
                                                               ),
                                                               child: Text(
                                                                 detailCheckInTimes[
                                                                         index]
                                                                     .time,
                                                                 style: TextStyle(
-                                                                    fontSize: 17,
+                                                                    fontSize:
+                                                                        17,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w600),
@@ -491,14 +587,13 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                                                       ),
                                                       child: Center(
                                                         child: new Container(
-                                                          margin:
-                                                              new EdgeInsets.all(
-                                                                  5.0),
+                                                          margin: new EdgeInsets
+                                                              .all(5.0),
                                                           height: 12.0,
                                                           width: 12.0,
                                                           decoration: new BoxDecoration(
-                                                              shape:
-                                                                  BoxShape.circle,
+                                                              shape: BoxShape
+                                                                  .circle,
                                                               color: detailCheckInTimes[
                                                                               index]
                                                                           .type ==
@@ -512,7 +607,8 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                                                 ],
                                               );
                                             },
-                                            itemCount: detailCheckInTimes.length,
+                                            itemCount:
+                                                detailCheckInTimes.length,
                                           ),
                                         )
                                       : Container(
@@ -525,8 +621,8 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                               )
                             : (curOffice == null)
                                 ? Container(
-                                    height:
-                                        MediaQuery.of(context).size.height * 0.6,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.6,
                                     width: double.infinity,
                                     margin: EdgeInsets.only(top: 48),
                                   )
@@ -580,7 +676,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     );
   }
 
-  CheckInParam getCheckInParam(){
+  CheckInParam getCheckInParam() {
     return new CheckInParam(
         username: userInfo.username,
         companyId: userInfo.companyId,
@@ -588,9 +684,12 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
         latitude: _curPosition.latitude,
         longitude: _curPosition.longitude,
         officeId: curOffice.officeId,
-        type: detailCheckInTimes.length==0 ? 1 : detailCheckInTimes[detailCheckInTimes.length-1].type ==1 ? 2 : 1,
-        usedWifi:
-        _connectionStatus.compareTo("wifi") == 0 ? true : false,
+        type: detailCheckInTimes.length == 0
+            ? 1
+            : detailCheckInTimes[detailCheckInTimes.length - 1].type == 1
+                ? 2
+                : 1,
+        usedWifi: _connectionStatus.compareTo("wifi") == 0 ? true : false,
         ip: _connectionStatus.compareTo("wifi") == 0 ? wifiIP : '');
   }
 
