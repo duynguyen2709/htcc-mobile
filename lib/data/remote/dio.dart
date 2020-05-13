@@ -19,6 +19,10 @@ class DioManager {
   static const PATH_CONTACTS = "api/employee/contacts";
   static const PATH_CONTACTS_FILTER = "api/employee/contacts/filter";
   static const PATH_LEAVING = "/api/employee/leaving";
+  static const PATH_NOTIFICATION = "/api/employee/notifications";
+  static const PATH_COUNT_NOTIFICATION = '/api/employee/home/employee';
+  static const PATH_NOTIFICATION_STATUS = '/api/employee/notifications/status';
+
   Dio dio;
 
   factory DioManager() {
@@ -30,8 +34,7 @@ class DioManager {
   }
 
   DioManager._internal() {
-    dio =
-        Dio(BaseOptions(baseUrl: _BASE_URL, connectTimeout: 30000, responseType: ResponseType.json, sendTimeout: 30000));
+    dio = Dio(BaseOptions(baseUrl: _BASE_URL, connectTimeout: 30000, responseType: ResponseType.json, sendTimeout: 30000));
 
     dio.interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
       var sharedPreference = await SharedPreferences.getInstance();

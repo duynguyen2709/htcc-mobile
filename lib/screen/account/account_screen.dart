@@ -5,6 +5,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/screen/account/account_screen_store.dart';
+import 'package:hethongchamcong_mobile/screen/dialog/app_dialog.dart';
 import 'package:hethongchamcong_mobile/screen/widget/circle_icon_button.dart';
 import 'package:hethongchamcong_mobile/screen/widget/empty_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
@@ -92,25 +93,7 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   void _showErrorDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(Constants.titleErrorDialog),
-          content: new Text(accountScreenStore.message),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text(Constants.buttonErrorDialog),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+    AppDialog.showDialogNotify(context, accountScreenStore.message, () {});
   }
 
   @override
@@ -170,8 +153,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             height: 150,
                             decoration: BoxDecoration(
                               color: Colors.black54,
-                              borderRadius:
-                                  BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
                             ),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -450,8 +432,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       },
                       boxDecoration: BoxDecoration(
                           border: Border.all(color: Colors.black45),
-                          borderRadius:
-                              BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
                           color: Colors.white),
                     ),
                     SizedBox(
@@ -489,8 +470,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     CustomTextField(
                       boxDecoration: BoxDecoration(
                           border: Border.all(color: Colors.black45),
-                          borderRadius:
-                              BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
                           color: Colors.white),
                       controller: _controllerTitle,
                       labelText: "Chức danh",
@@ -534,11 +514,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField(
-      {Key key,
-      @required this.controller,
-      @required this.labelText,
-      @required this.textStyle,
-      @required this.boxDecoration})
+      {Key key, @required this.controller, @required this.labelText, @required this.textStyle, @required this.boxDecoration})
       : super(key: key);
 
   final TextEditingController controller;
@@ -640,13 +616,10 @@ class _CustomSuffixTextFieldState extends State<CustomSuffixTextField> {
                         color: Colors.black,
                         icon: Icon(Icons.date_range),
                         onPressed: () {
-                          DatePicker.showDatePicker(context, showTitleActions: true, onChanged: (date) {},
-                              onConfirm: (date) {
+                          DatePicker.showDatePicker(context, showTitleActions: true, onChanged: (date) {}, onConfirm: (date) {
                             widget.controller.text = DateFormat('yyyy-MM-dd').format(date);
                             widget.callbackUpdateStore(widget.controller.text);
-                          },
-                              currentTime: DateFormat('yyyy-MM-dd').parse(widget.controller.text),
-                              locale: LocaleType.vi);
+                          }, currentTime: DateFormat('yyyy-MM-dd').parse(widget.controller.text), locale: LocaleType.vi);
                         })
                     : IconButton(
                         icon: Icon(
@@ -656,8 +629,8 @@ class _CustomSuffixTextFieldState extends State<CustomSuffixTextField> {
                         onPressed: () {
                           showDialog(
                               context: context,
-                              child: Dialog(
-                                child: FormOneTextField(
+                              child: AppDialog(
+                                FormOneTextField(
                                   validateCallBack: widget.validateCallBack,
                                   errorText: widget.errorText,
                                   labelText: widget.labelText,
@@ -716,73 +689,59 @@ class _FormOneTextFieldState extends State<FormOneTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height / 3 + 20,
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text("Chỉnh sửa"),
-          centerTitle: true,
-        ),
-        body: Container(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    style: widget.textStyle,
-                    controller: textController,
-                    keyboardType: widget.textInputType,
-                    decoration: InputDecoration(
-                        errorText: _validate ? null : widget.errorText,
-                        contentPadding: EdgeInsets.only(top: 5),
-                        labelText: widget.labelText,
-                        labelStyle: TextStyle(color: Colors.black45, fontSize: 15),
-                        disabledBorder: InputBorder.none),
-                  ),
-                ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: RaisedButton(
-                          child: Text("Hủy bỏ"),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: RaisedButton(
-                          child: Text("Đồng ý"),
-                          onPressed: () {
-                            if (widget.validateCallBack(textController.text)) {
-                              _validate = true;
-                              widget.callbackUpdateStore(textController.text);
-                              widget.controller.text = textController.text;
-                              Navigator.pop(context);
-                            } else {
-                              setState(() {
-                                _validate = false;
-                              });
-                            }
-                          },
-                        ),
-                      ),
-                    )
-                  ],
-                )
-              ],
-            ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextFormField(
+            style: widget.textStyle,
+            controller: textController,
+            keyboardType: widget.textInputType,
+            decoration: InputDecoration(
+                errorText: _validate ? null : widget.errorText,
+                contentPadding: EdgeInsets.only(top: 5),
+                labelText: widget.labelText,
+                labelStyle: TextStyle(color: Colors.black45, fontSize: 15),
+                disabledBorder: InputBorder.none),
           ),
         ),
-      ),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: RaisedButton(
+                  child: Text("Hủy bỏ"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: RaisedButton(
+                  child: Text("Đồng ý"),
+                  onPressed: () {
+                    if (widget.validateCallBack(textController.text)) {
+                      _validate = true;
+                      widget.callbackUpdateStore(textController.text);
+                      widget.controller.text = textController.text;
+                      Navigator.pop(context);
+                    } else {
+                      setState(() {
+                        _validate = false;
+                      });
+                    }
+                  },
+                ),
+              ),
+            )
+          ],
+        )
+      ],
     );
   }
 }

@@ -26,7 +26,7 @@ void main() async {
 
   List<UserData> users;
 
-  await FireBaseNotifications.getInstance().setUpFirebase();
+  FireBaseNotifications.getInstance().setUpFirebase();
 
   if (usersJson != null && usersJson.isNotEmpty) {
     users = userDataFromJson(usersJson);
@@ -51,8 +51,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     var config = ConfigWrapper.of(context);
+
     DioManager.setBaseUrl(config.baseURL);
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,

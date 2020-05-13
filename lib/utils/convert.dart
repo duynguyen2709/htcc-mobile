@@ -9,7 +9,11 @@ class Convert {
     return DateFormat("yyyyMMdd").parse(dateTime.toString());
   }
 
-  static String convertDateToString(DateTime dateTime){
+  static String convertDateToString(DateTime dateTime) {
     return DateFormat("dd-MM-yyyy").format(dateTime);
+  }
+
+  static DateTime convertStringToDate(String dateTime) {
+    return DateFormat("dd/MM/yyyy").parse(dateTime);
   }
 }

@@ -1,5 +1,6 @@
 class Constants {
   //Route
+
   static const String ic_logo = "assets/logo.png";
   static const String isLogin = "";
   static const String login_screen = "/login";
@@ -19,6 +20,7 @@ class Constants {
   static const String contacts_screen = "/contacts";
 
   //Shared preference
+
   static const String IS_LOGIN = "islogin";
   static const String TOKEN = "token";
   static const String USER = "user";
@@ -34,6 +36,17 @@ class Constants {
   static const String UPDATE_SUCCESSFUL = "Cập nhật thành công!";
 
   //Status Model
+
+  //Flag Screen
+
+  static const int defaultScreen = 0;
+  static const int checkInScreen = 1;
+  static const int leavingScreen = 2;
+  static const int statisticScreen = 3;
+  static const int accountScreen = 4;
+  static const int contactScreen = 5;
+  static const int salaryScreen = 6;
+  static const int complaintScreen = 7;
 
   //UI
   static String userName = "";

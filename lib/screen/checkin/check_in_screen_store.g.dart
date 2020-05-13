@@ -80,6 +80,23 @@ mixin _$CheckInStore on _CheckInStore, Store {
     }, _$errorMsgAtom, name: '${_$errorMsgAtom.name}_set');
   }
 
+  final _$messageAtom = Atom(name: '_CheckInStore.message');
+
+  @override
+  String get message {
+    _$messageAtom.context.enforceReadPolicy(_$messageAtom);
+    _$messageAtom.reportObserved();
+    return super.message;
+  }
+
+  @override
+  set message(String value) {
+    _$messageAtom.context.conditionallyRunInAction(() {
+      super.message = value;
+      _$messageAtom.reportChanged();
+    }, _$messageAtom, name: '${_$messageAtom.name}_set');
+  }
+
   final _$errorAuthAtom = Atom(name: '_CheckInStore.errorAuth');
 
   @override
@@ -149,6 +166,14 @@ mixin _$CheckInStore on _CheckInStore, Store {
     return _$checkInAsyncAction.run(() => super.checkIn(param));
   }
 
+  final _$checkInImageAsyncAction = AsyncAction('checkInImage');
+
+  @override
+  Future checkInImage(CheckInParam param, MultipartFile image) {
+    return _$checkInImageAsyncAction
+        .run(() => super.checkInImage(param, image));
+  }
+
   final _$_CheckInStoreActionController =
       ActionController(name: '_CheckInStore');
 
@@ -165,7 +190,7 @@ mixin _$CheckInStore on _CheckInStore, Store {
   @override
   String toString() {
     final string =
-        'isLoading: ${isLoading.toString()},getInfoCheckInSuccess: ${getInfoCheckInSuccess.toString()},checkInSuccess: ${checkInSuccess.toString()},errorMsg: ${errorMsg.toString()},errorAuth: ${errorAuth.toString()},checkInInfo: ${checkInInfo.toString()},currentCheckInOffice: ${currentCheckInOffice.toString()}';
+        'isLoading: ${isLoading.toString()},getInfoCheckInSuccess: ${getInfoCheckInSuccess.toString()},checkInSuccess: ${checkInSuccess.toString()},errorMsg: ${errorMsg.toString()},message: ${message.toString()},errorAuth: ${errorAuth.toString()},checkInInfo: ${checkInInfo.toString()},currentCheckInOffice: ${currentCheckInOffice.toString()}';
     return '{$string}';
   }
 }

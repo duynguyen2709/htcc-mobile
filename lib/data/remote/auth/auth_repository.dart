@@ -52,7 +52,10 @@ class AuthRepository extends BaseRepository {
     try {
       var sharedPreference = await SharedPreferences.getInstance();
 
-      var response = await dio.post(DioManager.PATH_LOGOUT);
+      var response = await dio.post(DioManager.PATH_LOGOUT,
+          queryParameters: {'tokenPush': await FireBaseNotifications.getInstance().fireBaseMessaging.getToken()});
+
+      FireBaseNotifications.getInstance().shouldHandle = false;
 
       ApiResponse<Empty> logOutResponse = ApiResponse.fromJson(response.data, (json) => Empty.fromJson(json));
       if (logOutResponse.returnCode == 1) {
@@ -96,8 +99,7 @@ class AuthRepository extends BaseRepository {
       var response = await dio.put(DioManager.PATH_CHANGE_PASSWORD, data: map);
       var result = handleResponse(response, (json) => Empty.fromJson(json));
       if (result is Success) {
-        updatePassword(
-            sharedPreferences, User.fromJson(jsonDecode(sharedPreferences.getString(Constants.USER))), newPassword);
+        updatePassword(sharedPreferences, User.fromJson(jsonDecode(sharedPreferences.getString(Constants.USER))), newPassword);
       }
       return result;
     } catch (error) {
