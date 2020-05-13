@@ -14,6 +14,7 @@ import 'package:hethongchamcong_mobile/utils/MeasureSize.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 
+import 'complaint_form.dart';
 import 'complaint_store.dart';
 
 class ComplaintList extends StatefulWidget {
@@ -26,8 +27,7 @@ class ComplaintList extends StatefulWidget {
   ComplaintListState createState() => ComplaintListState(store, isSuccessList);
 }
 
-class ComplaintListState extends State<ComplaintList>
-    with AutomaticKeepAliveClientMixin<ComplaintList> {
+class ComplaintListState extends State<ComplaintList> with AutomaticKeepAliveClientMixin<ComplaintList> {
   bool isAnonymously = false;
   final ComplaintStore store;
   final bool isSuccessList;
@@ -42,7 +42,7 @@ class ComplaintListState extends State<ComplaintList>
   @override
   void initState() {
     super.initState();
-    if(store.listComplaint!=null) {
+    if (store.listComplaint != null) {
       if (store.listComplaint.length == 0) {
         list = List();
         setState(() {
@@ -51,13 +51,9 @@ class ComplaintListState extends State<ComplaintList>
         });
       } else {
         if (isSuccessList)
-          list = store.listComplaint
-              .where((element) => element.status !=2)
-              .toList();
+          list = store.listComplaint.where((element) => element.status != 2).toList();
         else
-          list = store.listComplaint
-              .where((element) => element.status ==2)
-              .toList();
+          list = store.listComplaint.where((element) => element.status == 2).toList();
         setState(() {
           isEmpty = false;
           isError = false;
@@ -74,13 +70,9 @@ class ComplaintListState extends State<ComplaintList>
           });
         } else {
           if (isSuccessList)
-            list = store.listComplaint
-                .where((element) => element.status !=2)
-                .toList();
+            list = store.listComplaint.where((element) => element.status != 2).toList();
           else
-            list = store.listComplaint
-                .where((element) => element.status ==2)
-                .toList();
+            list = store.listComplaint.where((element) => element.status == 2).toList();
           setState(() {
             isEmpty = false;
             isError = false;
@@ -93,6 +85,7 @@ class ComplaintListState extends State<ComplaintList>
       }
     });
   }
+
   Future<void> _refresh() async {
     return await store.refresh();
   }
@@ -106,38 +99,33 @@ class ComplaintListState extends State<ComplaintList>
         RefreshIndicator(
           onRefresh: _refresh,
           child: MeasureSize(
-            onChange: (size){
+            onChange: (size) {
               screenSize = size;
             },
-            child: (isEmpty &&
-                DateFormat('yyyyMM')
-                    .format(store.monthQuery)
-                    .compareTo(DateFormat('yyyyMM').format(now)) ==
-                    0)
+            child: (isEmpty && DateFormat('yyyyMM').format(store.monthQuery).compareTo(DateFormat('yyyyMM').format(now)) == 0)
                 ? ListView(
-              physics: AlwaysScrollableScrollPhysics(),
-              children: <Widget>[
-                suggestAddComplaint,
-              ],
-                )
+                    physics: AlwaysScrollableScrollPhysics(),
+                    children: <Widget>[
+                      suggestAddComplaint,
+                    ],
+                  )
                 : (!isEmpty)
-                ? Column(
-              children: <Widget>[
-                Expanded(
-                  child: ListView.builder(
-                    itemBuilder: (context, index) =>
-                        buildComplaintItem(list[index]),
-                    itemCount: list.length,
-                  ),
-                ),
-              ],
-            )
-                : ListView(
-              physics: AlwaysScrollableScrollPhysics(),
-              children: <Widget>[
-                emptyPage,
-              ],
-            ),
+                    ? Column(
+                        children: <Widget>[
+                          Expanded(
+                            child: ListView.builder(
+                              itemBuilder: (context, index) => buildComplaintItem(list[index]),
+                              itemCount: list.length,
+                            ),
+                          ),
+                        ],
+                      )
+                    : ListView(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        children: <Widget>[
+                          emptyPage,
+                        ],
+                      ),
           ),
         ),
         Observer(builder: (_) {
@@ -212,9 +200,7 @@ class ComplaintListState extends State<ComplaintList>
                           height: 18,
                           width: 18,
                           margin: EdgeInsets.fromLTRB(8, 0, 8, 0),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: codeToColor(model.status)),
+                          decoration: BoxDecoration(shape: BoxShape.circle, color: codeToColor(model.status)),
                         ),
                         Expanded(
                           child: Padding(
@@ -227,14 +213,11 @@ class ComplaintListState extends State<ComplaintList>
                                   child: Text(
                                     model.complaintId,
                                     maxLines: 1,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                   ),
                                 ),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(4, 2, 4, 8),
+                                  padding: const EdgeInsets.fromLTRB(4, 2, 4, 8),
                                   child: Text(
                                     model.content.last,
                                     overflow: TextOverflow.ellipsis,
@@ -257,17 +240,12 @@ class ComplaintListState extends State<ComplaintList>
                                         alignment: Alignment.center,
                                         padding: EdgeInsets.all(4),
                                         decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: codeToColor(model.status),
-                                          width: 2),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5)),
+                                          border: Border.all(color: codeToColor(model.status), width: 2),
+                                          borderRadius: BorderRadius.all(Radius.circular(5)),
                                         ),
                                         child: Text(
                                           codeToStatus(model.status),
-                                          style: TextStyle(
-                                              fontStyle: FontStyle.italic,
-                                              fontWeight: FontWeight.bold),
+                                          style: TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -290,9 +268,7 @@ class ComplaintListState extends State<ComplaintList>
                       height: Random().nextInt(100).toDouble() + 40,
                       width: Random().nextInt(100).toDouble() + 40,
                       margin: EdgeInsets.fromLTRB(8, 0, 8, 12),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.blue.withOpacity(0.4)),
+                      decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.blue.withOpacity(0.4)),
                     ),
                   ),
                   Positioned(
@@ -303,9 +279,7 @@ class ComplaintListState extends State<ComplaintList>
                       height: Random().nextInt(100).toDouble() + 40,
                       width: Random().nextInt(100).toDouble() + 40,
                       margin: EdgeInsets.fromLTRB(8, 0, 8, 12),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.blueAccent.withOpacity(0.3)),
+                      decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.blueAccent.withOpacity(0.3)),
                     ),
                   ),
                 ],
@@ -350,10 +324,7 @@ class ComplaintListState extends State<ComplaintList>
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15))),
+                  color: Colors.blue, borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15))),
               child: Image.asset(
                 "./assets/empty_complaint.png",
                 height: 300,
@@ -364,10 +335,7 @@ class ComplaintListState extends State<ComplaintList>
             Container(
               width: MediaQuery.of(context).size.width - 50,
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(15),
-                      bottomRight: Radius.circular(15))),
+                  color: Colors.white, borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -377,17 +345,20 @@ class ComplaintListState extends State<ComplaintList>
                     child: Text(
                       "Bạn cần hỗ trợ hoặc góp ý ?",
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 20,
-                          color: Colors.black),
+                      style: TextStyle(fontWeight: FontWeight.w400, fontSize: 20, color: Colors.black),
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(16),
                     child: RaisedButton.icon(
                       onPressed: () {
-                        Navigator.of(context).pushNamed(Constants.complaint_form);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ComplaintForm(
+                                    store: store,
+                                  )),
+                        );
                       },
                       icon: Icon(
                         Icons.note_add,

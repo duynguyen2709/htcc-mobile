@@ -86,6 +86,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
               ),
               onPressed: () async  {
                 final res= await Navigator.push(context,  MaterialPageRoute(builder: (context) => ComplaintForm(store: store,)),);
+
                 if(res.toString().compareTo('Success')==0){
                   store.getComplaint(currentMonth);
                 }

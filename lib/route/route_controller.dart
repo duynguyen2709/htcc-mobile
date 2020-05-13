@@ -31,13 +31,16 @@ SlideCustomRoute initialSlideRoutes(RouteSettings settings) {
     case Constants.login_screen:
       return new SlideCustomRoute(
           builder: (_) => new LoginScreen(), settings: settings, routeName: Constants.login_screen);
-    case Constants.home_screen:
+    case Constants.home_screen: {
+      int index = settings.arguments as int;
       return new SlideCustomRoute(
           builder: (_) => new MainScreen(
-                title: "Welcome to Flutter app",
-              ),
+            title: "Welcome to Flutter app",
+            index: (index != null) ? index : 0,
+          ),
           settings: settings,
           routeName: Constants.main_screen);
+    }
     case Constants.account_screen:
       return new SlideCustomRoute(
           builder: (_) => new AccountScreen(), settings: settings, routeName: Constants.main_screen);

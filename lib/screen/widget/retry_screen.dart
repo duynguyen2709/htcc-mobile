@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 class RetryScreen extends StatelessWidget {
   final Function refresh;
 
-  RetryScreen({this.refresh});
+  final String msg;
+
+  RetryScreen({this.refresh, this.msg = "Đã có lỗi xảy ra. Vui lòng thử lại!"});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +13,7 @@ class RetryScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text("Đã có lỗi xảy ra. Vui lòng thử lại!"),
+          Text(msg),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[Icon(Icons.rotate_left), Text("Thử lại")],

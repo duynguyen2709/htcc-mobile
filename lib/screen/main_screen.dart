@@ -1,7 +1,10 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/leaving_screen.dart';
+import 'package:hethongchamcong_mobile/screen/main_screen_store.dart';
 import 'package:hethongchamcong_mobile/screen/more/more_screen.dart';
 import 'package:hethongchamcong_mobile/screen/notification/notification_screen.dart';
 import 'package:hethongchamcong_mobile/utils/firebase_notifications.dart';
@@ -11,15 +14,20 @@ import 'statistic/statisic_screen.dart';
 class MainScreen extends StatefulWidget {
   final String title;
 
-  MainScreen({this.title});
+  final int index;
+
+  MainScreen({this.title, this.index = 0});
 
   @override
   MainScreenState createState() => MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen> {
+class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   int _selectedPage = 0;
+
   bool isHide = false;
+
+  MainScreenStore mainScreenStore;
 
 //  final _pageOptions = [
 //    CheckInLocationPage(
@@ -35,12 +43,42 @@ class MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    FireBaseNotifications.getInstance().firebaseCloudMessagingListeners(context);
+
+    FireBaseNotifications.getInstance().shouldHandle = true;
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
 
+    _selectedPage = widget.index;
 
+    mainScreenStore = MainScreenStore();
+
+    FireBaseNotifications.getInstance().notifyStream.listen((int event) {
+      mainScreenStore.getCountNotification();
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+//    FireBaseNotifications.getInstance().notifyStream.close();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      mainScreenStore.getCountNotification();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    mainScreenStore.getCountNotification();
   }
 
   @override
@@ -61,7 +99,9 @@ class MainScreenState extends State<MainScreen> {
         parent: this,
       ),
       StatisticScreen(),
-      NotificationScreen(),
+      NotificationScreen(
+        mainScreenState: this,
+      ),
       MoreScreen()
     ];
     return Scaffold(
@@ -105,8 +145,7 @@ class MainScreenState extends State<MainScreen> {
     return Container(
       decoration: BoxDecoration(
         color: Color(0xEef7f7f7).withBlue(130),
-        borderRadius:
-            new BorderRadius.only(topLeft: const Radius.circular(20.0), topRight: const Radius.circular(20.0)),
+        borderRadius: new BorderRadius.only(topLeft: const Radius.circular(20.0), topRight: const Radius.circular(20.0)),
         boxShadow: [
           BoxShadow(
             color: Colors.grey,
@@ -128,7 +167,22 @@ class MainScreenState extends State<MainScreen> {
             BottomNavigationBarItem(icon: ImageIcon(AssetImage("./assets/checkin.png")), title: Text('Điểm danh')),
             BottomNavigationBarItem(icon: ImageIcon(AssetImage("./assets/leaving.png")), title: Text('Xin nghỉ phép')),
             BottomNavigationBarItem(icon: ImageIcon(AssetImage("./assets/statistics.png")), title: Text('Thống kê')),
-            BottomNavigationBarItem(icon: ImageIcon(AssetImage("./assets/noti.png")), title: Text('Thông báo')),
+            BottomNavigationBarItem(
+              icon: Observer(
+                builder: (BuildContext context) {
+                  return (mainScreenStore.number > 0)
+                      ? Badge(
+                          badgeContent: Text(
+                            mainScreenStore.number.toString(),
+                            style: TextStyle(color: Colors.white, fontSize: 12),
+                          ),
+                          child: ImageIcon(AssetImage("./assets/noti.png")),
+                        )
+                      : ImageIcon(AssetImage("./assets/noti.png"));
+                },
+              ),
+              title: Text('Thông báo'),
+            ),
             BottomNavigationBarItem(icon: Icon(Icons.more_horiz), title: Text('Thêm')),
           ],
           selectedItemColor: Colors.lightBlue,
@@ -153,4 +207,10 @@ class MainScreenState extends State<MainScreen> {
   }
 
   int getSelectedIndex() => _selectedPage;
+
+  setSelectedPage(int index) {
+    setState(() {
+      _selectedPage = index;
+    });
+  }
 }

@@ -53,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (checkLogin == true) {
         SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
         sharedPreferences.setBool(Constants.IS_LOGIN, true);
-        Navigator.pushReplacementNamed(context, Constants.home_screen);
+        Navigator.pushNamedAndRemoveUntil(context,Constants.home_screen, (Route<dynamic> route) => false);
       } else if (loginScreenStore.errorMessage != null && loginScreenStore.errorMessage.isNotEmpty)
         _showErrorDialog(loginScreenStore.errorMessage);
     });
@@ -62,7 +62,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    FireBaseNotifications.getInstance().firebaseCloudMessagingListeners(context);
   }
 
   void _login() async {
