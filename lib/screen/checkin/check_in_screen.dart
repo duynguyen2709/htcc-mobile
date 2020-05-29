@@ -6,6 +6,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,6 +14,7 @@ import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/local/shared_preference.dart';
 import 'package:hethongchamcong_mobile/data/model/check_in_info.dart';
 import 'package:hethongchamcong_mobile/data/model/check_in_param.dart';
+import 'package:hethongchamcong_mobile/data/model/qr_code_data.dart';
 import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_form.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen_store.dart';
@@ -100,6 +102,9 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
 
   var width = 60;
   var isExpanded = false;
+
+  String _scanBarcode = 'Unknown';
+
 
   @override
   void initState() {
@@ -239,8 +244,6 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
 
   var heightScreen = Size.zero;
 
-
-
   @override
   Widget build(BuildContext context) {
     _getTime();
@@ -289,7 +292,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                     top: 0,
                     right: -16,
                     child: AnimatedContainer(
-                        duration: Duration(milliseconds: 500),
+                        duration: Duration(milliseconds: 100),
                         width: this.width.toDouble(),
                         child: Container(
                             decoration: BoxDecoration(
@@ -347,18 +350,16 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                                           Icons.scanner,
                                           color: Colors.white,
                                         ),
-                                        onPressed: () => Navigator.push(context,  MaterialPageRoute(builder: (context) => CheckInQRCode()),),
+                                        onPressed: () => scanQR()
                                       ),
                                       IconButton(
-                                        icon: Icon(
-                                          Icons.note_add,
-                                          color: Colors.white,
-                                        ),
+                                          icon: Icon(
+                                            Icons.note_add,
+                                            color: Colors.white,
+                                          ),
                                           onPressed: () => Navigator.pushNamed(
-                                              context,
-                                              Constants.check_in_form,
-                                              arguments: _checkInStore)
-                                      ),
+                                              context, Constants.check_in_form,
+                                              arguments: _checkInStore)),
                                       Container(width: 16),
                                     ],
                                   )))),
@@ -527,11 +528,8 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                                                                   fontSize: 17),
                                                             ),
                                                             Container(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(4),
-                                                              decoration:
-                                                                  BoxDecoration(
+                                                              padding: EdgeInsets.all(4),
+                                                              decoration: BoxDecoration(
                                                                 border: Border.all(
                                                                     color: !detailCheckInTimes[
                                                                                 index]
@@ -693,6 +691,47 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
         ip: _connectionStatus.compareTo("wifi") == 0 ? wifiIP : '');
   }
 
+  CheckInParam getCheckInParamQR(QRCodeData data) {
+    return new CheckInParam(
+        username: userInfo.username,
+        companyId: userInfo.companyId,
+        clientTime: data.genTime,
+        latitude: 0,
+        longitude: 0,
+        officeId: data.officeId,
+        type: detailCheckInTimes.length == 0
+            ? 1
+            : detailCheckInTimes[detailCheckInTimes.length - 1].type == 1
+            ? 2
+            : 1,
+        qrCodeId: data.qrCodeId,
+        usedWifi: _connectionStatus.compareTo("wifi") == 0 ? true : false,
+        ip: _connectionStatus.compareTo("wifi") == 0 ? wifiIP : '');
+  }
+
+
+  Future<void> scanQR() async {
+    String barcodeScanRes;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.QR);
+      print(barcodeScanRes);
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _scanBarcode = barcodeScanRes;
+      checkInQR();
+    });
+  }
+
   Widget _checkInButton(bool isCompanyZone) {
     return GestureDetector(
       onTap: (!isInCompanyZone || isOffDay)
@@ -744,14 +783,8 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
   }
 
   openAlertBox(
-      bool isCheckout, String timeValid, String timeNow, Function onContinue) {
-    String content = "";
-    if (isCheckout) {
-      content = "Giờ tan ca hợp lệ là $timeValid. Bạn muốn tan ca sớm ?";
-    } else {
-      content =
-          "Đã trễ giờ điểm danh. Giờ điểm danh hợp lệ là $timeValid. Bạn vẫn muốn điểm danh ?";
-    }
+      String content, bool isOneOption, Function onContinue) {
+
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -873,5 +906,11 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
         );
       },
     );
+  }
+
+  void checkInQR() {
+    QRCodeData data = QRCodeData.fromJson(
+          jsonDecode(_scanBarcode));
+    _checkInStore.checkInQR(getCheckInParamQR(data));
   }
 }

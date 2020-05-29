@@ -37,8 +37,8 @@ abstract class _CheckInStore with Store {
   OfficeDetail currentCheckInOffice;
 
   @action
-  setLoading(bool isLoading){
-    this.isLoading =isLoading;
+  setLoading(bool isLoading) {
+    this.isLoading = isLoading;
   }
 
   @action
@@ -46,22 +46,24 @@ abstract class _CheckInStore with Store {
     getInfoCheckInSuccess = null;
     errorMsg = null;
     errorAuth = null;
-    isLoading=true;
+    isLoading = true;
     try {
       var response = await Injector.checkInRepository
           .getCheckInInfo(companyId: companyId, username: username, date: date);
       switch (response.runtimeType) {
         case Success:
           {
-            isLoading=false;
+            isLoading = false;
             getInfoCheckInSuccess = true;
             checkInInfo = (response as Success).data;
-            currentCheckInOffice = checkInInfo.officeList.length > 0 ? checkInInfo.officeList[0] : currentCheckInOffice;
+            currentCheckInOffice = checkInInfo.officeList.length > 0
+                ? checkInInfo.officeList[0]
+                : currentCheckInOffice;
             break;
           }
         case Error:
           {
-            isLoading=false;
+            isLoading = false;
             switch ((response as Error).status) {
               case Status.ERROR_NETWORK:
                 {
@@ -130,47 +132,131 @@ abstract class _CheckInStore with Store {
     }
   }
 
-
-    @action
-    checkInImage(CheckInParam param, MultipartFile image) async {
-      checkInSuccess = null;
-      errorMsg = null;
-      isLoading = true;
-      errorAuth = null;
-      message= null;
-      try {
-        var response = await Injector.checkInRepository.checkInImage(param, image);
-        if (response is Success) {
-          isLoading = false;
-          checkInSuccess = true;
-          message = response.msg;
-        } else {
-          checkInSuccess = false;
-          switch ((response as Error).status) {
-            case Status.ERROR_NETWORK:
-              {
-                isLoading = false;
-                errorMsg = (response as Error).msg;
-                break;
-              }
-            case Status.ERROR_AUTHENTICATE:
-              {
-                isLoading = false;
-                errorMsg = Constants.MESSAGE_AUTHENTICATE;
-                errorAuth = true;
-                break;
-              }
-            default:
-              {
-                isLoading = false;
-                errorMsg = (response as Error).msg;
-                break;
-              }
-          }
-        }
-      } catch (error) {
-        errorMsg = error.toString();
+  @action
+  checkInImage(CheckInParam param, MultipartFile image) async {
+    checkInSuccess = null;
+    errorMsg = null;
+    isLoading = true;
+    errorAuth = null;
+    message = null;
+    try {
+      var response =
+          await Injector.checkInRepository.checkInImage(param, image);
+      if (response is Success) {
         isLoading = false;
+        checkInSuccess = true;
+        message = response.msg;
+      } else {
+        checkInSuccess = false;
+        switch ((response as Error).status) {
+          case Status.ERROR_NETWORK:
+            {
+              isLoading = false;
+              errorMsg = (response as Error).msg;
+              break;
+            }
+          case Status.ERROR_AUTHENTICATE:
+            {
+              isLoading = false;
+              errorMsg = Constants.MESSAGE_AUTHENTICATE;
+              errorAuth = true;
+              break;
+            }
+          default:
+            {
+              isLoading = false;
+              errorMsg = (response as Error).msg;
+              break;
+            }
+        }
       }
+    } catch (error) {
+      errorMsg = error.toString();
+      isLoading = false;
     }
+  }
+
+  @action
+  checkInQR(CheckInParam param) async {
+    checkInSuccess = null;
+    errorMsg = null;
+    isLoading = true;
+    errorAuth = null;
+    try {
+      var response = await Injector.checkInRepository.checkInQR(param);
+      if (response is Success) {
+        isLoading = false;
+        checkInSuccess = true;
+        message = response.msg;
+      } else {
+        checkInSuccess = false;
+        switch ((response as Error).status) {
+          case Status.ERROR_NETWORK:
+            {
+              isLoading = false;
+              errorMsg = (response as Error).msg;
+              break;
+            }
+          case Status.ERROR_AUTHENTICATE:
+            {
+              isLoading = false;
+              errorMsg = Constants.MESSAGE_AUTHENTICATE;
+              errorAuth = true;
+              break;
+            }
+          default:
+            {
+              isLoading = false;
+              errorMsg = (response as Error).msg;
+              break;
+            }
+        }
+      }
+    } catch (error) {
+      errorMsg = error.toString();
+      isLoading = false;
+    }
+  }
+
+  @action
+  checkInForm(CheckInParam param) async {
+    checkInSuccess = null;
+    errorMsg = null;
+    isLoading = true;
+    errorAuth = null;
+    try {
+      var response = await Injector.checkInRepository.checkInForm(param);
+      if (response is Success) {
+        isLoading = false;
+        checkInSuccess = true;
+        message = response.msg;
+      } else {
+        checkInSuccess = false;
+        switch ((response as Error).status) {
+          case Status.ERROR_NETWORK:
+            {
+              isLoading = false;
+              errorMsg = (response as Error).msg;
+              break;
+            }
+          case Status.ERROR_AUTHENTICATE:
+            {
+              isLoading = false;
+              errorMsg = Constants.MESSAGE_AUTHENTICATE;
+              errorAuth = true;
+              break;
+            }
+          default:
+            {
+              isLoading = false;
+              errorMsg = (response as Error).msg;
+              break;
+            }
+        }
+      }
+    } catch (error) {
+      errorMsg = error.toString();
+      isLoading = false;
+    }
+  }
 }

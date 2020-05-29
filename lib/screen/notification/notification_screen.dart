@@ -26,7 +26,8 @@ class NotificationScreen extends StatefulWidget {
   _NotificationScreenState createState() => _NotificationScreenState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen> with WidgetsBindingObserver {
+class _NotificationScreenState extends State<NotificationScreen>
+    with WidgetsBindingObserver {
   NotificationScreenStore notificationScreenStore;
 
   GlobalKey<PagedListViewState> globalKey = GlobalKey();
@@ -75,7 +76,8 @@ class _NotificationScreenState extends State<NotificationScreen> with WidgetsBin
   }
 
   _scrollListener() {
-    if (controller.offset >= controller.position.maxScrollExtent && !controller.position.outOfRange) {
+    if (controller.offset >= controller.position.maxScrollExtent &&
+        !controller.position.outOfRange) {
       loadMore();
     }
   }
@@ -129,33 +131,31 @@ class _NotificationScreenState extends State<NotificationScreen> with WidgetsBin
     return (model.hasRead)
         ? Container(
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.fromLTRB(8, 2, 8, 4),
+            padding: EdgeInsets.fromLTRB(8, 0, 8, 2),
             child: Card(
               child: InkWell(
                 onTap: () {
-                  log(model.screenId.toString());
                   routeHandling(model.screenId);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Container(
                         width: 35,
                         height: 35,
                         margin: EdgeInsets.all(8),
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100.0),
-                            child: FadeInImage.assetNetwork(
-                              placeholder: 'assets/gif/loading.gif',
-                              image: model.iconUrl,
-                              fit: BoxFit.cover,
-                            )),
+                        child: FadeInImage.assetNetwork(
+                          placeholder: 'assets/gif/loading.gif',
+                          image: model.iconUrl,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 8, left: 8, bottom: 8, right: 15),
+                          padding: const EdgeInsets.only(
+                              top: 8, left: 8, bottom: 8, right: 15),
                           child: Container(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,8 +164,11 @@ class _NotificationScreenState extends State<NotificationScreen> with WidgetsBin
                                   padding: const EdgeInsets.only(bottom: 2.0),
                                   child: Text(
                                     model.title,
+                                    overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,color: Colors.grey),
                                   ),
                                 ),
                                 Padding(
@@ -174,12 +177,13 @@ class _NotificationScreenState extends State<NotificationScreen> with WidgetsBin
                                     model.content,
                                     maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(color: Colors.grey),
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 2.0),
                                   child: Text(
-                                    model.date,
+                                    '${model.date} - ${model.time}',
                                     style: TextStyle(color: Colors.grey),
                                   ),
                                 )
@@ -196,51 +200,56 @@ class _NotificationScreenState extends State<NotificationScreen> with WidgetsBin
           )
         : Container(
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.fromLTRB(8, 2, 8, 4),
-            child: ClipRect(
-              child: Banner(
-                child: Card(
+            padding: EdgeInsets.fromLTRB(8, 0, 8, 2),
+            child: Stack(
+              children: <Widget>[
+                Card(
+                  elevation: 8,
                   child: InkWell(
                     onTap: () {
-                      notificationScreenStore.updateStatusNotification(model.notiId, 1);
+                      notificationScreenStore.updateStatusNotification(
+                          model.notiId, 1);
                       widget.mainScreenState.mainScreenStore.setNumber(1);
-                      log(model.screenId.toString());
                       routeHandling(model.screenId);
                     },
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Container(
                             width: 35,
                             height: 35,
                             margin: EdgeInsets.all(8),
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(100.0),
-                                child: FadeInImage.assetNetwork(
-                                  placeholder: 'assets/gif/loading.gif',
-                                  image: model.iconUrl,
-                                  fit: BoxFit.cover,
-                                )),
+                            child: FadeInImage.assetNetwork(
+                              placeholder: 'assets/gif/loading.gif',
+                              image: model.iconUrl,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.only(top: 8, left: 8, bottom: 8, right: 15),
+                              padding: const EdgeInsets.only(
+                                  top: 8, left: 8, bottom: 8, right: 15),
                               child: Container(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Padding(
-                                      padding: const EdgeInsets.only(bottom: 2.0),
+                                      padding:
+                                          const EdgeInsets.only(bottom: 2.0),
                                       child: Text(
                                         model.title,
                                         maxLines: 1,
-                                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16),
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(bottom: 4.0),
+                                      padding:
+                                          const EdgeInsets.only(bottom: 4.0),
                                       child: Text(
                                         model.content,
                                         maxLines: 3,
@@ -248,10 +257,10 @@ class _NotificationScreenState extends State<NotificationScreen> with WidgetsBin
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(bottom: 2.0),
+                                      padding:
+                                          const EdgeInsets.only(bottom: 2.0, top: 4),
                                       child: Text(
-                                        model.date,
-                                        style: TextStyle(color: Colors.grey),
+                                        '${model.date} - ${model.time}',
                                       ),
                                     )
                                   ],
@@ -264,36 +273,60 @@ class _NotificationScreenState extends State<NotificationScreen> with WidgetsBin
                     ),
                   ),
                 ),
-                message: 'NEW',
-                color: Colors.red,
-                location: BannerLocation.topEnd,
-              ),
-            ),
-          );
+                Positioned(
+                  top:0,right: 0,
+                  child: Container(
+                    height: 24.0,
+                    width: 24.0,
+                    decoration:
+                    new BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                    child: Center(
+                      child: new Container(
+                        margin: new EdgeInsets
+                            .all(5.0),
+                        height: 12.0,
+                        width: 12.0,
+                        decoration: new BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.red,
+                      ),
+                    ),
+                  )),
+                ),
+              ],
+            ));
   }
 
   Widget buildHeaderItem(DateTime datetime, int position) {
     DateTime tmpDateBefore;
-    if (position - 1 >= 0 && notificationScreenStore.list[position - 1] != null) {
-      tmpDateBefore = Convert.convertStringToDate(notificationScreenStore.list[position - 1].date);
+    if (position - 1 >= 0 &&
+        notificationScreenStore.list[position - 1] != null) {
+      tmpDateBefore = Convert.convertStringToDate(
+          notificationScreenStore.list[position - 1].date);
     }
     if (tmpDateBefore == null) {
       return Align(
         alignment: Alignment.centerLeft,
         child: Padding(
           padding: const EdgeInsets.only(top: 10, bottom: 10, left: 15),
-          child: Text("Tháng ${datetime.month} Năm ${datetime.year}", style: TextStyle(fontWeight: FontWeight.w500)),
+          child: Text("Tháng ${datetime.month} Năm ${datetime.year}",
+              style: TextStyle(fontWeight: FontWeight.w500)),
         ),
       );
     } else {
-      if (tmpDateBefore.month == datetime.month && tmpDateBefore.year == datetime.year) {
+      if (tmpDateBefore.month == datetime.month &&
+          tmpDateBefore.year == datetime.year) {
         return SizedBox();
       } else {
         return Align(
           alignment: Alignment.centerLeft,
           child: Padding(
             padding: const EdgeInsets.only(top: 10, bottom: 10, left: 15),
-            child: Text("Tháng ${datetime.month} Năm ${datetime.year}", style: TextStyle(fontWeight: FontWeight.w500)),
+            child: Text("Tháng ${datetime.month} Năm ${datetime.year}",
+                style: TextStyle(fontWeight: FontWeight.w500)),
           ),
         );
       }
@@ -325,16 +358,28 @@ class _NotificationScreenState extends State<NotificationScreen> with WidgetsBin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-          title: "Thông báo",
-          child: Container(),
-          onPressed: () {
-            AppDialog.showDialogYN(context, "Bạn có muốn đánh dấu đã đọc tất cả thông tin ?", () {
+      appBar: AppBar(
+        title: Text(
+          "Thông báo",
+          style: TextStyle(color: Colors.black, fontSize: 24),
+        ),
+        backgroundColor: Color(0xEef7f7f7),
+        elevation: 0,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.playlist_add_check,
+              color: Colors.black,
+            ),
+            iconSize: 32,
+            onPressed: () => AppDialog.showDialogYN(
+                context, "Bạn có muốn đánh dấu đã đọc tất cả thông báo ?", () {
               notificationScreenStore.updateStatusNotification("", 0);
               widget.mainScreenState.mainScreenStore.setNumber(0);
-            }, () {});
-          },
-          onTitleTapped: () {}),
+            }, () {}),
+          )
+        ],
+      ),
       body: Stack(
         children: <Widget>[
           Observer(
@@ -345,7 +390,8 @@ class _NotificationScreenState extends State<NotificationScreen> with WidgetsBin
                   msg: notificationScreenStore.msg,
                 );
               else {
-                if (notificationScreenStore.list == null || notificationScreenStore.list.isEmpty) {
+                if (notificationScreenStore.list == null ||
+                    notificationScreenStore.list.isEmpty) {
                   return EmptyScreen(
                     refresh: refresh,
                   );
@@ -361,8 +407,13 @@ class _NotificationScreenState extends State<NotificationScreen> with WidgetsBin
                             itemBuilder: (context, position) {
                               return Column(
                                 children: <Widget>[
-                                  buildHeaderItem(Convert.convertStringToDate(notificationScreenStore.list[position].date), position),
-                                  buildNotificationItem(notificationScreenStore.list[position]),
+                                  buildHeaderItem(
+                                      Convert.convertStringToDate(
+                                          notificationScreenStore
+                                              .list[position].date),
+                                      position),
+                                  buildNotificationItem(
+                                      notificationScreenStore.list[position]),
                                 ],
                               );
                             },

@@ -44,7 +44,7 @@ Result handleListResponse<T extends BaseModel>(
         status: Status.FAIL, msg: "Vui lòng kiểm tra lại kết nối mạng.");
   }
 }
-Result handleError(DioError error) {
+Result handleError(var error) {
   if (error.response.statusCode == 401) {
     return Error(status: Status.ERROR_AUTHENTICATE);
   } else {

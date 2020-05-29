@@ -174,6 +174,20 @@ mixin _$CheckInStore on _CheckInStore, Store {
         .run(() => super.checkInImage(param, image));
   }
 
+  final _$checkInQRAsyncAction = AsyncAction('checkInQR');
+
+  @override
+  Future checkInQR(CheckInParam param) {
+    return _$checkInQRAsyncAction.run(() => super.checkInQR(param));
+  }
+
+  final _$checkInFormAsyncAction = AsyncAction('checkInForm');
+
+  @override
+  Future checkInForm(CheckInParam param) {
+    return _$checkInFormAsyncAction.run(() => super.checkInForm(param));
+  }
+
   final _$_CheckInStoreActionController =
       ActionController(name: '_CheckInStore');
 

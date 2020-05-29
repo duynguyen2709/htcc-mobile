@@ -69,4 +69,24 @@ class CheckInRepository extends BaseRepository {
       return handleError(error);
     }
   }
+
+  Future<Result> checkInQR(CheckInParam param) async {
+    try {
+      String url = '${DioManager.PATH_CHECK_IN}/qrcode';
+      var response = await dio.post(url, data: param.toJson());
+      return handleResponse(response, (json) => Empty.fromJson(json));
+    } catch (error) {
+      return handleError(error);
+    }
+  }
+
+  Future<Result> checkInForm(CheckInParam param) async {
+    try {
+      String url = '${DioManager.PATH_CHECK_IN}/form';
+      var response = await dio.post(url, data: param.toJson());
+      return handleResponse(response, (json) => Empty.fromJson(json));
+    } catch (error) {
+      return handleError(error);
+    }
+  }
 }

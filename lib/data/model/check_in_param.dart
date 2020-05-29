@@ -8,16 +8,21 @@ class CheckInParam {
   bool usedWifi;
   String username;
   String officeId;
+  String qrCodeId;
+  String reason;
 
   CheckInParam(
       {this.clientTime,
-        this.companyId,
-        this.ip,
-        this.latitude,
-        this.longitude,
-        this.type,
-        this.usedWifi,
-        this.username,this.officeId});
+      this.companyId,
+      this.ip,
+      this.latitude,
+      this.longitude,
+      this.type,
+      this.usedWifi,
+      this.username,
+      this.officeId,
+      this.qrCodeId,
+      this.reason});
 
   CheckInParam.fromJson(Map<String, dynamic> json) {
     clientTime = json['clientTime'];
@@ -42,6 +47,9 @@ class CheckInParam {
     data['usedWifi'] = this.usedWifi;
     data['username'] = this.username;
     data['officeId'] = this.officeId;
+    if (qrCodeId != null)
+      data['qrCodeId'] = this.qrCodeId;
+    if (reason != null) data['reason'] = this.reason;
     return data;
   }
 }
