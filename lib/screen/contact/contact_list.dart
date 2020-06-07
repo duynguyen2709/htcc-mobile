@@ -329,7 +329,7 @@ class _ContactItemState extends State<ContactItem> with AutomaticKeepAliveClient
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(100.0),
                       child: FadeInImage.assetNetwork(
-                        placeholder: 'assets/login_header.png',
+                        placeholder: 'assets/ic_launcher-playstore.png',
                         image: contact.avatar,
                         fit: BoxFit.cover,
                       )),

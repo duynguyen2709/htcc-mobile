@@ -3,38 +3,39 @@ import 'package:flutter/material.dart';
 class AppDialog extends SimpleDialog {
   AppDialog(Widget child, {String title, double radius = 5, bool hasAction = false, Function onAction})
       : super(
-            titlePadding: const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
-            contentPadding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(radius))),
-            title: AppBar(
-                centerTitle: true,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(radius), topRight: Radius.circular(radius))),
-                automaticallyImplyLeading: false,
-                title: Text(
-                  title ?? "Thông báo",
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                  textAlign: TextAlign.center,
-                ),
-                actions: <Widget>[
-                  hasAction
-                      ? IconButton(
-                          icon: Icon(
-                            Icons.add,
-                            color: Colors.white,
-                          ),
-                          onPressed: onAction,
-                        )
-                      : Center()
-                ]),
+            contentPadding: EdgeInsets.all(12.0),
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24.0))),
+//            title: AppBar(
+//                centerTitle: true,
+//                shape: RoundedRectangleBorder(
+//                    borderRadius:
+//                        BorderRadius.only(topLeft: Radius.circular(radius), topRight: Radius.circular(radius))),
+//                automaticallyImplyLeading: false,
+//                title: Text(
+//                  title ?? "Thông báo",
+//                  style: TextStyle(fontSize: 20, color: Colors.white),
+//                  textAlign: TextAlign.center,
+//                ),
+//                actions: <Widget>[
+//                  hasAction
+//                      ? IconButton(
+//                          icon: Icon(
+//                            Icons.add,
+//                            color: Colors.white,
+//                          ),
+//                          onPressed: onAction,
+//                        )
+//                      : Center()
+//                ]),
             children: [child]);
+
   static showDialogYN(BuildContext context, String content, Function onAgree, Function onDisAgree) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(24.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24.0))),
             contentPadding: EdgeInsets.all(12.0),
             backgroundColor: Colors.white,
             content: Container(
@@ -47,8 +48,7 @@ class AppDialog extends SimpleDialog {
                   children: <Widget>[
                     Text(
                       "Xác nhận",
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                     ),
                     SizedBox(
                       height: 6,
@@ -58,8 +58,7 @@ class AppDialog extends SimpleDialog {
                       child: Text(
                         content,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300, fontSize: 18),
+                        style: TextStyle(fontWeight: FontWeight.w300, fontSize: 18),
                       ),
                     ),
                     Divider(
@@ -75,16 +74,13 @@ class AppDialog extends SimpleDialog {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
                                 "Hủy",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red),
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
                                 textAlign: TextAlign.center,
                               ),
                             ),
                             onTap: () {
                               onDisAgree();
-                              Navigator.of(context, rootNavigator: true)
-                                  .pop('dialog');
+                              Navigator.of(context, rootNavigator: true).pop('dialog');
                             },
                             hoverColor: Colors.transparent,
                             splashColor: Colors.transparent,
@@ -103,16 +99,13 @@ class AppDialog extends SimpleDialog {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
                                 "Tiếp tục",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue),
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
                                 textAlign: TextAlign.center,
                               ),
                             ),
                             onTap: () {
                               onAgree();
-                              Navigator.of(context, rootNavigator: true)
-                                  .pop('dialog');
+                              Navigator.of(context, rootNavigator: true).pop('dialog');
                             },
                             hoverColor: Colors.transparent,
                             splashColor: Colors.transparent,
@@ -132,23 +125,43 @@ class AppDialog extends SimpleDialog {
     showDialog(
       context: context,
       builder: (BuildContext c) {
-        // return object of type Dialog
         return AppDialog(
           Column(
             children: <Widget>[
+              Text(
+                "Thông báo",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              ),
+              SizedBox(
+                height: 6,
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20, bottom: 10),
                 child: Text(content, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  child: Container(width: double.infinity, alignment: Alignment.center, child: Text("Ok")),
-                  onPressed: () {
-                    onOk();
-                    Navigator.pop(c);
-                  },
+              SizedBox(
+                height: 8,
+              ),
+              Divider(
+                color: Colors.grey,
+                height: 4.0,
+              ),
+              InkWell(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "OK",
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
+                onTap: () {
+                  Navigator.of(c).pop();
+                },
+                hoverColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                highlightColor: Colors.transparent,
               )
             ],
           ),

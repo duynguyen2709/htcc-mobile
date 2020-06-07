@@ -5,6 +5,7 @@ class User extends BaseModel {
   String username;
   String employeeId;
   String officeId;
+  int gender;
   String department;
   String title;
   String fullName;
@@ -21,6 +22,7 @@ class User extends BaseModel {
     username = json['username'];
     employeeId = json['employeeId'];
     officeId = json['officeId'];
+    gender = json['gender'];
     department = json['department'];
     title = json['title'];
     fullName = json['fullName'];
@@ -39,6 +41,7 @@ class User extends BaseModel {
     data['username'] = this.username;
     data['employeeId'] = this.employeeId;
     data['officeId'] = this.officeId;
+    data['gender'] = this.gender;
     data['department'] = this.department;
     data['title'] = this.title;
     data['fullName'] = this.fullName;
