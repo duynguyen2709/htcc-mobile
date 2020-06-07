@@ -59,6 +59,7 @@ class AccountRepository extends BaseRepository {
         "birthDate": account.birthDate,
         "companyId": account.companyId,
         "department": account.department,
+        "gender": account.gender,
         "email": account.email,
         "employeeId": account.employeeId,
         "fullName": account.fullName,

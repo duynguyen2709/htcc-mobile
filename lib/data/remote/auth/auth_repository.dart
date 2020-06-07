@@ -20,6 +20,8 @@ class AuthRepository extends BaseRepository {
     Map<String, dynamic> map = Map();
     map.addAll({
       "clientId": "1",
+    });
+    map.addAll({
       "companyId": companyId.trim(),
       "password": password,
       "username": userName.trim(),
@@ -99,7 +101,8 @@ class AuthRepository extends BaseRepository {
       var response = await dio.put(DioManager.PATH_CHANGE_PASSWORD, data: map);
       var result = handleResponse(response, (json) => Empty.fromJson(json));
       if (result is Success) {
-        updatePassword(sharedPreferences, User.fromJson(jsonDecode(sharedPreferences.getString(Constants.USER))), newPassword);
+        updatePassword(
+            sharedPreferences, User.fromJson(jsonDecode(sharedPreferences.getString(Constants.USER))), newPassword);
       }
       return result;
     } catch (error) {

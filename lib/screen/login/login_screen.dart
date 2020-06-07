@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +5,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/screen/login/login_screen_store.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
-import 'package:hethongchamcong_mobile/utils/firebase_notifications.dart';
 import 'package:mobx/mobx.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (checkLogin == true) {
         SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
         sharedPreferences.setBool(Constants.IS_LOGIN, true);
-        Navigator.pushNamedAndRemoveUntil(context,Constants.home_screen, (Route<dynamic> route) => false);
+        Navigator.pushNamedAndRemoveUntil(context, Constants.home_screen, (Route<dynamic> route) => false);
       } else if (loginScreenStore.errorMessage != null && loginScreenStore.errorMessage.isNotEmpty)
         _showErrorDialog(loginScreenStore.errorMessage);
     });
@@ -125,7 +121,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               },
               child: SingleChildScrollView(
-                physics: (MediaQuery.of(context).viewInsets.bottom == 0.0) ? NeverScrollableScrollPhysics() : BouncingScrollPhysics(),
+                physics: (MediaQuery.of(context).viewInsets.bottom == 0.0)
+                    ? NeverScrollableScrollPhysics()
+                    : BouncingScrollPhysics(),
                 child: Column(
                   children: <Widget>[
                     Container(
@@ -133,7 +131,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Colors.blue,
                         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50)),
                         gradient: LinearGradient(
-                            begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.blue, Colors.blue[700]]),
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.blue, Colors.blue[700]]),
                       ),
                       width: 200,
                       height: MediaQuery.of(context).size.height / 3,
@@ -143,9 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Container(
                               decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
                               padding: EdgeInsets.all(10),
-                              child: FlutterLogo(
-                                size: 80,
-                              ),
+                              child: Image(image: AssetImage('assets/ic_launcher_round.png')),
                             ),
                           ),
                           Align(
@@ -154,8 +152,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               padding: const EdgeInsets.all(20),
                               child: Text(
                                 "Đăng nhập",
-                                style:
-                                    TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic),
                               ),
                             ),
                           )
