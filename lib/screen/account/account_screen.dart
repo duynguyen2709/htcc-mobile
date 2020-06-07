@@ -40,6 +40,8 @@ class _AccountScreenState extends State<AccountScreen> {
 
   TextEditingController _controllerOfficeId;
 
+  TextEditingController _controllerGender;
+
   TextEditingController _controllerDepartment;
 
   TextEditingController _controllerEmail;
@@ -49,6 +51,7 @@ class _AccountScreenState extends State<AccountScreen> {
   @override
   void initState() {
     super.initState();
+
     accountScreenStore = AccountScreenStore();
 
     _controllerId = TextEditingController();
@@ -64,6 +67,8 @@ class _AccountScreenState extends State<AccountScreen> {
     _controllerCMND = TextEditingController();
 
     _controllerOfficeId = TextEditingController();
+
+    _controllerGender = TextEditingController();
 
     _controllerDepartment = TextEditingController();
 
@@ -153,7 +158,8 @@ class _AccountScreenState extends State<AccountScreen> {
                             height: 150,
                             decoration: BoxDecoration(
                               color: Colors.black54,
-                              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                              borderRadius:
+                                  BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
                             ),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -274,6 +280,8 @@ class _AccountScreenState extends State<AccountScreen> {
 
     _controllerOfficeId.text = account.officeId;
 
+    _controllerGender.text = (account.gender == 1) ? 'Nam' : 'Nữ';
+
     _controllerDepartment.text = account.department;
 
     _controllerEmail.text = account.email;
@@ -362,6 +370,20 @@ class _AccountScreenState extends State<AccountScreen> {
                       height: 10,
                     ),
                     CustomSuffixTextField(
+                      validateCallBack: Validation.validateEmpty,
+                      controller: _controllerGender,
+                      labelText: "Giới tính",
+                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                      callbackUpdateStore: (String text) {
+                        accountScreenStore.isConfig = true;
+                        accountScreenStore.account.gender = (text == '1') ? 1 : 0;
+                      },
+                      isGender: true,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CustomSuffixTextField(
                       validateCallBack: (String text) => true,
                       controller: _controllerBirthDay,
                       labelText: "Ngày sinh",
@@ -432,7 +454,8 @@ class _AccountScreenState extends State<AccountScreen> {
                       },
                       boxDecoration: BoxDecoration(
                           border: Border.all(color: Colors.black45),
-                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                          borderRadius:
+                              BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
                           color: Colors.white),
                     ),
                     SizedBox(
@@ -470,7 +493,8 @@ class _AccountScreenState extends State<AccountScreen> {
                     CustomTextField(
                       boxDecoration: BoxDecoration(
                           border: Border.all(color: Colors.black45),
-                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                          borderRadius:
+                              BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
                           color: Colors.white),
                       controller: _controllerTitle,
                       labelText: "Chức danh",
@@ -514,7 +538,11 @@ class _AccountScreenState extends State<AccountScreen> {
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField(
-      {Key key, @required this.controller, @required this.labelText, @required this.textStyle, @required this.boxDecoration})
+      {Key key,
+      @required this.controller,
+      @required this.labelText,
+      @required this.textStyle,
+      @required this.boxDecoration})
       : super(key: key);
 
   final TextEditingController controller;
@@ -554,9 +582,12 @@ class CustomSuffixTextField extends StatefulWidget {
       this.textInputType = TextInputType.text,
       this.isDate = false,
       this.errorText = "",
+      this.isGender = false,
       this.callbackUpdateStore,
       this.boxDecoration})
       : super(key: key);
+
+  final bool isGender;
 
   final TextEditingController controller;
 
@@ -616,31 +647,52 @@ class _CustomSuffixTextFieldState extends State<CustomSuffixTextField> {
                         color: Colors.black,
                         icon: Icon(Icons.date_range),
                         onPressed: () {
-                          DatePicker.showDatePicker(context, showTitleActions: true, onChanged: (date) {}, onConfirm: (date) {
+                          DatePicker.showDatePicker(context, showTitleActions: true, onChanged: (date) {},
+                              onConfirm: (date) {
                             widget.controller.text = DateFormat('yyyy-MM-dd').format(date);
                             widget.callbackUpdateStore(widget.controller.text);
-                          }, currentTime: DateFormat('yyyy-MM-dd').parse(widget.controller.text), locale: LocaleType.vi);
+                          },
+                              currentTime: DateFormat('yyyy-MM-dd').parse(widget.controller.text),
+                              locale: LocaleType.vi);
                         })
-                    : IconButton(
-                        icon: Icon(
-                          Icons.edit,
-                          color: Colors.black,
-                        ),
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              child: AppDialog(
-                                FormOneTextField(
-                                  validateCallBack: widget.validateCallBack,
-                                  errorText: widget.errorText,
-                                  labelText: widget.labelText,
-                                  controller: widget.controller,
-                                  textInputType: widget.textInputType,
-                                  callbackUpdateStore: widget.callbackUpdateStore,
-                                ),
-                              ));
-                        },
-                      )
+                    : ((!widget.isGender)
+                        ? IconButton(
+                            icon: Icon(
+                              Icons.edit,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  child: AppDialog(
+                                    FormOneTextField(
+                                      validateCallBack: widget.validateCallBack,
+                                      errorText: widget.errorText,
+                                      labelText: widget.labelText,
+                                      controller: widget.controller,
+                                      textInputType: widget.textInputType,
+                                      callbackUpdateStore: widget.callbackUpdateStore,
+                                    ),
+                                  ));
+                            },
+                          )
+                        : IconButton(
+                            icon: Icon(
+                              Icons.edit,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  child: AppDialog(
+                                    FormRadio(
+                                      controller: widget.controller,
+                                      textInputType: widget.textInputType,
+                                      callbackUpdateStore: widget.callbackUpdateStore,
+                                    ),
+                                  ));
+                            },
+                          ))
               ],
             ),
           ),
@@ -692,55 +744,220 @@ class _FormOneTextFieldState extends State<FormOneTextField> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        Text(
+          widget.labelText,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        ),
+        SizedBox(
+          height: 6,
+        ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: TextFormField(
+            textAlign: TextAlign.center,
             style: widget.textStyle,
             controller: textController,
             keyboardType: widget.textInputType,
             decoration: InputDecoration(
                 errorText: _validate ? null : widget.errorText,
                 contentPadding: EdgeInsets.only(top: 5),
-                labelText: widget.labelText,
                 labelStyle: TextStyle(color: Colors.black45, fontSize: 15),
                 disabledBorder: InputBorder.none),
           ),
         ),
+        SizedBox(
+          height: 5,
+        ),
+        Divider(
+          color: Colors.black,
+          height: 4.0,
+        ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  child: Text("Hủy bỏ"),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+              child: InkWell(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Hủy",
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                hoverColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                highlightColor: Colors.transparent,
               ),
             ),
+            Container(
+              color: Colors.grey,
+              height: 30,
+              width: 0.5,
+            ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  child: Text("Đồng ý"),
-                  onPressed: () {
-                    if (widget.validateCallBack(textController.text)) {
-                      _validate = true;
-                      widget.callbackUpdateStore(textController.text);
-                      widget.controller.text = textController.text;
-                      Navigator.pop(context);
-                    } else {
-                      setState(() {
-                        _validate = false;
-                      });
-                    }
-                  },
+              child: InkWell(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Đồng ý",
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
+                onTap: () {
+                  if (widget.validateCallBack(textController.text)) {
+                    _validate = true;
+                    widget.callbackUpdateStore(textController.text);
+                    widget.controller.text = textController.text;
+                    Navigator.pop(context);
+                  } else {
+                    setState(() {
+                      _validate = false;
+                    });
+                  }
+                },
+                hoverColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                highlightColor: Colors.transparent,
               ),
             )
           ],
-        )
+        ),
+      ],
+    );
+  }
+}
+
+class FormRadio extends StatefulWidget {
+  FormRadio({this.controller, this.textStyle, this.textInputType, this.callbackUpdateStore});
+
+  final TextEditingController controller;
+
+  final TextStyle textStyle;
+
+  final TextInputType textInputType;
+
+  final Function callbackUpdateStore;
+
+  @override
+  _FormRadioState createState() => _FormRadioState();
+}
+
+class _FormRadioState extends State<FormRadio> {
+  int gender;
+
+  @override
+  void initState() {
+    super.initState();
+    gender = (widget.controller.text == "Nam") ? 1 : 0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          "Chỉnh sửa",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        ),
+        SizedBox(
+          height: 6,
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: RadioListTile(
+                  title: Text('Nam'),
+                  onChanged: (value) {
+                    setState(() {
+                      gender = value;
+                    });
+                  },
+                  groupValue: gender,
+                  value: 1,
+                ),
+              ),
+              Expanded(
+                child: RadioListTile(
+                  title: Text('Nữ'),
+                  onChanged: (value) {
+                    setState(() {
+                      gender = value;
+                    });
+                  },
+                  groupValue: gender,
+                  value: 0,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 5,
+        ),
+        Divider(
+          color: Colors.black,
+          height: 4.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: InkWell(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Hủy",
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                hoverColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+              ),
+            ),
+            Container(
+              color: Colors.grey,
+              height: 30,
+              width: 0.5,
+            ),
+            Expanded(
+              child: InkWell(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Đồng ý",
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                onTap: () {
+                  widget.callbackUpdateStore(gender.toString());
+                  widget.controller.text = (gender == 1) ? 'Nam' : 'Nữ';
+                  Navigator.pop(context);
+                },
+                hoverColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+              ),
+            )
+          ],
+        ),
       ],
     );
   }

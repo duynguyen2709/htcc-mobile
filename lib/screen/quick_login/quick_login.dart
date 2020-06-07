@@ -39,7 +39,8 @@ class _QuickLoginState extends State<QuickLogin> {
         SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
         sharedPreferences.setBool(Constants.IS_LOGIN, true);
         Navigator.pushReplacementNamed(context, Constants.home_screen);
-      } else if (quickLoginStore.errorMessage != null && quickLoginStore.errorMessage.isNotEmpty) _showErrorDialog(quickLoginStore.errorMessage);
+      } else if (quickLoginStore.errorMessage != null && quickLoginStore.errorMessage.isNotEmpty)
+        _showErrorDialog(quickLoginStore.errorMessage);
     });
   }
 
@@ -99,7 +100,10 @@ class _QuickLoginState extends State<QuickLogin> {
                       decoration: BoxDecoration(
                         color: Colors.blue,
                         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50)),
-                        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.blue, Colors.blue[600]]),
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.blue, Colors.blue[600]]),
                       ),
                       width: 200,
                       height: MediaQuery.of(context).size.height / 3,
@@ -109,9 +113,7 @@ class _QuickLoginState extends State<QuickLogin> {
                             child: Container(
                               decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
                               padding: EdgeInsets.all(10),
-                              child: FlutterLogo(
-                                size: 80,
-                              ),
+                              child: Image(image: AssetImage('assets/ic_launcher_round.png')),
                             ),
                           ),
                           Align(
@@ -120,7 +122,11 @@ class _QuickLoginState extends State<QuickLogin> {
                               padding: EdgeInsets.all(10),
                               child: Text(
                                 "Danh sách tài khoản",
-                                style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic),
                               ),
                             ),
                           ),
@@ -184,14 +190,20 @@ class _QuickLoginState extends State<QuickLogin> {
                                                 children: <Widget>[
                                                   Text(
                                                     widget.users[index].user.companyId,
-                                                    style: TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold),
+                                                    style: TextStyle(
+                                                        color: Colors.black87,
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.bold),
                                                     overflow: TextOverflow.ellipsis,
                                                     maxLines: 1,
                                                     textAlign: TextAlign.start,
                                                   ),
                                                   Text(
                                                     widget.users[index].user.username,
-                                                    style: TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold),
+                                                    style: TextStyle(
+                                                        color: Colors.black87,
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.bold),
                                                     overflow: TextOverflow.ellipsis,
                                                     maxLines: 1,
                                                     textAlign: TextAlign.start,
@@ -209,8 +221,8 @@ class _QuickLoginState extends State<QuickLogin> {
                                       ),
                                     ),
                                     onTap: () {
-                                      quickLoginStore.login(
-                                          widget.users[index].user.username, widget.users[index].password, widget.users[index].user.companyId);
+                                      quickLoginStore.login(widget.users[index].user.username,
+                                          widget.users[index].password, widget.users[index].user.companyId);
                                     },
                                   ),
                                   color: Colors.transparent,
