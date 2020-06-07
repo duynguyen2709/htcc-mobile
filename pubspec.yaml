@@ -60,8 +60,7 @@ dependencies:
   firebase_messaging: ^6.0.13
   flutter_local_notifications: ^1.4.2
   badges: ^1.1.1
-  qr_code_scanner:
-  flutter_barcode_scanner:
+  flutter_barcode_scanner: ^0.0.9
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -15,7 +15,6 @@ import 'package:hethongchamcong_mobile/data/model/check_in_param.dart';
 import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 import './check_in_screen_store.dart';
 
 class CheckInForm extends StatefulWidget {

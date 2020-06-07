@@ -345,12 +345,10 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                                                 null);
                                         },
                                       ),
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.scanner,
-                                          color: Colors.white,
-                                        ),
-                                        onPressed: () => scanQR()
+
+                                      GestureDetector(
+                                        onTap: () => scanQR(),
+                                        child: Image.asset('assets/qr-scan-icon.png', width: 28, height:30),
                                       ),
                                       IconButton(
                                           icon: Icon(
@@ -715,7 +713,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          "#ff6666", "Cancel", true, ScanMode.QR);
+          "#ff6666", "Cancel", true);
       print(barcodeScanRes);
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
