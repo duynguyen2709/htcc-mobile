@@ -1,17 +1,17 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
+import 'package:hethongchamcong_mobile/utils/log_dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DioManager {
   static final DioManager _instance = DioManager._internal();
 
   // ignore: non_constant_identifier_names
-  static String _BASE_URL = "";
+  static String _BASE_URL = "https://1612145.online/";
   static const PATH_LOGIN = "api/gateway/public/login";
   static const PATH_LOGOUT = "api/gateway/private/logout";
   static const PATH_CHANGE_PASSWORD = "api/gateway/private/changepassword/1";
+  static const PATH_RESET_PASSWORD = "api/gateway/public/resetpassword";
   static const PATH_USER = "api/employee/users";
   static const PATH_CHECK_IN = "api/employee/checkin/";
   static const PATH_COMPLAINT = "api/employee/complaint";
@@ -22,6 +22,8 @@ class DioManager {
   static const PATH_NOTIFICATION = "/api/employee/notifications";
   static const PATH_COUNT_NOTIFICATION = '/api/employee/home/employee';
   static const PATH_NOTIFICATION_STATUS = '/api/employee/notifications/status';
+  static const PATH_SCREEN = 'api/employee/home/employee';
+  static const PATH_PAYSLIP = 'api/employee/payslip';
 
   Dio dio;
 
@@ -34,7 +36,8 @@ class DioManager {
   }
 
   DioManager._internal() {
-    dio = Dio(BaseOptions(baseUrl: _BASE_URL, connectTimeout: 30000, responseType: ResponseType.json, sendTimeout: 30000));
+    dio = Dio(
+        BaseOptions(baseUrl: _BASE_URL, connectTimeout: 30000, responseType: ResponseType.json, sendTimeout: 30000));
 
     dio.interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
       var sharedPreference = await SharedPreferences.getInstance();
@@ -46,7 +49,13 @@ class DioManager {
     }, onError: (DioError e) async {
       return e;
     }));
-
-    dio.interceptors.add(LogInterceptor(responseBody: true, requestBody: true));
+//    dio.interceptors.add(LogInterceptor(
+//      responseBody: true,
+//      requestBody: true,
+//    ));
+    dio.interceptors.add(MLogInterceptor(
+      responseBody: true,
+      requestBody: true,
+    ));
   }
 }

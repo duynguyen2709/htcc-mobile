@@ -154,11 +154,4 @@ mixin _$ComplaintStore on _ComplaintStore, Store {
   Future refresh() {
     return _$refreshAsyncAction.run(() => super.refresh());
   }
-
-  @override
-  String toString() {
-    final string =
-        'isLoading: ${isLoading.toString()},postComplaintSuccess: ${postComplaintSuccess.toString()},getListComplaintSuccess: ${getListComplaintSuccess.toString()},listComplaint: ${listComplaint.toString()},errorAuth: ${errorAuth.toString()},errorMsg: ${errorMsg.toString()},monthQuery: ${monthQuery.toString()}';
-    return '{$string}';
-  }
 }

@@ -7,9 +7,11 @@ import 'package:hethongchamcong_mobile/data/base/base_repository.dart';
 import 'package:hethongchamcong_mobile/data/base/result.dart';
 import 'package:hethongchamcong_mobile/data/model/empty.dart';
 import 'package:hethongchamcong_mobile/data/model/login_response.dart';
+import 'package:hethongchamcong_mobile/data/model/screen.dart';
 import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/data/remote/dio.dart';
 import 'package:hethongchamcong_mobile/data/utils/handle_respone.dart';
+import 'package:hethongchamcong_mobile/injector/injector.dart';
 import 'package:hethongchamcong_mobile/utils/firebase_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,7 +19,7 @@ class AuthRepository extends BaseRepository {
   AuthRepository() : super();
 
   Future<Result> login(String userName, String password, String companyId) async {
-    Map<String, dynamic> map = Map();
+    var map = Map();
     map.addAll({
       "clientId": "1",
     });
@@ -37,6 +39,7 @@ class AuthRepository extends BaseRepository {
 
         sharedPreference.setString(Constants.TOKEN, loginResponse.data.token);
         sharedPreference.setString(Constants.USER, json.encode(loginResponse.data.user));
+        await Injector.mainRepository.getCountNotification();
 
         var users = sharedPreference.getString(Constants.USERS);
 
@@ -49,6 +52,17 @@ class AuthRepository extends BaseRepository {
       return Error(status: Status.ERROR_NETWORK, msg: "Vui lòng kiểm tra lại kết nối mạng.");
     }
   }
+
+//  Future<void> getListScreen() async {
+//    //Config Screens
+//    var sharedPreference = await SharedPreferences.getInstance();
+//    User user = User.fromJson(jsonDecode(sharedPreference.getString(Constants.USER)));
+//    var screens = await dio.get(DioManager.PATH_SCREEN + '/' + user.companyId + '/' + user.username,
+//        queryParameters: {'screens': '1,2,3,4,10'});
+//    var tmp = ScreenResponse.fromJson(screens.data);
+//    sharedPreference.setString(Constants.LIST_SCREEN, screenResponseToJson(tmp));
+//    screenResponse.data = tmp.data;
+//  }
 
   Future<Result> logout() async {
     try {
@@ -107,6 +121,22 @@ class AuthRepository extends BaseRepository {
       return result;
     } catch (error) {
       return handleError(error);
+    }
+  }
+
+  Future<String> resetPass(String code, String username) async {
+    try {
+      Map<String, dynamic> map = Map();
+
+      map.addAll({
+        "clientId": 1,
+        "companyId": code,
+        "username": username,
+      });
+      var response = await dio.post(DioManager.PATH_RESET_PASSWORD, data: map);
+      return response.data['returnMessage'];
+    } catch (error) {
+      return 'Kiểm tra kết nối mạng!';
     }
   }
 }

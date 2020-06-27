@@ -200,11 +200,4 @@ mixin _$CheckInStore on _CheckInStore, Store {
       _$_CheckInStoreActionController.endAction(_$actionInfo);
     }
   }
-
-  @override
-  String toString() {
-    final string =
-        'isLoading: ${isLoading.toString()},getInfoCheckInSuccess: ${getInfoCheckInSuccess.toString()},checkInSuccess: ${checkInSuccess.toString()},errorMsg: ${errorMsg.toString()},message: ${message.toString()},errorAuth: ${errorAuth.toString()},checkInInfo: ${checkInInfo.toString()},currentCheckInOffice: ${currentCheckInOffice.toString()}';
-    return '{$string}';
-  }
 }

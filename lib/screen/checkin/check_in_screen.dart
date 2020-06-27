@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,18 +14,14 @@ import 'package:hethongchamcong_mobile/data/local/shared_preference.dart';
 import 'package:hethongchamcong_mobile/data/model/check_in_info.dart';
 import 'package:hethongchamcong_mobile/data/model/check_in_param.dart';
 import 'package:hethongchamcong_mobile/data/model/qr_code_data.dart';
+import 'package:hethongchamcong_mobile/data/model/screen.dart';
 import 'package:hethongchamcong_mobile/data/model/user.dart';
-import 'package:hethongchamcong_mobile/screen/checkin/check_in_form.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen_store.dart';
 import 'package:hethongchamcong_mobile/screen/main_screen.dart';
 import 'package:hethongchamcong_mobile/utils/MeasureSize.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mobx/mobx.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
-
-import 'check_in_qr_code.dart';
 
 class CheckInLocationPage extends StatefulWidget {
   final MainScreenState parent;
@@ -100,11 +95,11 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
 
   _CheckInLocationPageState(this.parent);
 
-  var width = 60;
+  var width = 60.0;
   var isExpanded = false;
+  double expandWidth = 222;
 
   String _scanBarcode = 'Unknown';
-
 
   @override
   void initState() {
@@ -127,8 +122,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
 
     //catch connectivity change
     connectivity = Connectivity();
-    subscription = connectivity.onConnectivityChanged
-        .listen((ConnectivityResult result) async {
+    subscription = connectivity.onConnectivityChanged.listen((ConnectivityResult result) async {
       if (result == ConnectivityResult.wifi) {
         wifiIP = await (Connectivity().getWifiIP());
         _connectionStatus = "wifi";
@@ -141,14 +135,12 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     reaction((_) => _checkInStore.currentCheckInOffice, (office) {
       if (office != null && curOffice == null) {
         curOffice = office;
-        _companyPosition = Position(
-            longitude: office.validLongitude, latitude: office.validLatitude);
+        _companyPosition = Position(longitude: office.validLongitude, latitude: office.validLatitude);
         setState(() {
           if (!office.canCheckIn) isOffDay = true;
         });
       } else {
-        curOffice = _checkInStore.checkInInfo.officeList
-            .firstWhere((office) => office.officeId == curOffice.officeId);
+        curOffice = _checkInStore.checkInInfo.officeList.firstWhere((office) => office.officeId == curOffice.officeId);
       }
     });
     reaction((_) => _checkInStore.getInfoCheckInSuccess, (isSuccess) async {
@@ -162,8 +154,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
 
     reaction((_) => _checkInStore.checkInSuccess, (isSuccess) async {
       if (isSuccess == true) {
-        _checkInStore.getCheckInInfo(
-            userInfo.companyId, userInfo.username, null);
+        _checkInStore.getCheckInInfo(userInfo.companyId, userInfo.username, null);
       } else if (isSuccess != null) if (_checkInStore.errorAuth == true)
         _showErrorDialog(true);
       else
@@ -178,18 +169,26 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
   }
 
   Future<Position> locateUser() async {
-    return Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
+  double checkWidthCheckinBar() {
+    double tmp = 222;
+    int index = 0;
+    if (!checkScreen(Constants.CHECKIN_QR)) index++;
+    if (!checkScreen(Constants.CHECKIN_IMAGE)) index++;
+    if (!checkScreen(Constants.CHECKIN_FORM)) index++;
+    tmp = tmp - 222 * index / 3;
+    if (tmp < 150) {
+      tmp = 150;
+    }
+    return tmp;
+  }
   getUserLocation() async {
     _curPosition = await locateUser();
     if (_companyPosition != null) {
       var distance = await Geolocator().distanceBetween(
-          _companyPosition.latitude,
-          _companyPosition.longitude,
-          _curPosition.latitude,
-          _curPosition.longitude);
+          _companyPosition.latitude, _companyPosition.longitude, _curPosition.latitude, _curPosition.longitude);
       _checkInStore.setLoading(false);
       if (mounted) {
         if (distance <= (curOffice != null ? curOffice.maxAllowDistance : 0)) {
@@ -209,8 +208,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
   }
 
   Future<void> _refresh() async {
-    return await _checkInStore.getCheckInInfo(
-        userInfo.companyId, userInfo.username, null);
+    return await _checkInStore.getCheckInInfo(userInfo.companyId, userInfo.username, null);
   }
 
   @override
@@ -248,8 +246,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
   Widget build(BuildContext context) {
     _getTime();
     if (parent.getSelectedIndex() == 0)
-      SystemChrome.setSystemUIOverlayStyle(
-          SystemUiOverlayStyle(statusBarColor: _color));
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: _color));
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -270,8 +267,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                   ),
                   waveAmplitude: 10,
                   backgroundColor: _color,
-                  size: Size(MediaQuery.of(context).size.width,
-                      MediaQuery.of(context).size.height / 2),
+                  size: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height / 2),
                 ),
 //                Positioned(
 //                  top: 0,
@@ -293,12 +289,11 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                     right: -16,
                     child: AnimatedContainer(
                         duration: Duration(milliseconds: 100),
-                        width: this.width.toDouble(),
+                        width: this.width,
                         child: Container(
                             decoration: BoxDecoration(
                                 color: Color(0xEEFFFFFF).withOpacity(0.35),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(24))),
+                                borderRadius: BorderRadius.all(Radius.circular(24))),
                             child: !isExpanded
                                 ? IconButton(
                                     icon: Icon(
@@ -307,14 +302,14 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                                     ),
                                     onPressed: () {
                                       setState(() {
+                                        expandWidth = checkWidthCheckinBar();
                                         isExpanded = !isExpanded;
-                                        width = width == 60 ? 220 : 60;
+                                        width = width == 60 ? expandWidth : 60.0;
                                       });
                                     },
                                   )
                                 : Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       IconButton(
                                         icon: Icon(
@@ -323,41 +318,43 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                                         ),
                                         onPressed: () {
                                           setState(() {
+                                            expandWidth = checkWidthCheckinBar();
                                             isExpanded = !isExpanded;
-                                            width = width == 60 ? 200 : 60;
+                                            width = width == 60 ? expandWidth : 60;
                                           });
                                         },
                                       ),
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.camera_alt,
-                                          color: Colors.white,
-                                        ),
-                                        onPressed: () async {
-                                          var res = await Navigator.pushNamed(
-                                              context,
-                                              Constants.check_in_camera_screen,
-                                              arguments: _checkInStore);
-                                          if (res != null)
-                                            _checkInStore.getCheckInInfo(
-                                                userInfo.companyId,
-                                                userInfo.username,
-                                                null);
-                                        },
-                                      ),
-
-                                      GestureDetector(
-                                        onTap: () => scanQR(),
-                                        child: Image.asset('assets/qr-scan-icon.png', width: 28, height:30),
-                                      ),
-                                      IconButton(
-                                          icon: Icon(
-                                            Icons.note_add,
-                                            color: Colors.white,
-                                          ),
-                                          onPressed: () => Navigator.pushNamed(
-                                              context, Constants.check_in_form,
-                                              arguments: _checkInStore)),
+                                      (checkScreen(Constants.CHECKIN_IMAGE))
+                                          ? IconButton(
+                                              icon: Icon(
+                                                Icons.camera_alt,
+                                                color: Colors.white,
+                                              ),
+                                              onPressed: () async {
+                                                var res = await Navigator.pushNamed(
+                                                    context, Constants.check_in_camera_screen,
+                                                    arguments: _checkInStore);
+                                                if (res != null)
+                                                  _checkInStore.getCheckInInfo(
+                                                      userInfo.companyId, userInfo.username, null);
+                                              },
+                                            )
+                                          : Center(),
+                                      (checkScreen(Constants.CHECKIN_QR))
+                                          ? GestureDetector(
+                                              onTap: () => scanQR(),
+                                              child: Image.asset('assets/qr-scan-icon.png', width: 28, height: 30),
+                                            )
+                                          : Center(),
+                                      (checkScreen(Constants.CHECKIN_FORM))
+                                          ? IconButton(
+                                              icon: Icon(
+                                                Icons.note_add,
+                                                color: Colors.white,
+                                              ),
+                                              onPressed: () => Navigator.pushNamed(context, Constants.check_in_form,
+                                                  arguments: _checkInStore))
+                                          : Center(),
                                       Container(width: 16),
                                     ],
                                   )))),
@@ -372,16 +369,9 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text(now,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 50,
-                                    fontWeight: FontWeight.bold)),
+                            Text(now, style: TextStyle(color: Colors.black, fontSize: 50, fontWeight: FontWeight.bold)),
                             Text(followingHours == 1 ? " AM" : " PM",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold)),
+                                style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold)),
                           ],
                         ),
                         margin: EdgeInsets.fromLTRB(0, 56, 0, 0),
@@ -395,10 +385,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                                 DateTime.now().month.toString() +
                                 "/" +
                                 DateTime.now().year.toString(),
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w500)),
+                            style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.w500)),
                         margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                       ),
                       Container(
@@ -406,27 +393,20 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                       ),
                       curOffice != null
                           ? Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 0),
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 56, vertical: 8),
+                              padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                              margin: EdgeInsets.symmetric(horizontal: 56, vertical: 8),
                               decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5))),
+                                  color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(5))),
                               child: FormField<OfficeDetail>(
                                 builder: (FormFieldState<OfficeDetail> state) {
                                   return InputDecorator(
                                     decoration: InputDecoration(
                                       labelText: "Chi nhánh",
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
+                                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
                                       fillColor: Colors.white,
                                     ),
-                                    isEmpty: curOffice.officeId == '' ||
-                                        curOffice == null ||
-                                        curOffice.officeId == null,
+                                    isEmpty:
+                                        curOffice.officeId == '' || curOffice == null || curOffice.officeId == null,
                                     child: DropdownButtonHideUnderline(
                                       child: DropdownButton<OfficeDetail>(
                                         value: curOffice,
@@ -438,9 +418,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                                           getUserLocation();
                                           _checkInStore.setLoading(true);
                                         },
-                                        items: _checkInStore
-                                            .checkInInfo.officeList
-                                            .map((OfficeDetail value) {
+                                        items: _checkInStore.checkInInfo.officeList.map((OfficeDetail value) {
                                           return DropdownMenuItem<OfficeDetail>(
                                             value: value,
                                             child: Text(value.officeId),
@@ -458,31 +436,26 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                         margin: EdgeInsets.only(top: 8),
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(16),
-                                topRight: Radius.circular(16))),
+                            borderRadius:
+                                BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16))),
                         padding: EdgeInsets.only(top: 48),
                         child: (curOffice != null && curOffice.canCheckIn)
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   _checkInButton(isInCompanyZone),
-                                  ((!isInCompanyZone) &&
-                                          metersToCompanyZone != null)
+                                  ((!isInCompanyZone) && metersToCompanyZone != null)
                                       ? Container(
                                           margin: EdgeInsets.only(top: 30),
                                           child: Center(
                                             child: Padding(
                                               child: Text(
                                                   "Khoảng cách đến vị trí điểm danh hợp lệ : " +
-                                                      metersToCompanyZone
-                                                          .toStringAsFixed(0) +
+                                                      metersToCompanyZone.toStringAsFixed(0) +
                                                       " m",
                                                   textAlign: TextAlign.center,
-                                                  style:
-                                                      TextStyle(fontSize: 15)),
-                                              padding: EdgeInsets.fromLTRB(
-                                                  24, 0, 24, 0),
+                                                  style: TextStyle(fontSize: 15)),
+                                              padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
                                             ),
                                           ),
                                         )
@@ -492,67 +465,42 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                                   Container(height: 40),
                                   detailCheckInTimes.length > 0
                                       ? ConstrainedBox(
-                                          constraints:
-                                              BoxConstraints(minHeight: 200),
+                                          constraints: BoxConstraints(minHeight: 200),
                                           child: ListView.builder(
                                             shrinkWrap: true,
-                                            physics:
-                                                NeverScrollableScrollPhysics(),
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
+                                            physics: NeverScrollableScrollPhysics(),
+                                            itemBuilder: (BuildContext context, int index) {
                                               return new Stack(
                                                 children: <Widget>[
                                                   new Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 48.0),
+                                                    padding: const EdgeInsets.only(left: 48.0),
                                                     child: new Card(
-                                                      margin: new EdgeInsets
-                                                              .symmetric(
-                                                          vertical: 2,
-                                                          horizontal: 8),
+                                                      margin: new EdgeInsets.symmetric(vertical: 2, horizontal: 8),
                                                       child: new Container(
-                                                        padding:
-                                                            EdgeInsets.all(16),
+                                                        padding: EdgeInsets.all(16),
                                                         width: double.infinity,
                                                         child: Row(
                                                           children: <Widget>[
                                                             Text(
                                                               "Đã điểm danh ${detailCheckInTimes[index].type == 1 ? "vào ca" : "tan ca"} lúc - ",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .start,
-                                                              style: TextStyle(
-                                                                  fontSize: 17),
+                                                              textAlign: TextAlign.start,
+                                                              style: TextStyle(fontSize: 17),
                                                             ),
                                                             Container(
                                                               padding: EdgeInsets.all(4),
                                                               decoration: BoxDecoration(
                                                                 border: Border.all(
-                                                                    color: !detailCheckInTimes[
-                                                                                index]
-                                                                            .isOnTime
-                                                                        ? Colors
-                                                                            .red
-                                                                        : detailCheckInTimes[index].type ==
-                                                                                1
+                                                                    color: !detailCheckInTimes[index].isOnTime
+                                                                        ? Colors.red
+                                                                        : detailCheckInTimes[index].type == 1
                                                                             ? _checkInColor
                                                                             : _checkOutColor),
-                                                                borderRadius: BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            5)),
+                                                                borderRadius: BorderRadius.all(Radius.circular(5)),
                                                               ),
                                                               child: Text(
-                                                                detailCheckInTimes[
-                                                                        index]
-                                                                    .time,
+                                                                detailCheckInTimes[index].time,
                                                                 style: TextStyle(
-                                                                    fontSize:
-                                                                        17,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
+                                                                    fontSize: 17, fontWeight: FontWeight.w600),
                                                               ),
                                                             )
                                                           ],
@@ -576,24 +524,18 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                                                     child: new Container(
                                                       height: 20.0,
                                                       width: 20.0,
-                                                      decoration:
-                                                          new BoxDecoration(
+                                                      decoration: new BoxDecoration(
                                                         shape: BoxShape.circle,
                                                         color: Colors.white,
                                                       ),
                                                       child: Center(
                                                         child: new Container(
-                                                          margin: new EdgeInsets
-                                                              .all(5.0),
+                                                          margin: new EdgeInsets.all(5.0),
                                                           height: 12.0,
                                                           width: 12.0,
                                                           decoration: new BoxDecoration(
-                                                              shape: BoxShape
-                                                                  .circle,
-                                                              color: detailCheckInTimes[
-                                                                              index]
-                                                                          .type ==
-                                                                      1
+                                                              shape: BoxShape.circle,
+                                                              color: detailCheckInTimes[index].type == 1
                                                                   ? _checkInColor
                                                                   : _checkOutColor),
                                                         ),
@@ -603,12 +545,10 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                                                 ],
                                               );
                                             },
-                                            itemCount:
-                                                detailCheckInTimes.length,
+                                            itemCount: detailCheckInTimes.length,
                                           ),
                                         )
-                                      : Container(
-                                          height: 140, color: Colors.white),
+                                      : Container(height: 140, color: Colors.white),
                                   Container(
                                     height: 60,
                                     color: Colors.white,
@@ -617,8 +557,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                               )
                             : (curOffice == null)
                                 ? Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.6,
+                                    height: MediaQuery.of(context).size.height * 0.6,
                                     width: double.infinity,
                                     margin: EdgeInsets.only(top: 48),
                                   )
@@ -647,6 +586,11 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   Widget get _dayOffPage {
@@ -680,11 +624,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
         latitude: _curPosition.latitude,
         longitude: _curPosition.longitude,
         officeId: curOffice.officeId,
-        type: detailCheckInTimes.length == 0
-            ? 1
-            : detailCheckInTimes[detailCheckInTimes.length - 1].type == 1
-                ? 2
-                : 1,
+        type: detailCheckInTimes.length == 0 ? 1 : detailCheckInTimes[detailCheckInTimes.length - 1].type == 1 ? 2 : 1,
         usedWifi: _connectionStatus.compareTo("wifi") == 0 ? true : false,
         ip: _connectionStatus.compareTo("wifi") == 0 ? wifiIP : '');
   }
@@ -697,23 +637,17 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
         latitude: 0,
         longitude: 0,
         officeId: data.officeId,
-        type: detailCheckInTimes.length == 0
-            ? 1
-            : detailCheckInTimes[detailCheckInTimes.length - 1].type == 1
-            ? 2
-            : 1,
+        type: detailCheckInTimes.length == 0 ? 1 : detailCheckInTimes[detailCheckInTimes.length - 1].type == 1 ? 2 : 1,
         qrCodeId: data.qrCodeId,
         usedWifi: _connectionStatus.compareTo("wifi") == 0 ? true : false,
         ip: _connectionStatus.compareTo("wifi") == 0 ? wifiIP : '');
   }
 
-
   Future<void> scanQR() async {
     String barcodeScanRes;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          "#ff6666", "Cancel", true);
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancel", true);
       print(barcodeScanRes);
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
@@ -740,9 +674,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
       child: Container(
         decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(
-                color: (isCompanyZone && !isOffDay) ? _color : _disableColor,
-                width: 2)),
+            border: Border.all(color: (isCompanyZone && !isOffDay) ? _color : _disableColor, width: 2)),
         child: Padding(
           padding: EdgeInsets.all(3),
           child: Stack(
@@ -751,9 +683,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
               ClipOval(
                 child: WaveWidget(
                   config: CustomConfig(
-                    gradients: (isCompanyZone && !isOffDay)
-                        ? _colorGradient
-                        : _disableGradient,
+                    gradients: (isCompanyZone && !isOffDay) ? _colorGradient : _disableGradient,
                     durations: [20000, 19440],
                     heightPercentages: [0.4, 0.45],
                     blur: MaskFilter.blur(BlurStyle.solid, 10),
@@ -761,18 +691,13 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                     gradientEnd: Alignment.topRight,
                   ),
                   waveAmplitude: 0,
-                  backgroundColor:
-                      (isCompanyZone && !isOffDay) ? _color : _disableColor,
-                  size: Size(MediaQuery.of(context).size.width / 2.25,
-                      MediaQuery.of(context).size.width / 2.25),
+                  backgroundColor: (isCompanyZone && !isOffDay) ? _color : _disableColor,
+                  size: Size(MediaQuery.of(context).size.width / 2.25, MediaQuery.of(context).size.width / 2.25),
                 ),
               ),
               Text("Điểm danh",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25)),
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25)),
             ],
           ),
         ),
@@ -780,15 +705,12 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     );
   }
 
-  openAlertBox(
-      String content, bool isOneOption, Function onContinue) {
-
+  openAlertBox(String content, bool isOneOption, Function onContinue) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(24.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24.0))),
             contentPadding: EdgeInsets.all(12.0),
             backgroundColor: Colors.white,
             content: Container(
@@ -801,8 +723,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                   children: <Widget>[
                     Text(
                       "Xác nhận",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                     ),
                     SizedBox(
                       height: 6,
@@ -812,8 +733,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                       child: Text(
                         content,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300, fontSize: 18),
+                        style: TextStyle(fontWeight: FontWeight.w300, fontSize: 18),
                       ),
                     ),
                     Divider(
@@ -829,15 +749,12 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
                                 "Hủy",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red),
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
                                 textAlign: TextAlign.center,
                               ),
                             ),
                             onTap: () {
-                              Navigator.of(context, rootNavigator: true)
-                                  .pop('dialog');
+                              Navigator.of(context, rootNavigator: true).pop('dialog');
                             },
                             hoverColor: Colors.transparent,
                             splashColor: Colors.transparent,
@@ -856,16 +773,13 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
                                 "Tiếp tục",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue),
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
                                 textAlign: TextAlign.center,
                               ),
                             ),
                             onTap: () {
                               onContinue();
-                              Navigator.of(context, rootNavigator: true)
-                                  .pop('dialog');
+                              Navigator.of(context, rootNavigator: true).pop('dialog');
                             },
                             hoverColor: Colors.transparent,
                             splashColor: Colors.transparent,
@@ -895,9 +809,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
               child: new Text(Constants.buttonErrorDialog),
               onPressed: () {
                 Navigator.of(context).pop();
-                if (isAuthErr)
-                  Navigator.pushReplacementNamed(
-                      context, Constants.login_screen);
+                if (isAuthErr) Navigator.pushReplacementNamed(context, Constants.login_screen);
               },
             ),
           ],
@@ -907,8 +819,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
   }
 
   void checkInQR() {
-    QRCodeData data = QRCodeData.fromJson(
-          jsonDecode(_scanBarcode));
+    QRCodeData data = QRCodeData.fromJson(jsonDecode(_scanBarcode));
     _checkInStore.checkInQR(getCheckInParamQR(data));
   }
 }

@@ -26,6 +26,23 @@ mixin _$MainScreenStore on _MainScreenStore, Store {
     }, _$numberAtom, name: '${_$numberAtom.name}_set');
   }
 
+  final _$isLoadingAtom = Atom(name: '_MainScreenStore.isLoading');
+
+  @override
+  bool get isLoading {
+    _$isLoadingAtom.context.enforceReadPolicy(_$isLoadingAtom);
+    _$isLoadingAtom.reportObserved();
+    return super.isLoading;
+  }
+
+  @override
+  set isLoading(bool value) {
+    _$isLoadingAtom.context.conditionallyRunInAction(() {
+      super.isLoading = value;
+      _$isLoadingAtom.reportChanged();
+    }, _$isLoadingAtom, name: '${_$isLoadingAtom.name}_set');
+  }
+
   final _$getCountNotificationAsyncAction = AsyncAction('getCountNotification');
 
   @override
@@ -45,11 +62,5 @@ mixin _$MainScreenStore on _MainScreenStore, Store {
     } finally {
       _$_MainScreenStoreActionController.endAction(_$actionInfo);
     }
-  }
-
-  @override
-  String toString() {
-    final string = 'number: ${number.toString()}';
-    return '{$string}';
   }
 }

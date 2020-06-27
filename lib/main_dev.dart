@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:hethongchamcong_mobile/config/app_color.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/remote/dio.dart';
+import 'package:hethongchamcong_mobile/injector/injector.dart';
 import 'package:hethongchamcong_mobile/route/route_controller.dart';
 import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
 import 'package:hethongchamcong_mobile/screen/main_screen.dart';
@@ -34,6 +35,10 @@ void main() async {
 
   if (isLogin == null) isLogin = false;
 
+  if (isLogin == true) {
+    Injector.mainRepository.getCacheListScreen();
+  }
+
   runApp(ConfigWrapper(
       config: Config.fromJson(config),
       child: new MyApp(
@@ -51,7 +56,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     var config = ConfigWrapper.of(context);
 
     DioManager.setBaseUrl(config.baseURL);

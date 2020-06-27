@@ -27,6 +27,7 @@ class Constants {
   static const String USER = "user";
   static const String USERS = "users";
   static const String CHECK_IN_INFO = "checkin_info";
+  static const String LIST_SCREEN = 'list_screen';
 
   //Message Dialog
 
@@ -91,4 +92,28 @@ class Constants {
   static String messagePasswordError = "Mật khẩu không trùng lắp";
 
   static String messagePasswordEmpty = "Mật khẩu rỗng";
+
+  static int CHECKIN = 1;
+
+  static int DAY_OFF = 2;
+
+  static int STATISTIC = 3;
+
+  static int PERSONAL_INFO = 4;
+
+  static int CONTACT_LIST = 5;
+
+  static int PAYCHECK = 6;
+
+  static int COMPLAINT = 7;
+
+  static int HOME = 8;
+
+  static int CHECKIN_IMAGE = 9;
+
+  static int CHECKIN_QR = 10;
+
+  static int CHECKIN_FORM = 11;
+
+  static int WORKING_DAY = 12;
 }

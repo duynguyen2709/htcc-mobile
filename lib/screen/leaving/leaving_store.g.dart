@@ -300,11 +300,4 @@ mixin _$LeavingStore on _LeavingStore, Store {
       _$_LeavingStoreActionController.endAction(_$actionInfo);
     }
   }
-
-  @override
-  String toString() {
-    final string =
-        'isLoading: ${isLoading.toString()},shouldRetry: ${shouldRetry.toString()},events: ${events.toString()},errorMsg: ${errorMsg.toString()},leavingData: ${leavingData.toString()},listRequest: ${listRequest.toString()},listEvent: ${listEvent.toString()},dataMap: ${dataMap.toString()},status: ${status.toString()},year: ${year.toString()},isSubmitSuccess: ${isSubmitSuccess.toString()},isLoadingSubmitForm: ${isLoadingSubmitForm.toString()},isLoadingCancel: ${isLoadingCancel.toString()},isCancelSuccess: ${isCancelSuccess.toString()},errAuth: ${errAuth.toString()}';
-    return '{$string}';
-  }
 }

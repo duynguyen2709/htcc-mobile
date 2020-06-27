@@ -48,17 +48,15 @@ abstract class _CheckInStore with Store {
     errorAuth = null;
     isLoading = true;
     try {
-      var response = await Injector.checkInRepository
-          .getCheckInInfo(companyId: companyId, username: username, date: date);
+      var response =
+          await Injector.checkInRepository.getCheckInInfo(companyId: companyId, username: username, date: date);
       switch (response.runtimeType) {
         case Success:
           {
             isLoading = false;
             getInfoCheckInSuccess = true;
             checkInInfo = (response as Success).data;
-            currentCheckInOffice = checkInInfo.officeList.length > 0
-                ? checkInInfo.officeList[0]
-                : currentCheckInOffice;
+            currentCheckInOffice = checkInInfo.officeList.length > 0 ? checkInInfo.officeList[0] : currentCheckInOffice;
             break;
           }
         case Error:

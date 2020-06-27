@@ -1,115 +1,49 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
-import 'package:hethongchamcong_mobile/screen/forgot_password/forgot_password.dart';
-import 'package:hethongchamcong_mobile/screen/login/login_screen_store.dart';
+import 'package:hethongchamcong_mobile/screen/dialog/app_dialog.dart';
+import 'package:hethongchamcong_mobile/screen/forgot_password/forgot_password_store.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
 import 'package:mobx/mobx.dart';
-import 'package:progress_dialog/progress_dialog.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginScreen extends StatefulWidget {
+class ForgotPassword extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _ForgotPasswordState createState() => _ForgotPasswordState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  FocusNode focusNodeUserName = FocusNode();
-
-  FocusNode focusNodePassword = FocusNode();
-
-  FocusNode focusNodeCode = FocusNode();
-
-  bool isShowPass = false;
-
-  bool shouldNotFocus = false;
-
-  TextEditingController userNameController = TextEditingController();
-
-  TextEditingController passwordController = TextEditingController();
-
-  TextEditingController companyIdController = TextEditingController();
+class _ForgotPasswordState extends State<ForgotPassword> {
+  ForgotPasswordStore forgotPasswordStore;
 
   FocusScopeNode currentFocus;
 
-  ProgressDialog pr;
+  TextEditingController codeController = TextEditingController();
 
-  LoginScreenStore loginScreenStore;
+  TextEditingController usernameController = TextEditingController();
+
+  FocusNode focusNodeCode = FocusNode();
+
+  FocusNode focusNodeUser = FocusNode();
 
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
-    super.initState();
-
-    loginScreenStore = LoginScreenStore();
-
-    reaction((_) => loginScreenStore.checkLogin, (checkLogin) async {
-      if (checkLogin == true) {
-        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-        sharedPreferences.setBool(Constants.IS_LOGIN, true);
-        Navigator.pushNamedAndRemoveUntil(context, Constants.home_screen, (Route<dynamic> route) => false);
-      } else if (loginScreenStore.errorMessage != null && loginScreenStore.errorMessage.isNotEmpty)
-        _showErrorDialog(loginScreenStore.errorMessage);
+    forgotPasswordStore = ForgotPasswordStore();
+    reaction((_) => forgotPasswordStore.msg, (String msg) {
+      if (msg != '') {
+        AppDialog.showDialogNotify(context, msg, () {
+//          Navigator.of(context).pushAndRemoveUntil(
+//              MaterialPageRoute(builder: (context) => LoginScreen()), (Route<dynamic> route) => false);
+        });
+      }
+      ;
     });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  void _login() async {
-    loginScreenStore.login(userNameController.text, passwordController.text, companyIdController.text);
-  }
-
-  void _showErrorDialog(String errorMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: Text(Constants.titleErrorDialog),
-          content: Text(errorMessage),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            FlatButton(
-              child: Text(Constants.buttonErrorDialog),
-              onPressed: () {
-                shouldNotFocus = true;
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     currentFocus = FocusScope.of(context);
-
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-
-    pr = ProgressDialog(context, type: ProgressDialogType.Normal);
-
-    //Optional
-    pr.style(
-      message: Constants.loading,
-      borderRadius: 10.0,
-      backgroundColor: Colors.white,
-      progressWidget: CircularProgressIndicator(),
-      elevation: 10.0,
-      insetAnimCurve: Curves.elasticIn,
-      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
-      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600),
-    );
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.grey[100],
@@ -152,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(20),
                               child: Text(
-                                "Đăng nhập",
+                                "Quên mật khẩu",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 23,
@@ -173,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: <Widget>[
                           Container(
                             child: TextFormField(
-                              controller: companyIdController,
+                              controller: codeController,
                               focusNode: focusNodeCode,
                               decoration: InputDecoration(
                                 fillColor: Colors.white,
@@ -191,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     borderRadius: BorderRadius.all(Radius.circular(5)),
                                     borderSide: BorderSide(color: Colors.black, width: 2)),
                                 contentPadding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                                labelText: Constants.code,
+                                labelText: 'Mã công ty',
                                 hintStyle: focusNodeCode.hasFocus ? TextStyle(color: Colors.blue) : TextStyle(),
                                 filled: true,
                               ),
@@ -207,8 +141,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           Container(
                             child: TextFormField(
-                              controller: userNameController,
-                              focusNode: focusNodeUserName,
+                              controller: usernameController,
+                              focusNode: focusNodeUser,
                               decoration: InputDecoration(
                                 fillColor: Colors.white,
                                 prefixIcon: Icon(Icons.mail),
@@ -225,8 +159,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     borderRadius: BorderRadius.all(Radius.circular(5)),
                                     borderSide: BorderSide(color: Colors.black, width: 2)),
                                 contentPadding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                                labelText: Constants.hintUserName,
-                                hintStyle: focusNodeUserName.hasFocus ? TextStyle(color: Color(0x78b9eb)) : TextStyle(),
+                                labelText: 'Tên đăng nhập',
+                                hintStyle: focusNodeUser.hasFocus ? TextStyle(color: Colors.blue) : TextStyle(),
                                 filled: true,
                               ),
                               validator: (value) {
@@ -239,84 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: EdgeInsets.only(bottom: 25),
                             margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                           ),
-                          Container(
-                            child: TextFormField(
-                              controller: passwordController,
-                              obscureText: !isShowPass,
-                              focusNode: focusNodePassword,
-                              decoration: InputDecoration(
-                                fillColor: Colors.white,
-                                prefixIcon: Icon(Icons.lock),
-                                suffixIcon: isShowPass
-                                    ? GestureDetector(
-                                        child: Icon(Icons.lock_open),
-                                        onTap: () {
-                                          setState(() {
-                                            isShowPass = !isShowPass;
-                                          });
-                                        },
-                                      )
-                                    : GestureDetector(
-                                        child: Icon(Icons.lock_outline),
-                                        onTap: () {
-                                          setState(() {
-                                            isShowPass = !isShowPass;
-                                          });
-                                        },
-                                      ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.red, width: 2)),
-                                errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.red, width: 2)),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.blue, width: 2)),
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.black, width: 2)),
-                                contentPadding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                                labelText: Constants.hintPassword,
-                                hintStyle: focusNodePassword.hasFocus ? TextStyle(color: Colors.blue) : TextStyle(),
-                                filled: true,
-                              ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return Constants.titleErrorPassword;
-                                }
-                                return null;
-                              },
-                            ),
-                            padding: EdgeInsets.only(bottom: 10),
-                            margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          ),
                         ],
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Container(
-                        margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context, MaterialPageRoute(builder: (BuildContext context) => ForgotPassword()));
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            child: Text(
-                              Constants.forgotPassword,
-                              textAlign: TextAlign.end,
-                              style: TextStyle(
-                                color: Colors.red,
-                              ),
-                            ),
-                          ),
-                        ),
                       ),
                     ),
                     Container(
@@ -326,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(15),
                           child: Text(
-                            Constants.buttonLogin,
+                            'Xác nhận',
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                           ),
                         ),
@@ -334,7 +191,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (!currentFocus.hasPrimaryFocus) {
                             currentFocus.unfocus();
                           }
-                          if (_formKey.currentState.validate()) _login();
+                          if (_formKey.currentState.validate()) {
+                            forgotPasswordStore.submit(codeController.text, usernameController.text);
+                          }
                         },
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(320.0),
@@ -348,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             Observer(builder: (_) {
-              if (loginScreenStore.isLoading)
+              if (forgotPasswordStore.isLoading)
                 return LoadingScreen();
               else
                 return Center();

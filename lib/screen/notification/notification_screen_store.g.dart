@@ -104,11 +104,4 @@ mixin _$NotificationScreenStore on _NotificationScreenStore, Store {
       _$_NotificationScreenStoreActionController.endAction(_$actionInfo);
     }
   }
-
-  @override
-  String toString() {
-    final string =
-        'isLoading: ${isLoading.toString()},list: ${list.toString()},msg: ${msg.toString()},msgLoadMore: ${msgLoadMore.toString()}';
-    return '{$string}';
-  }
 }

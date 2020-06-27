@@ -155,8 +155,9 @@ class AppDialog extends SimpleDialog {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                onTap: () {
+                onTap: () async {
                   Navigator.of(c).pop();
+                  if (onOk != null) onOk();
                 },
                 hoverColor: Colors.transparent,
                 splashColor: Colors.transparent,

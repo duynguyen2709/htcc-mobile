@@ -87,11 +87,4 @@ mixin _$ComplaintDetailStore on _ComplaintDetailStore, Store {
     return _$rePostComplaintAsyncAction
         .run(() => super.rePostComplaint(rePostComplaintParam));
   }
-
-  @override
-  String toString() {
-    final string =
-        'isLoading: ${isLoading.toString()},errorAuth: ${errorAuth.toString()},errorMsg: ${errorMsg.toString()},postComplaintSuccess: ${postComplaintSuccess.toString()}';
-    return '{$string}';
-  }
 }

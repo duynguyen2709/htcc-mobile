@@ -103,11 +103,4 @@ mixin _$LeavingFormStore on _LeavingFormStore, Store {
   Future submit(FormLeaving formLeaving) {
     return _$submitAsyncAction.run(() => super.submit(formLeaving));
   }
-
-  @override
-  String toString() {
-    final string =
-        'isLoadingSubmitForm: ${isLoadingSubmitForm.toString()},msg: ${msg.toString()},isSubmitSuccess: ${isSubmitSuccess.toString()},events: ${events.toString()},errAuth: ${errAuth.toString()}';
-    return '{$string}';
-  }
 }

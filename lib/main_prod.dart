@@ -10,12 +10,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'config/config.dart';
 import 'config/inheritage_config.dart';
 import 'env/prod.dart';
+import 'injector/injector.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   bool isLogin = sharedPreferences.getBool(Constants.IS_LOGIN);
   if (isLogin == null) isLogin = false;
+  if (isLogin == true) {
+    await Injector.mainRepository.getCacheListScreen();
+  }
   runApp(ConfigWrapper(config: Config.fromJson(config), child: new MyApp(isLogin: isLogin,)));
 }
 

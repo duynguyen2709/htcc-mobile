@@ -1,3 +1,4 @@
+import 'package:hethongchamcong_mobile/data/model/payslip.dart';
 import 'package:hethongchamcong_mobile/data/remote/account/account_repository.dart';
 import 'package:hethongchamcong_mobile/data/remote/auth/auth_repository.dart';
 import 'package:hethongchamcong_mobile/data/remote/checkin/check_in_repository.dart';
@@ -6,6 +7,7 @@ import 'package:hethongchamcong_mobile/data/remote/contact/contact_repository.da
 import 'package:hethongchamcong_mobile/data/remote/leaving/leaving_repository.dart';
 import 'package:hethongchamcong_mobile/data/remote/main/main_repository.dart';
 import 'package:hethongchamcong_mobile/data/remote/notification/notification_repository.dart';
+import 'package:hethongchamcong_mobile/data/remote/payslip/pay_slip_repository.dart';
 
 class Injector {
   static final AccountRepository accountRepository = AccountRepository();
@@ -16,4 +18,5 @@ class Injector {
   static final LeavingRepository leavingRepository = LeavingRepository();
   static final NotificationRepository notificationRepository = NotificationRepository();
   static final MainRepository mainRepository = MainRepository();
+  static final PayslipRepository payslipRepository = PayslipRepository();
 }
