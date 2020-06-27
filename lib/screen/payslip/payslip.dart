@@ -54,7 +54,7 @@ class _PaySlipScreenState extends State<PaySlipScreen> {
                   size: 24,
                 ),
                 onPressed: () {
-                  var tmp = date.subtract(Duration(days: 32));
+                  var tmp = date.subtract(Duration(days: 20));
                   date = DateTime(tmp.year, tmp.month, 1);
                   month = convertIntToDayofWeek(date.month) + '/' + date.year.toString();
                   refresh();
