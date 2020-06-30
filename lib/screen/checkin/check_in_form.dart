@@ -74,11 +74,6 @@ class _CheckInFormState extends State<CheckInForm> {
         _connectionStatus = "mobile";
       }
     });
-    reaction((_) => store.checkInSuccess, (isSuccess) async {
-      if (isSuccess == true) {
-        _showErrorDialog(false);
-      }
-    });
   }
 
   @override

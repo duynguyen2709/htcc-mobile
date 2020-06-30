@@ -98,38 +98,52 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
                       title: "Đổi mật khẩu",
                       following: false,
-                      onTap: () => {Navigator.pushNamed(context, Constants.password_screen)}),
+                      onTap: () => {
+                            Navigator.pushNamed(
+                                context, Constants.password_screen)
+                          }),
                   (checkScreen(Constants.CONTACT_LIST))
                       ? Section(
-                          leading: Icon(
-                            Icons.contacts,
-                            color: Colors.black,
-                          ),
-                          title: "Danh bạ công ty",
-                          following: false,
-                          onTap: () => {Navigator.pushNamed(context, Constants.contacts_screen)})
+                      leading: Icon(
+                        Icons.contacts,
+                        color: Colors.black,
+                      ),
+                      title: "Danh bạ công ty",
+                      following: false,
+                      onTap: () => {Navigator.pushNamed(context, Constants.contacts_screen)})
                       : Center(),
+                  Section(
+                      leading: Icon(
+                        Icons.calendar_today,
+                        color: Colors.black,
+                      ),
+                      title: "Lịch làm việc",
+                      following: false,
+                      onTap: () => {
+                        Navigator.pushNamed(
+                            context, Constants.shift_screen)
+                      }),
                   (checkScreen(Constants.PAYCHECK))
                       ? Section(
-                          leading: ImageIcon(
-                            AssetImage("./assets/payroll.png"),
-                            color: Colors.black,
-                          ),
-                          title: "Quản lý bảng lương",
-                          following: false,
-                          onTap: () => {
-                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => PaySlipScreen()))
-                              })
+                      leading: ImageIcon(
+                        AssetImage("./assets/payroll.png"),
+                        color: Colors.black,
+                      ),
+                      title: "Quản lý bảng lương",
+                      following: false,
+                      onTap: () => {
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => PaySlipScreen()))
+                      })
                       : Center(),
                   (checkScreen(Constants.COMPLAINT))
                       ? Section(
-                          leading: ImageIcon(
-                            AssetImage("./assets/complaint.png"),
-                            color: Colors.black,
-                          ),
-                          title: "Góp ý - Khiếu nại",
-                          following: false,
-                          onTap: () => {Navigator.pushNamed(context, Constants.complaint_screen)})
+                      leading: ImageIcon(
+                        AssetImage("./assets/complaint.png"),
+                        color: Colors.black,
+                      ),
+                      title: "Góp ý - Khiếu nại",
+                      following: false,
+                      onTap: () => {Navigator.pushNamed(context, Constants.complaint_screen)})
                       : Center(),
                 ],
               ),
@@ -157,7 +171,10 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
                       title: "Về ứng dụng",
                       following: false,
-                      onTap: () => {Navigator.pushNamed(context, Constants.account_screen)}),
+                      onTap: () => {
+                            Navigator.pushNamed(
+                                context, Constants.about_us)
+                          }),
                   Section(
                       leading: Icon(
                         Icons.exit_to_app,

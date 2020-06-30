@@ -137,7 +137,8 @@ class AppDialog extends SimpleDialog {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20, bottom: 10),
-                child: Text(content, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                child: Text(content, style: TextStyle(fontWeight: FontWeight.w300, fontSize: 18) , textAlign: TextAlign.center,
+                ),
               ),
               SizedBox(
                 height: 8,

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hethongchamcong_mobile/data/model/check_in_param.dart';
 import 'package:hethongchamcong_mobile/data/model/login_response.dart';
+import 'package:hethongchamcong_mobile/screen/aboutus/about_us_screen.dart';
 import 'package:hethongchamcong_mobile/screen/account/account_screen.dart';
 import 'package:hethongchamcong_mobile/screen/cameracheckin/check_in_camera_screen.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_form.dart';
@@ -16,6 +17,7 @@ import 'package:hethongchamcong_mobile/screen/login/login_screen.dart';
 import 'package:hethongchamcong_mobile/screen/main_screen.dart';
 import 'package:hethongchamcong_mobile/screen/password/password_screen.dart';
 import 'package:hethongchamcong_mobile/screen/quick_login/quick_login.dart';
+import 'package:hethongchamcong_mobile/screen/shift/shift_screen.dart';
 
 import '../config/constant.dart';
 
@@ -70,6 +72,12 @@ SlideCustomRoute initialSlideRoutes(RouteSettings settings) {
     case Constants.contacts_screen:
       return new SlideCustomRoute(
           builder: (_) => new ContactList(), settings: settings, routeName: Constants.contacts_screen);
+    case Constants.shift_screen:
+      return new SlideCustomRoute(
+          builder: (_) => new ShiftScreen(), settings: settings, routeName: Constants.shift_screen);
+    case Constants.about_us:
+      return new SlideCustomRoute(
+          builder: (_) => new AboutUs(), settings: settings, routeName: Constants.about_us);
     case Constants.quick_login:
       return new SlideCustomRoute(
           builder: (_) => new QuickLogin(

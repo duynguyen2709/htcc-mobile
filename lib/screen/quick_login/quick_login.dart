@@ -91,180 +91,166 @@ class _QuickLoginState extends State<QuickLogin> {
     return SafeArea(
       child: WillPopScope(
           child: Scaffold(
-            backgroundColor: Colors.grey[100],
+            backgroundColor: Colors.white,
             body: Stack(
               children: <Widget>[
                 Column(
-                  children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50)),
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [Colors.blue, Colors.blue[600]]),
-                      ),
-                      width: 200,
-                      height: MediaQuery.of(context).size.height / 3,
-                      child: Stack(
-                        children: <Widget>[
-                          Center(
-                            child: Container(
-                              decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                              padding: EdgeInsets.all(10),
-                              child: Image(image: AssetImage('assets/ic_launcher_round.png')),
+                  children: [
+                    Stack(
+                      children: [
+                        Image.asset("assets/bg_login.png"),
+                        Positioned(
+                          bottom: 0,
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              "Danh sách tài khoản",
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w500,
+                                  fontStyle: FontStyle.italic),
                             ),
                           ),
-                          Align(
-                            alignment: Alignment.bottomRight,
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+
+                          Expanded(
                             child: Container(
-                              padding: EdgeInsets.all(10),
-                              child: Text(
-                                "Danh sách tài khoản",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic),
+                              child: ListView.builder(
+                                itemCount: widget.users.length + 1,
+                                itemBuilder: (BuildContext context, int index) {
+                                  if (index != widget.users.length)
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                                      ),
+                                      margin: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+                                      child: Material(
+                                        child: InkWell(
+                                          child: Container(
+                                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                                            height: 70,
+                                            child: Row(
+                                              children: <Widget>[
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(100.0),
+                                                      child: FadeInImage.assetNetwork(
+                                                        placeholder: 'assets/gif/loading.gif',
+                                                        image: widget.users[index].user.avatar,
+                                                        fit: BoxFit.cover,
+                                                      )),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Container(
+                                                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                                                  color: Colors.grey,
+                                                  width: 1,
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    margin: EdgeInsets.only(left: 24),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: <Widget>[
+                                                        Text(
+                                                          widget.users[index].user.companyId,
+                                                          style: TextStyle(
+                                                              color: Colors.black87,
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold),
+                                                          overflow: TextOverflow.ellipsis,
+                                                          maxLines: 1,
+                                                          textAlign: TextAlign.start,
+                                                        ),
+                                                        Text(
+                                                          widget.users[index].user.username,
+                                                          style: TextStyle(
+                                                              color: Colors.black87,
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold),
+                                                          overflow: TextOverflow.ellipsis,
+                                                          maxLines: 1,
+                                                          textAlign: TextAlign.start,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Spacer(),
+                                                _buildPopupMenu(widget.users[index]),
+                                                SizedBox(
+                                                  width: 10,
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            quickLoginStore.login(widget.users[index].user.username,
+                                                widget.users[index].password, widget.users[index].user.companyId);
+                                          },
+                                        ),
+                                        color: Colors.transparent,
+                                      ),
+                                    );
+                                  else
+                                    return Container(
+                                      decoration: BoxDecoration(border: Border(top: BorderSide())),
+                                      margin: EdgeInsets.only(top: 20),
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.pushNamed(context, Constants.login_screen);
+                                        },
+                                        child: Container(
+                                          height: 50,
+                                          child: Row(
+                                            children: <Widget>[
+                                              SizedBox(
+                                                width: 30,
+                                              ),
+                                              Icon(
+                                                Icons.add_box,
+                                                color: Colors.blue,
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                "Đăng nhập bằng tài khoản khác",
+                                                style: TextStyle(color: Colors.black),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                },
                               ),
                             ),
-                          ),
+                          )
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Expanded(
-                      child: Container(
-                        child: ListView.builder(
-                          itemCount: widget.users.length + 1,
-                          itemBuilder: (BuildContext context, int index) {
-                            if (index != widget.users.length)
-                              return Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                                ),
-                                margin: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-                                child: Material(
-                                  child: InkWell(
-                                    child: Container(
-                                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                                      height: 70,
-                                      child: Row(
-                                        children: <Widget>[
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Container(
-                                            width: 40,
-                                            height: 40,
-                                            child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(100.0),
-                                                child: FadeInImage.assetNetwork(
-                                                  placeholder: 'assets/gif/loading.gif',
-                                                  image: widget.users[index].user.avatar,
-                                                  fit: BoxFit.cover,
-                                                )),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Container(
-                                            padding: EdgeInsets.only(top: 20, bottom: 20),
-                                            color: Colors.grey,
-                                            width: 1,
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: Container(
-                                              margin: EdgeInsets.only(left: 24),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Text(
-                                                    widget.users[index].user.companyId,
-                                                    style: TextStyle(
-                                                        color: Colors.black87,
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.bold),
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 1,
-                                                    textAlign: TextAlign.start,
-                                                  ),
-                                                  Text(
-                                                    widget.users[index].user.username,
-                                                    style: TextStyle(
-                                                        color: Colors.black87,
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.bold),
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 1,
-                                                    textAlign: TextAlign.start,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Spacer(),
-                                          _buildPopupMenu(widget.users[index]),
-                                          SizedBox(
-                                            width: 10,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      quickLoginStore.login(widget.users[index].user.username,
-                                          widget.users[index].password, widget.users[index].user.companyId);
-                                    },
-                                  ),
-                                  color: Colors.transparent,
-                                ),
-                              );
-                            else
-                              return Container(
-                                decoration: BoxDecoration(border: Border(top: BorderSide())),
-                                margin: EdgeInsets.only(top: 20),
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.pushNamed(context, Constants.login_screen);
-                                  },
-                                  child: Container(
-                                    height: 50,
-                                    child: Row(
-                                      children: <Widget>[
-                                        SizedBox(
-                                          width: 30,
-                                        ),
-                                        Icon(
-                                          Icons.add_box,
-                                          color: Colors.blue,
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          "Đăng nhập bằng tài khoản khác",
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                          },
-                        ),
-                      ),
-                    )
                   ],
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
                 ),
                 Observer(builder: (_) {
                   if (quickLoginStore.isLoading)
