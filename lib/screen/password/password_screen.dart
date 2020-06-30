@@ -122,34 +122,37 @@ class _PasswordScreenState extends State<PasswordScreen> {
                             height: 60,
                           ),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            margin: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    topRight: Radius.circular(10)),
-                                color: Colors.white),
+                            margin: EdgeInsets.symmetric(horizontal: 24),
+                            padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 12),
                             child: TextFormField(
-                              keyboardType: TextInputType.text,
                               controller: _oldPasswordController,
                               obscureText: _oldPasswordVisible,
-                              style: TextStyle(fontSize: 20),
+                              cursorColor: Colors.white,
+                              style: TextStyle(fontSize: 18, color: Colors.white),
                               decoration: InputDecoration(
-                                border: InputBorder.none,
-                                labelText: 'Mật khẩu cũ',
-                                // Here is key idea
+                                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(
+                                    color: Colors.white,
+                                    width: 1
+                                ),),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 1),
+                                ),
+                                hintText: 'Mật khẩu cũ',
+                                hintStyle: TextStyle(color: Colors.white),
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     _oldPasswordVisible
                                         ? Icons.visibility
                                         : Icons.visibility_off,
                                     color: _oldPasswordVisible
-                                        ? Theme.of(context).primaryColorDark
-                                        : Colors.grey,
+                                        ? Colors.white
+                                        : Colors.black,
                                   ),
                                   onPressed: () {
                                     setState(() {
-                                      _oldPasswordVisible = !_oldPasswordVisible;
+                                      _oldPasswordVisible =
+                                          !_oldPasswordVisible;
                                     });
                                   },
                                 ),
@@ -167,26 +170,32 @@ class _PasswordScreenState extends State<PasswordScreen> {
                                 )
                               : Container(),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            margin: EdgeInsets.fromLTRB(16, 8, 16, 4),
-                            decoration: BoxDecoration(color: Colors.white),
+                            margin: EdgeInsets.symmetric(horizontal: 24),
+                            padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 12),
                             child: TextFormField(
-                              keyboardType: TextInputType.text,
                               controller: _newPasswordController,
                               obscureText: _newPasswordVisible,
-                              style: TextStyle(fontSize: 20),
+                              cursorColor: Colors.white,
+                              style: TextStyle(fontSize: 18, color: Colors.white),
                               decoration: InputDecoration(
-                                border: InputBorder.none,
-                                labelText: 'Mật khẩu mới',
-                                // Here is key idea
+                                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(
+                                    color: Colors.white,
+                                    width: 1
+                                ),),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 1),
+                                ),
+                                hintText: 'Mật khẩu mới',
+                                hintStyle: TextStyle(color: Colors.white),
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     _newPasswordVisible
                                         ? Icons.visibility
                                         : Icons.visibility_off,
                                     color: _newPasswordVisible
-                                        ? Theme.of(context).primaryColorDark
-                                        : Colors.grey,
+                                        ?  Colors.white
+                                        : Colors.black,
                                   ),
                                   onPressed: () {
                                     setState(() {
@@ -208,30 +217,32 @@ class _PasswordScreenState extends State<PasswordScreen> {
                                 )
                               : Container(),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            margin: EdgeInsets.fromLTRB(16, 8, 16, 4),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(10),
-                                    bottomRight: Radius.circular(10)),
-                                color: Colors.white),
+                            margin: EdgeInsets.symmetric(horizontal: 24),
+                            padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 12),
                             child: TextFormField(
-                              keyboardType: TextInputType.text,
                               controller: _repeatController,
                               obscureText: _repeatVisible,
-                              style: TextStyle(fontSize: 20),
+                              cursorColor: Colors.white,
+                              style: TextStyle(fontSize: 18, color: Colors.white),
                               decoration: InputDecoration(
-                                border: InputBorder.none,
-                                labelText: 'Nhập mật khẩu mới',
-                                // Here is key idea
+                                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(
+                                    color: Colors.white,
+                                    width: 1
+                                ),),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 1),
+                                ),
+                                hintText: 'Nhập lại mật khẩu mới',
+                                hintStyle: TextStyle(color: Colors.white),
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     _repeatVisible
                                         ? Icons.visibility
                                         : Icons.visibility_off,
                                     color: _repeatVisible
-                                        ? Theme.of(context).primaryColorDark
-                                        : Colors.grey,
+                                        ?  Colors.white
+                                        : Colors.black,
                                   ),
                                   onPressed: () {
                                     setState(() {
@@ -253,7 +264,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                                 )
                               : Container(),
                           SizedBox(
-                            height: 20,
+                            height: 80,
                           ),
                         ],
                       ),

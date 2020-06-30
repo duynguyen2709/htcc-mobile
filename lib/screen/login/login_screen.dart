@@ -9,6 +9,7 @@ import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
 import 'package:mobx/mobx.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -109,6 +110,220 @@ class _LoginScreenState extends State<LoginScreen> {
       insetAnimCurve: Curves.elasticIn,
       progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
       messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600),
+    );
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Stack(
+                    children: [
+                      Image.asset("assets/bg_login.png"),
+                      Positioned(
+                        bottom: 0,
+                        child: Container(
+                          padding: EdgeInsets.all(20),
+                          child:  Text(
+                            "Đăng nhập",
+                            style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                            color: Colors.transparent,
+                          ),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 8),
+                                  child: TextFormField(
+                                    controller: companyIdController,
+                                    focusNode: focusNodeCode,
+                                    decoration: InputDecoration(
+                                      border: UnderlineInputBorder(borderSide: BorderSide(
+                                          color: Colors.grey[100],
+                                          width: 0.5
+                                      ),),
+                                      hintText: "Mã công ty",
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                    ),
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return Constants.titleErrorCode;
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 8),
+                                  child: TextFormField(
+                                    controller: userNameController,
+                                    focusNode: focusNodeUserName,
+                                    decoration: InputDecoration(
+                                        border: UnderlineInputBorder(borderSide: BorderSide(
+                                            color: Colors.grey[100],
+                                            width: 0.5
+                                        ),),
+                                        hintText: "Tên đăng nhập",
+                                        hintStyle: TextStyle(color: Colors.grey)),
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return Constants.titleErrorUserName;
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 8),
+                                  child: TextFormField(
+                                    controller: passwordController,
+                                    obscureText: !isShowPass,
+                                    focusNode: focusNodePassword,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return Constants.titleErrorPassword;
+                                      }
+                                      return null;
+                                    },
+                                    decoration: InputDecoration(
+                                      border: UnderlineInputBorder(borderSide: BorderSide(
+                                          color: Colors.grey[100],
+                                          width: 0.5
+                                      ),),
+                                      hintText: "Mật khẩu",
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                      suffixIcon: isShowPass
+                                          ? GestureDetector(
+                                        child: Icon(Icons.lock_open),
+                                        onTap: () {
+                                          setState(() {
+                                            isShowPass = !isShowPass;
+                                          });
+                                        },
+                                      )
+                                          : GestureDetector(
+                                        child: Icon(Icons.lock_outline),
+                                        onTap: () {
+                                          setState(() {
+                                            isShowPass = !isShowPass;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        InkWell(
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: Text(
+                              "Quên mật khẩu?",
+                              style: TextStyle(
+                                color: Colors.lightBlue,
+                              ),
+                            ),
+                          ),
+                          onTap: (){
+                            Navigator.push(
+                                context, MaterialPageRoute(builder: (BuildContext context) => ForgotPassword()));
+                          },
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        InkWell(
+                          child: Container(
+                            height: 50,
+                            margin: EdgeInsets.symmetric(horizontal: 60),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: Colors.blue,
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Đăng nhập",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18),
+                              ),
+                            ),
+                          ),
+                          onTap: () {
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                            if (_formKey.currentState.validate()) _login();
+                          },
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Center(
+                            child: InkWell(
+                              child: Container(
+                                child: Text(
+                                  "Đăng ký trải nghiệm",
+                                  style: TextStyle(
+                                    color: Colors.blueAccent,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                                decoration: BoxDecoration(
+                                    border: Border(bottom: BorderSide(color: Colors.blueAccent))
+                                ),
+                              ),
+                              onTap: (){
+                                launch('https://home.1612145.online/');
+                              },
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Observer(builder: (_) {
+              if (loginScreenStore.isLoading)
+                return LoadingScreen();
+              else
+                return Center();
+            }),
+          ],
+        ),
+      ),
     );
     return SafeArea(
       child: Scaffold(

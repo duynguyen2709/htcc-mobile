@@ -32,8 +32,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     reaction((_) => forgotPasswordStore.msg, (String msg) {
       if (msg != '') {
         AppDialog.showDialogNotify(context, msg, () {
-//          Navigator.of(context).pushAndRemoveUntil(
-//              MaterialPageRoute(builder: (context) => LoginScreen()), (Route<dynamic> route) => false);
+          while(Navigator.of(context).canPop()){
+            Navigator.of(context).pop();
+          }
         });
       }
       ;
@@ -46,164 +47,124 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     currentFocus = FocusScope.of(context);
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.grey[100],
+        backgroundColor: Colors.white,
         body: Stack(
-          children: <Widget>[
-            GestureDetector(
-              onTap: () {
-                if (!currentFocus.hasPrimaryFocus) {
-                  currentFocus.unfocus();
-                }
-              },
-              child: SingleChildScrollView(
-                physics: (MediaQuery.of(context).viewInsets.bottom == 0.0)
-                    ? NeverScrollableScrollPhysics()
-                    : BouncingScrollPhysics(),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50)),
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [Colors.blue, Colors.blue[700]]),
-                      ),
-                      width: 200,
-                      height: MediaQuery.of(context).size.height / 3,
-                      child: Stack(
-                        children: <Widget>[
-                          Center(
-                            child: Container(
-                              decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                              padding: EdgeInsets.all(10),
-                              child: Image(image: AssetImage('assets/ic_launcher_round.png')),
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Stack(
+                    children: [
+                      Image.asset("assets/bg_login.png"),
+                      Positioned(
+                        bottom: 0,
+                        child: Container(
+                          padding: EdgeInsets.all(20),
+                          child:  Text(
+                            "Quên mật khẩu",
+                            style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Padding(
-                              padding: const EdgeInsets.all(20),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                            color: Colors.transparent,
+                          ),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 8),
+                                  child: TextFormField(
+                                    controller: codeController,
+                                    focusNode: focusNodeCode,
+                                    decoration: InputDecoration(
+                                      border: UnderlineInputBorder(borderSide: BorderSide(
+                                          color: Colors.grey[100],
+                                          width: 0.5
+                                      ),),
+                                      hintText: "Mã công ty",
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                    ),
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return Constants.titleErrorCode;
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 8),
+                                  child: TextFormField(
+                                    controller: usernameController,
+                                    focusNode: focusNodeUser,
+                                    decoration: InputDecoration(
+                                        border: UnderlineInputBorder(borderSide: BorderSide(
+                                            color: Colors.grey[100],
+                                            width: 0.5
+                                        ),),
+                                        hintText: "Tên đăng nhập",
+                                        hintStyle: TextStyle(color: Colors.grey)),
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return Constants.titleErrorUserName;
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        InkWell(
+                          child: Container(
+                            height: 50,
+                            margin: EdgeInsets.symmetric(horizontal: 60),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: Colors.blue,
+                            ),
+                            child: Center(
                               child: Text(
-                                "Quên mật khẩu",
+                                "Xác nhận",
                                 style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 23,
                                     fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic),
+                                    fontSize: 18),
                               ),
                             ),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            child: TextFormField(
-                              controller: codeController,
-                              focusNode: focusNodeCode,
-                              decoration: InputDecoration(
-                                fillColor: Colors.white,
-                                prefixIcon: Icon(Icons.business_center),
-                                focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.red, width: 2)),
-                                errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.red, width: 2)),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.blue, width: 2)),
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.black, width: 2)),
-                                contentPadding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                                labelText: 'Mã công ty',
-                                hintStyle: focusNodeCode.hasFocus ? TextStyle(color: Colors.blue) : TextStyle(),
-                                filled: true,
-                              ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return Constants.titleErrorCode;
-                                }
-                                return null;
-                              },
-                            ),
-                            padding: EdgeInsets.only(bottom: 25),
-                            margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                           ),
-                          Container(
-                            child: TextFormField(
-                              controller: usernameController,
-                              focusNode: focusNodeUser,
-                              decoration: InputDecoration(
-                                fillColor: Colors.white,
-                                prefixIcon: Icon(Icons.mail),
-                                focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.red, width: 2)),
-                                errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.red, width: 2)),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.blue, width: 2)),
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    borderSide: BorderSide(color: Colors.black, width: 2)),
-                                contentPadding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                                labelText: 'Tên đăng nhập',
-                                hintStyle: focusNodeUser.hasFocus ? TextStyle(color: Colors.blue) : TextStyle(),
-                                filled: true,
-                              ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return Constants.titleErrorUserName;
-                                }
-                                return null;
-                              },
-                            ),
-                            padding: EdgeInsets.only(bottom: 25),
-                            margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: RaisedButton(
-                        textColor: Colors.white,
-                        color: Colors.blue,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Text(
-                            'Xác nhận',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                          ),
+                          onTap: () {
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                            if (_formKey.currentState.validate()) forgotPasswordStore.submit(codeController.text, usernameController.text);
+                          },
                         ),
-                        onPressed: () {
-                          if (!currentFocus.hasPrimaryFocus) {
-                            currentFocus.unfocus();
-                          }
-                          if (_formKey.currentState.validate()) {
-                            forgotPasswordStore.submit(codeController.text, usernameController.text);
-                          }
-                        },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(320.0),
-                        ),
-                      ),
-                      margin: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                      ],
                     ),
-                  ],
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                ),
+                  )
+                ],
               ),
             ),
             Observer(builder: (_) {
@@ -214,7 +175,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             }),
           ],
         ),
-      ),
+      )
     );
   }
 }

@@ -101,6 +101,7 @@ class ContactListState extends State<ContactList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: SearchAppBar(searchQuery: (queryString) => searchWithQuery(queryString),),
       body: new GestureDetector(
           onTap: () {

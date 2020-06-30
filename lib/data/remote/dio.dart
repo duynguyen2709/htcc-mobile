@@ -22,6 +22,9 @@ class DioManager {
   static const PATH_NOTIFICATION = "/api/employee/notifications";
   static const PATH_COUNT_NOTIFICATION = '/api/employee/home/employee';
   static const PATH_NOTIFICATION_STATUS = '/api/employee/notifications/status';
+  static const PATH_STATISTIC ='/api/employee/statistic';
+  static const PATH_WORKING_DAY = 'api/employee/workingday/';
+  static const PATH_PERSONAL_SHIFT = 'api/employee//shifts/personal/';
   static const PATH_SCREEN = 'api/employee/home/employee';
   static const PATH_PAYSLIP = 'api/employee/payslip';
 

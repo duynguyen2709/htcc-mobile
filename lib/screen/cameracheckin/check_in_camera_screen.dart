@@ -15,6 +15,7 @@ import 'package:hethongchamcong_mobile/data/model/check_in_info.dart';
 import 'package:hethongchamcong_mobile/data/model/check_in_param.dart';
 import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/screen/checkin/check_in_screen_store.dart';
+import 'package:hethongchamcong_mobile/screen/dialog/app_dialog.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path/path.dart' as Path;
 import 'package:path_provider/path_provider.dart';
@@ -237,7 +238,6 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
   OfficeDetail curOffice;
   Connectivity connectivity;
   StreamSubscription<ConnectivityResult> subscription;
-
   _DisplayImageScreenState(this.imagePath, this.store);
 
   @override
@@ -258,14 +258,6 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
       } else if (result == ConnectivityResult.mobile) {
         _connectionStatus = "mobile";
       }
-    });
-    reaction((_) => store.checkInSuccess, (isSuccess) async {
-      if (isSuccess == true) {
-        _showErrorDialog(false);
-      } else if (isSuccess != null) if (store.errorAuth == true)
-        _showErrorDialog(true);
-      else
-        _showErrorDialog(false);
     });
   }
 
@@ -291,33 +283,6 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
         ip: _connectionStatus.compareTo("wifi") == 0 ? wifiIP : '');
   }
 
-  void _showErrorDialog(bool isAuthErr) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(Constants.titleErrorDialog),
-          content:
-              new Text(store.checkInSuccess ? store.message : store.errorMsg),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text(Constants.buttonErrorDialog),
-              onPressed: () {
-                Navigator.of(context).pop();
-                if (store.checkInSuccess == true)
-                  Navigator.pop(context, "success");
-                if (isAuthErr)
-                  Navigator.pushReplacementNamed(
-                      context, Constants.login_screen);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -325,19 +290,17 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
       appBar: AppBar(title: Text('Gửi ảnh điểm danh')),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
-      body: ListView(
-        children: [Stack(
+      body: Container(
+        child: Stack(
           children: <Widget>[
             Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Image.file(
-                    File(imagePath),
-                    height: MediaQuery.of(context).size.height*0.6,
-                  ),
+              children: [     Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Image.file(
+                  File(imagePath),
+                  height: MediaQuery.of(context).size.height*0.6,
                 ),
+              ),
                 curOffice != null
                     ? Container(
                   padding:
@@ -379,83 +342,85 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
                     },
                   ),
                 )
-                    : Container(),
-                Container(
-                  height: 80,
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width,
-                  alignment: Alignment.bottomCenter,
-                  padding: EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24))),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: <Widget>[
-                      AnimatedContainer(
-                        duration: Duration(seconds: _isBack ? 0 : 4),
-                        alignment: _alignment,
-                        child: AnimatedOpacity(
-                          opacity: _opacity,
-                          duration: Duration(seconds: _isBack ? 0 : 3),
-                          child: Icon(
-                            Icons.send,
-                            color: Colors.white,
-                            size: 35,
-                          ),
+                    : Container(),],
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 80,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
+                alignment: Alignment.bottomCenter,
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24))),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    AnimatedContainer(
+                      duration: Duration(seconds: _isBack ? 0 : 4),
+                      alignment: _alignment,
+                      child: AnimatedOpacity(
+                        opacity: _opacity,
+                        duration: Duration(seconds: _isBack ? 0 : 3),
+                        child: Icon(
+                          Icons.send,
+                          color: Colors.white,
+                          size: 35,
                         ),
                       ),
-                      Container(
-                        height: 64,
-                        width: 64,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle, color: Colors.white),
-                        padding: EdgeInsets.only(left: 6),
-                        alignment: Alignment.center,
-                        child: InkWell(
-                          splashColor: Colors.grey,
-                          onTap: () async {
-                            if (_timer != null) _timer.cancel();
-                            _timer =
-                            new Timer(const Duration(seconds: 5), () {
-                              if (mounted) {
-                                setState(() {
-                                  _isBack = true;
-                                  _alignment = Alignment.center;
-                                  _opacity = 1.0;
-                                });
-                              }
-                            });
-                            if (mounted)
+                    ),
+                    Container(
+                      height: 64,
+                      width: 64,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.white),
+                      padding: EdgeInsets.only(left: 6),
+                      alignment: Alignment.center,
+                      child: InkWell(
+                        splashColor: Colors.grey,
+                        onTap: () async {
+                          if (_timer != null) _timer.cancel();
+                          _timer =
+                          new Timer(const Duration(seconds: 5), () {
+                            if (mounted) {
                               setState(() {
-                                _isBack = false;
-                                _alignment =
-                                _alignment == Alignment.bottomRight
-                                    ? Alignment.center
-                                    : Alignment.bottomRight;
-                                _opacity = _opacity == 0.0 ? 1.0 : 0.0;
+                                _isBack = true;
+                                _alignment = Alignment.center;
+                                _opacity = 1.0;
                               });
+                            }
+                          });
+                          if (mounted)
+                            setState(() {
+                              _isBack = false;
+                              _alignment =
+                              _alignment == Alignment.bottomRight
+                                  ? Alignment.center
+                                  : Alignment.bottomRight;
+                              _opacity = _opacity == 0.0 ? 1.0 : 0.0;
+                            });
 
-                            //send to server
-                            MultipartFile image =
-                            await _getMultipartFile(File(imagePath));
-                            store.checkInImage(getCheckInParam(), image);
-                          },
-                          child: Icon(
-                            Icons.send,
-                            color: Colors.blue,
-                            size: 40,
-                          ),
+                          //send to server
+                          MultipartFile image =
+                          await _getMultipartFile(File(imagePath));
+                          store.checkInImage(getCheckInParam(), image);
+                        },
+                        child: Icon(
+                          Icons.send,
+                          color: Colors.blue,
+                          size: 40,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
             Observer(builder: (_) {
               if (store.isLoading)
@@ -478,8 +443,7 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
                 return Center();
             }),
           ],
-        )
-        ],
+        ),
       ),
     );
   }
