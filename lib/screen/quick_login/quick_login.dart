@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/model/login_response.dart';
+import 'package:hethongchamcong_mobile/screen/dialog/app_dialog.dart';
 import 'package:hethongchamcong_mobile/screen/quick_login/quick_login_store.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
 import 'package:mobx/mobx.dart';
@@ -39,31 +40,10 @@ class _QuickLoginState extends State<QuickLogin> {
         SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
         sharedPreferences.setBool(Constants.IS_LOGIN, true);
         Navigator.pushReplacementNamed(context, Constants.home_screen);
-      } else if (quickLoginStore.errorMessage != null && quickLoginStore.errorMessage.isNotEmpty)
-        _showErrorDialog(quickLoginStore.errorMessage);
+      } else if (quickLoginStore.errorMessage != null && quickLoginStore.errorMessage.isNotEmpty){
+        AppDialog.showDialogNotify(context, quickLoginStore.errorMessage, (){});
+      }
     });
-  }
-
-  void _showErrorDialog(String errorMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: Text(Constants.titleErrorDialog),
-          content: Text(errorMessage),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            FlatButton(
-              child: Text(Constants.buttonErrorDialog),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override

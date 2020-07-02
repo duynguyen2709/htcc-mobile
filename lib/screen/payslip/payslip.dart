@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -236,154 +238,159 @@ class _ItemPaySplitState extends State<ItemPaySplit> with AutomaticKeepAliveClie
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
         color: Colors.white,
         elevation: 10,
-        child: Column(
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(4),
-                  topRight: Radius.circular(4),
-                ),
-                color: Colors.greenAccent,
-              ),
-              padding: EdgeInsets.all(8),
-              width: double.infinity,
-              child: Center(
-                child: Text(
-                  '-- PHIẾU LƯƠNG --',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
-                ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: Random().nextInt(100).toDouble(),
+              right: Random().nextInt(100).toDouble() - 40,
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                height: Random().nextInt(100).toDouble() + 40,
+                width: Random().nextInt(100).toDouble() + 40,
+                margin: EdgeInsets.fromLTRB(8, 0, 8, 12),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.blue.withOpacity(0.4)),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: CustomExpansionTile(
-                      title: Row(
-                        children: <Widget>[
-                          Container(
-                              margin: EdgeInsets.fromLTRB(8, 4, 8, 4),
-                              child: CalendarCell(
-                                startDate: DateTime.parse(widget.payslip.dateFrom),
-                                endDate: DateTime.parse(widget.payslip.dateTo),
-                              )),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      widget.payslip.paySlipId,
-                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
+            Positioned(
+              top: Random().nextInt(100).toDouble(),
+              right: Random().nextInt(100).toDouble() - 40,
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                height: Random().nextInt(100).toDouble() + 40,
+                width: Random().nextInt(100).toDouble() + 40,
+                margin: EdgeInsets.fromLTRB(8, 0, 8, 12),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.blueAccent.withOpacity(0.3)),
+              ),
+            ),
+            Column(
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
+                    ),
+                    color: Colors.lightBlue,
+                  ),
+                  padding: EdgeInsets.all(8),
+                  width: double.infinity,
+                  child: Center(
+                    child: Text(
+                      '-- PHIẾU LƯƠNG --',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: CustomExpansionTile(
+                          title: Row(
+                            children: <Widget>[
+                              Container(
+                                  margin: EdgeInsets.fromLTRB(8, 4, 16, 0),
+                                  child: CalendarCell(
+                                    startDate: DateTime.parse(widget.payslip.dateFrom),
+                                    endDate: DateTime.parse(widget.payslip.dateTo),
+                                  )),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Text(
                                       "Tổng cộng: ",
-                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),
+                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.grey[600],height: 1.5),
                                     ),
-                                    Text(
-                                      widget.payslip.totalNetPay,
-                                      style: TextStyle(
-                                          fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      "Ngày tạo phiếu: ",
-                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),
+                                    SizedBox(
+                                      height: 10,
                                     ),
-                                    Text(
-                                      DateFormat('dd-MM-yyyy').format(DateTime.parse(widget.payslip.payDate)),
-                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black),
-                                    )
+                                    Row(
+                                      children: <Widget>[
+                                        Text(
+                                          widget.payslip.totalNetPay,
+                                          style: TextStyle(
+                                              fontSize: 28, fontWeight: FontWeight.bold, color: Colors.blue),
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: <Widget>[
+                                        Text(
+                                          "Ngày tạo phiếu: ",
+                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.grey[600],height: 1.5),
+                                        ),
+                                        Text(
+                                          DateFormat('dd-MM-yyyy').format(DateTime.parse(widget.payslip.payDate)),
+                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black),
+                                        )
+                                      ],
+                                    ),
                                   ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(Icons.keyboard_arrow_down),
-                          )
-                        ],
-                      ),
-                      children: <Widget>[
-                        SizedBox(height: 8),
-                        Container(
-                          padding: EdgeInsets.all(8),
-                          width: double.infinity,
-                          color: Colors.blueAccent,
-                          child: Center(
-                            child: Text(
-                              "** CHI TIẾT **",
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Container(
-                          child: Column(
-                            children: <Widget>[
-                              Center(
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(maxHeight: 220, minHeight: 50),
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: widget.payslip.incomeList.length,
-                                    itemBuilder: (BuildContext context, int index) {
-                                      return _buildItemInCome(widget.payslip.incomeList[index]);
-                                    },
-                                  ),
                                 ),
                               ),
-                              (widget.payslip.deductionList != null && widget.payslip.deductionList.length > 0)
-                                  ? Container(
-                                      height: 2,
-                                      color: Colors.blueAccent,
-                                    )
-                                  : Center(),
-                              (widget.payslip.deductionList != null && widget.payslip.deductionList.length > 0)
-                                  ? Center(
-                                      child: ConstrainedBox(
-                                        constraints: BoxConstraints(maxHeight: 220, minHeight: 50),
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: widget.payslip.deductionList.length,
-                                          itemBuilder: (BuildContext context, int index) {
-                                            return _buildItemDeduction(widget.payslip.deductionList[index]);
-                                          },
-                                        ),
-                                      ),
-                                    )
-                                  : Center(),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Icon(Icons.keyboard_arrow_down),
+                              )
                             ],
                           ),
-                        )
-                      ],
-                    ),
+                          children: <Widget>[
+                            SizedBox(height: 8),
+                            Container(
+                              padding: EdgeInsets.all(8),
+                              width: double.infinity,
+                              color: Colors.lightBlueAccent,
+                              child: Center(
+                                child: Text(
+                                  "** CHI TIẾT **",
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Container(
+                              child: Column(
+                                children: <Widget>[
+                                  Column(
+                                    children: widget.payslip.incomeList.map((e) =>  _buildItemInCome(e)).toList(),
+                                  ),
+                                  (widget.payslip.deductionList != null && widget.payslip.deductionList.length > 0)
+                                      ? Container(
+                                          height: 4,
+                                          color: Colors.lightBlueAccent.withOpacity(0.2),
+                                        )
+                                      : Center(),
+                                  (widget.payslip.deductionList != null && widget.payslip.deductionList.length > 0)
+                                      ? Column(
+                                          children: widget.payslip.deductionList.map((e) => _buildItemDeduction(e)).toList(),
+                                        )
+                                      : Center(),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            )
+                )
+              ],
+            ),
           ],
         ),
       ),
@@ -396,22 +403,30 @@ class _ItemPaySplitState extends State<ItemPaySplit> with AutomaticKeepAliveClie
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                item.category + ': ',
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
-              ),
-              (item.extraInfo != null && item.extraInfo.isNotEmpty)
-                  ? Text(
-                      '(${item.extraInfo})',
-                      style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12),
-                    )
-                  : Center(),
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  item.category + ': ',
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+                ),
+                (item.extraInfo != null && item.extraInfo.isNotEmpty)
+                    ? Text(
+                        '(${item.extraInfo})',
+                        style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12),
+                      )
+                    : Center(),
+              ],
+            ),
           ),
-          Text('+ ' + item.amount, style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.green))
+          SizedBox( width: 140,child:
+          Row(
+            children: [
+              Expanded(child: Text('+  ', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.green))),
+              Text( item.amount, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.green)),
+            ],
+          ))
         ],
       ),
     );
@@ -423,22 +438,30 @@ class _ItemPaySplitState extends State<ItemPaySplit> with AutomaticKeepAliveClie
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                item.category + ': ',
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
-              ),
-              (item.extraInfo != null && item.extraInfo.isNotEmpty)
-                  ? Text(
-                      '(${item.extraInfo})',
-                      style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12),
-                    )
-                  : Center(),
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  item.category + ': ',
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+                ),
+                (item.extraInfo != null && item.extraInfo.isNotEmpty)
+                    ? Text(
+                  '(${item.extraInfo})',
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12),
+                )
+                    : Center(),
+              ],
+            )
           ),
-          Text('- ' + item.amount, style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.red))
+          SizedBox( width: 140,child:
+          Row(
+            children: [
+              Expanded(child: Text('-  ', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.redAccent))),
+              Text( item.amount, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.redAccent)),
+            ],
+          ))
         ],
       ),
     );

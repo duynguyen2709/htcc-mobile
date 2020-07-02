@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
+import 'package:hethongchamcong_mobile/screen/dialog/app_dialog.dart';
 import 'package:hethongchamcong_mobile/screen/password/password_screen_store.dart';
 import 'package:mobx/mobx.dart';
 
@@ -44,40 +45,23 @@ class _PasswordScreenState extends State<PasswordScreen> {
     errorMsgRetypePass = PasswordError.VALID;
     reaction((_) => passwordScreenStore.isSuccess, (isSuccess) async {
       if (isSuccess == true) {
-        _showErrorDialog(false, "Đổi mật khẩu thành công.");
+        _showDialog(false, "Đổi mật khẩu thành công.");
       } else if (isSuccess != null) {
         if (passwordScreenStore.errorAuth!=null) {
-          _showErrorDialog(true, passwordScreenStore.errorMessage);
+          _showDialog(true, passwordScreenStore.errorMessage);
         } else {
-          _showErrorDialog(false, passwordScreenStore.errorMessage);
+          _showDialog(false, passwordScreenStore.errorMessage);
         }
       }
     });
   }
 
-  void _showErrorDialog(bool isAuthErr, String msg) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(Constants.titleErrorDialog),
-          content: new Text(msg),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text(Constants.buttonErrorDialog),
-              onPressed: () {
-                Navigator.of(context).pop();
-                if (isAuthErr)
-                  Navigator.pushReplacementNamed(
-                      context, Constants.login_screen);
-              },
-            ),
-          ],
-        );
-      },
-    );
+  void _showDialog(bool isAuthErr, String msg) {
+    AppDialog.showDialogNotify(context, msg, (){
+      if (isAuthErr)
+        Navigator.pushReplacementNamed(
+            context, Constants.login_screen);
+    });
   }
 
   @override
@@ -335,26 +319,26 @@ class _PasswordScreenState extends State<PasswordScreen> {
     err2 = PasswordError.VALID;
     err3 = PasswordError.VALID;
     if (_oldPasswordController.text == "") {
-      err1 = PasswordError.EMPTY;}
-//    } else if (_oldPasswordController.text.length < 8) {
-//      err1 = PasswordError.SHORT;
-//    } else if (!validatePasswordStructure(_oldPasswordController.text)) {
-//      err1 = PasswordError.INVALID;
-//    }
+      err1 = PasswordError.EMPTY;
+    } else if (_oldPasswordController.text.length < 8) {
+      err1 = PasswordError.SHORT;
+    } else if (!validatePasswordStructure(_oldPasswordController.text)) {
+      err1 = PasswordError.INVALID;
+    }
     if (_newPasswordController.text == "") {
-      err2 = PasswordError.EMPTY;}
-//    } else if (_newPasswordController.text.length < 8) {
-//      err2 = PasswordError.SHORT;
-//    } else if (!validatePasswordStructure(_newPasswordController.text)) {
-//      err2 = PasswordError.INVALID;
-//    }
+      err2 = PasswordError.EMPTY;
+    } else if (_newPasswordController.text.length < 8) {
+      err2 = PasswordError.SHORT;
+    } else if (!validatePasswordStructure(_newPasswordController.text)) {
+      err2 = PasswordError.INVALID;
+    }
     if (_repeatController.text == "") {
-      err3 = PasswordError.EMPTY;}
-//    } else if (_repeatController.text.length < 8) {
-//      err3 = PasswordError.SHORT;
-//    } else if (!validatePasswordStructure(_repeatController.text)) {
-//      err3 = PasswordError.INVALID;
-//    }
+      err3 = PasswordError.EMPTY;
+    } else if (_repeatController.text.length < 8) {
+      err3 = PasswordError.SHORT;
+    } else if (!validatePasswordStructure(_repeatController.text)) {
+      err3 = PasswordError.INVALID;
+    }
     if (_repeatController.text.compareTo(_newPasswordController.text) != 0) {
       err3 = PasswordError.NOT_EQUAL;
     }

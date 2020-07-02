@@ -436,7 +436,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius:
-                                BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16))),
+                                BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24))),
                         padding: EdgeInsets.only(top: 48),
                         child: (curOffice != null && curOffice.canCheckIn)
                             ? Column(

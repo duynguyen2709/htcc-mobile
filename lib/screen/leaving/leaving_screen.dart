@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
+import 'package:hethongchamcong_mobile/screen/dialog/app_dialog.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/info_leaving/info_leaving_screen.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/leaving_form/leaving_form.dart';
 import 'package:hethongchamcong_mobile/screen/leaving/leaving_store.dart';
@@ -36,39 +37,17 @@ class _LeavingScreenState extends State<LeavingScreen> {
     leavingStore.loadData();
 
     reaction((_) => leavingStore.errorMsg, (String errorMsg) {
-      _showErrorDialog(errorMsg);
+      AppDialog.showDialogNotify(context, errorMsg, (){});
     });
 
     reaction((_) => leavingStore.errAuth, (errAuth) {
-     if(errAuth==true) _showErrorDialog(leavingStore.errorMsg);
+     if(errAuth==true)   AppDialog.showDialogNotify(context, leavingStore.errorMsg, (){
+       Navigator.pushReplacementNamed(
+           context, Constants.login_screen);
+     });
     });
   }
 
-  void _showErrorDialog(String errorMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: Text(Constants.titleErrorDialog),
-          content: Text(errorMessage),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            FlatButton(
-              child: Text(Constants.buttonErrorDialog),
-              onPressed: () {
-                Navigator.of(context).pop();
-                if(leavingStore.errAuth){
-                  Navigator.pushReplacementNamed(
-                      context, Constants.login_screen);
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   void dispose() {

@@ -8,6 +8,7 @@ import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/model/complaint.dart';
 import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/screen/complaint/complaint_detail/complaint_detail_store.dart';
+import 'package:hethongchamcong_mobile/screen/dialog/app_dialog.dart';
 import 'package:hethongchamcong_mobile/screen/widget/info_line.dart';
 import 'package:hethongchamcong_mobile/screen/widget/photo_viewer.dart';
 import 'package:intl/intl.dart';
@@ -42,34 +43,15 @@ class _ComplaintDetailState extends State<ComplaintDetail> {
     store = ComplaintDetailStore();
     reaction((_) => store.postComplaintSuccess, (isSuccess) async {
       if (isSuccess == true) {
-        _showMessage("Gửi góp ý/ khiếu nại thành công.");
+        AppDialog.showDialogNotify(context, "Gửi góp ý/ khiếu nại thành công.", (){
+          Navigator.pop(context, 'Success');
+        });
       } else if (isSuccess != null) {
-        _showErrorDialog(store.errorAuth);
+        AppDialog.showDialogNotify(context, store.errorMsg, (){
+          if (store.errorAuth) Navigator.pushReplacementNamed(context, Constants.login_screen);
+        });
       }
     });
-  }
-
-  void _showErrorDialog(bool isAuthErr) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(Constants.titleErrorDialog),
-          content: new Text(store.errorMsg),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text(Constants.buttonErrorDialog),
-              onPressed: () {
-                Navigator.of(context).pop();
-                if (isAuthErr) Navigator.pushReplacementNamed(context, Constants.login_screen);
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   String codeToStatus(int code) {
@@ -83,29 +65,6 @@ class _ComplaintDetailState extends State<ComplaintDetail> {
       default:
         return 'Đang xử lý';
     }
-  }
-
-  void _showMessage(String msg) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(Constants.titleErrorDialog),
-          content: new Text(msg),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text(Constants.buttonErrorDialog),
-              onPressed: () {
-                Navigator.of(context).pop();
-                if (store.postComplaintSuccess==true) Navigator.pop(context, 'Success');
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -306,7 +265,7 @@ class _ComplaintDetailState extends State<ComplaintDetail> {
                                       date: DateFormat("yyyyMM").format(DateTime.now()));
                                   store.rePostComplaint(rePostComplaintParam);
                                 } else {
-                                  _showMessage("Nội dung góp ý/ khiếu nại không được để trống.");
+                                  AppDialog.showDialogNotify(context, "Nội dung góp ý/ khiếu nại không được để trống.", (){});
                                 }
                               },
                               child: Icon(

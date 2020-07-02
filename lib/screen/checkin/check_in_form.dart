@@ -458,34 +458,6 @@ class _CheckInFormState extends State<CheckInForm> {
     super.dispose();
   }
 
-  void _showErrorDialog(bool isAuthErr) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(Constants.titleErrorDialog),
-          content:
-              new Text(store.checkInSuccess ? store.message : store.errorMsg),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text(Constants.buttonErrorDialog),
-              onPressed: () {
-                Navigator.of(context).pop();
-                if (store.checkInSuccess == true)
-                  Navigator.pop(context, "success");
-                if (isAuthErr)
-                  Navigator.pushReplacementNamed(
-                      context, Constants.login_screen);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void _showMessage(String msg) {
     showDialog(
       context: context,

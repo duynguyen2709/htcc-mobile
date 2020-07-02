@@ -56,7 +56,7 @@ class _NotificationScreenState extends State<NotificationScreen>
 
     reaction((_) => notificationScreenStore.msgLoadMore, (String msg) {
       if (msg != null && msg.isNotEmpty) {
-        _showErrorDialog(msg);
+        AppDialog.showDialogNotify(context, msg, (){});
       }
     });
   }
@@ -133,6 +133,9 @@ class _NotificationScreenState extends State<NotificationScreen>
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.fromLTRB(8, 0, 8, 2),
             child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius:  BorderRadius.only(topLeft: Radius.circular(15), topRight:Radius.circular(24), bottomLeft:Radius.circular(15) ),
+              ),
               child: InkWell(
                 onTap: () {
                   routeHandling(model.screenId);
@@ -204,6 +207,9 @@ class _NotificationScreenState extends State<NotificationScreen>
             child: Stack(
               children: <Widget>[
                 Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
                   elevation: 8,
                   child: InkWell(
                     onTap: () {
@@ -313,7 +319,7 @@ class _NotificationScreenState extends State<NotificationScreen>
         child: Padding(
           padding: const EdgeInsets.only(top: 10, bottom: 10, left: 15),
           child: Text("Tháng ${datetime.month} Năm ${datetime.year}",
-              style: TextStyle(fontWeight: FontWeight.w500)),
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15)),
         ),
       );
     } else {
@@ -326,34 +332,13 @@ class _NotificationScreenState extends State<NotificationScreen>
           child: Padding(
             padding: const EdgeInsets.only(top: 10, bottom: 10, left: 15),
             child: Text("Tháng ${datetime.month} Năm ${datetime.year}",
-                style: TextStyle(fontWeight: FontWeight.w500)),
+                style: TextStyle(fontWeight: FontWeight.w500,fontSize: 15)),
           ),
         );
       }
     }
   }
 
-  void _showErrorDialog(String errorMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: Text(Constants.titleErrorDialog),
-          content: Text(errorMessage),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            FlatButton(
-              child: Text(Constants.buttonErrorDialog),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -361,15 +346,15 @@ class _NotificationScreenState extends State<NotificationScreen>
       appBar: AppBar(
         title: Text(
           "Thông báo",
-          style: TextStyle(color: Colors.black, fontSize: 24),
+          style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600),
         ),
-        backgroundColor: Color(0xEef7f7f7),
+        backgroundColor: Colors.blue,
         elevation: 0,
         actions: <Widget>[
           IconButton(
             icon: Icon(
               Icons.playlist_add_check,
-              color: Colors.black,
+              color: Colors.white,
             ),
             iconSize: 32,
             onPressed: () => AppDialog.showDialogYN(
@@ -382,6 +367,21 @@ class _NotificationScreenState extends State<NotificationScreen>
       ),
       body: Stack(
         children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.blue,
+                    Colors.blue.withOpacity(0.8),
+                    Colors.lightBlueAccent,
+                    Colors.lightBlueAccent.withOpacity(0.8),
+                    Colors.lightBlueAccent.withOpacity(0.5),
+                    Colors.white
+                  ]),
+            ),
+          ),
           Observer(
             builder: (BuildContext context) {
               if (notificationScreenStore.msg.isNotEmpty)

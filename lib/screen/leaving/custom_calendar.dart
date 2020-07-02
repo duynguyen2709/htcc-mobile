@@ -297,154 +297,153 @@ class WeekCalendarState extends State<WeekCalendar>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        TableCalendar(
-          locale: "en_US",
-          rowHeight: 40,
-          calendarController: calendarController,
-          events: events,
-          initialCalendarFormat: CalendarFormat.week,
-          formatAnimation: FormatAnimation.slide,
-          startingDayOfWeek: StartingDayOfWeek.sunday,
-          availableGestures: AvailableGestures.none,
-          calendarStyle: CalendarStyle(
-            outsideDaysVisible: false,
+    return Container(
+      padding: EdgeInsets.only(bottom: 12),
+      child: TableCalendar(
+        locale: "en_US",
+        rowHeight: 40,
+        calendarController: calendarController,
+        events: events,
+        initialCalendarFormat: CalendarFormat.month,
+        formatAnimation: FormatAnimation.slide,
+        startingDayOfWeek: StartingDayOfWeek.sunday,
+        availableGestures: AvailableGestures.horizontalSwipe,
+        calendarStyle: CalendarStyle(
+          outsideDaysVisible: false,
+        ),
+        daysOfWeekStyle: DaysOfWeekStyle(
+            weekendStyle: TextStyle().copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16),
+            weekdayStyle:
+                TextStyle().copyWith(color: Colors.white, fontSize: 16)),
+        headerStyle: HeaderStyle(
+          centerHeaderTitle: true,
+          formatButtonVisible: false,
+          titleTextStyle: TextStyle().copyWith(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+          formatButtonTextStyle:
+              TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
+          rightChevronIcon: Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.white,
+            size: 16,
           ),
-          daysOfWeekStyle: DaysOfWeekStyle(
-              weekendStyle: TextStyle().copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16),
-              weekdayStyle:
-                  TextStyle().copyWith(color: Colors.white, fontSize: 16)),
-          headerStyle: HeaderStyle(
-            centerHeaderTitle: true,
-            formatButtonVisible: false,
-            titleTextStyle: TextStyle().copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-            formatButtonTextStyle:
-                TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
-            rightChevronIcon: Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.white,
-              size: 16,
-            ),
-            leftChevronIcon: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
-              size: 16,
-            ),
+          leftChevronIcon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+            size: 16,
           ),
-          onVisibleDaysChanged: (dateFirst, dateLast, _) {
-            if (dateLast.isBefore(widget.minDate)) {
-              calendarController.setSelectedDay(widget.minDate);
-            }
-            if (dateFirst.isAfter(widget.maxDate)) {
-              calendarController.setSelectedDay(widget.maxDate);
-            }
+        ),
+        onVisibleDaysChanged: (dateFirst, dateLast, _) {
+          if (dateLast.isBefore(widget.minDate)) {
+            calendarController.setSelectedDay(widget.minDate);
+          }
+          if (dateFirst.isAfter(widget.maxDate)) {
+            calendarController.setSelectedDay(widget.maxDate);
+          }
+        },
+        builders: CalendarBuilders(
+          selectedDayBuilder: (context, date, _) {
+            return Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.transparent,
+                border: Border.all(color: Colors.white, width: 2),
+              ),
+              width: 50,
+              height: 50,
+              alignment: Alignment.center,
+              child: Text(
+                '${date.day}',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.white)
+                    .copyWith(fontSize: 16.0),
+              ),
+            );
           },
-          builders: CalendarBuilders(
-            selectedDayBuilder: (context, date, _) {
+          dayBuilder: (context, date, _) {
+            if (date.isAfter(widget.maxDate) ||
+                date.isBefore(widget.minDate)) {
               return Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.transparent,
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-                width: 50,
-                height: 50,
+                color: Colors.transparent,
+                width: 60,
+                height: 60,
                 alignment: Alignment.center,
                 child: Text(
                   '${date.day}',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white)
-                      .copyWith(fontSize: 16.0),
+                  style: TextStyle()
+                      .copyWith(fontSize: 16.0, color: Colors.white30),
                 ),
               );
-            },
-            dayBuilder: (context, date, _) {
-              if (date.isAfter(widget.maxDate) ||
-                  date.isBefore(widget.minDate)) {
-                return Container(
-                  color: Colors.transparent,
-                  width: 60,
-                  height: 60,
-                  alignment: Alignment.center,
-                  child: Text(
-                    '${date.day}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle()
-                        .copyWith(fontSize: 16.0, color: Colors.white30),
-                  ),
-                );
-              } else
-                return Container(
-                  color: Colors.transparent,
-                  width: 60,
-                  height: 60,
-                  alignment: Alignment.center,
-                  child: Text(
-                    '${date.day}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle()
-                        .copyWith(fontSize: 16.0, color: Colors.white),
-                  ),
-                );
-            },
-            todayDayBuilder: (context, date, events) {
-              if ((date.isAfter(widget.maxDate) &&
-                      date.difference(widget.maxDate).inDays > 1) ||
-                  (date.isBefore(widget.minDate) && date.difference(widget.minDate).inDays > 1)) {
-                return Container(
-                  color: Colors.transparent,
-                  width: 60,
-                  height: 60,
-                  alignment: Alignment.center,
-                  child: Text(
-                    '${date.day}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle()
-                        .copyWith(fontSize: 16.0, color: Colors.white30),
-                  ),
-                );
-              } else
-                return Container(
-                  color: Colors.transparent,
-                  width: 60,
-                  height: 60,
-                  alignment: Alignment.center,
-                  child: Text(
-                    '${date.day}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle()
-                        .copyWith(fontSize: 16.0, color: Colors.white),
-                  ),
-                );
-            },
-            markersBuilder: (context, date, events, holidays) {
-              final children = <Widget>[];
-
-              if (events.isNotEmpty) {
-                children.add(
-                  Positioned(
-                    bottom: 4,
-                    child: Center(child: _buildEventsMarker(date, events)),
-                  ),
-                );
-              }
-              return children;
-            },
-          ),
-          onDaySelected: (date, events) {
-            onDaySelected(events, date);
+            } else
+              return Container(
+                color: Colors.transparent,
+                width: 60,
+                height: 60,
+                alignment: Alignment.center,
+                child: Text(
+                  '${date.day}',
+                  textAlign: TextAlign.center,
+                  style: TextStyle()
+                      .copyWith(fontSize: 16.0, color: Colors.white),
+                ),
+              );
           },
-          startDay: widget.minDate,
-          endDay: widget.maxDate,
-          initialSelectedDay: widget.minDate,
-        )
-      ],
+          todayDayBuilder: (context, date, events) {
+            if ((date.isAfter(widget.maxDate) &&
+                    date.difference(widget.maxDate).inDays > 1) ||
+                (date.isBefore(widget.minDate) && date.difference(widget.minDate).inDays > 1)) {
+              return Container(
+                color: Colors.transparent,
+                width: 60,
+                height: 60,
+                alignment: Alignment.center,
+                child: Text(
+                  '${date.day}',
+                  textAlign: TextAlign.center,
+                  style: TextStyle()
+                      .copyWith(fontSize: 16.0, color: Colors.white30),
+                ),
+              );
+            } else
+              return Container(
+                color: Colors.transparent,
+                width: 60,
+                height: 60,
+                alignment: Alignment.center,
+                child: Text(
+                  '${date.day}',
+                  textAlign: TextAlign.center,
+                  style: TextStyle()
+                      .copyWith(fontSize: 16.0, color: Colors.white),
+                ),
+              );
+          },
+          markersBuilder: (context, date, events, holidays) {
+            final children = <Widget>[];
+
+            if (events.isNotEmpty) {
+              children.add(
+                Positioned(
+                  bottom: 4,
+                  child: Center(child: _buildEventsMarker(date, events)),
+                ),
+              );
+            }
+            return children;
+          },
+        ),
+        onDaySelected: (date, events) {
+          onDaySelected(events, date);
+        },
+        startDay: widget.minDate,
+        endDay: widget.maxDate,
+        initialSelectedDay: widget.minDate,
+      ),
     );
   }
 

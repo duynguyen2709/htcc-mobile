@@ -30,7 +30,7 @@ class _StatisticScreenState extends State<StatisticScreen> {
   String _fromDate =DateFormat('dd/MM/yyyy')
       .format(DateTime(DateTime.now().year,DateTime.now().month,1));
   String _toDate =DateFormat('dd/MM/yyyy')
-      .format(DateTime.now());
+      .format(DateTime(DateTime.now().year,DateTime.now().month+1,0));
   StatisticStore store;
   User user;
   var heightScreen = Size.zero;
@@ -126,7 +126,6 @@ class _StatisticScreenState extends State<StatisticScreen> {
           x = x + 1;
         }
         setState(() {
-          print(date);
         });
       }
     });
@@ -165,7 +164,7 @@ class _StatisticScreenState extends State<StatisticScreen> {
                             Colors.lightBlue,
                             Colors.lightBlueAccent
                           ]),
-                      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8),bottomRight:Radius.circular(8) )
+                      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(24),bottomRight:Radius.circular(24) )
                     ),
                   ),
                   MeasureSize(

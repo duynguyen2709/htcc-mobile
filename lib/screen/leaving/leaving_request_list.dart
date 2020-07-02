@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/model/leaving.dart';
+import 'package:hethongchamcong_mobile/screen/dialog/app_dialog.dart';
 import 'package:hethongchamcong_mobile/screen/widget/calendar_cell.dart';
 import 'package:hethongchamcong_mobile/screen/widget/custom_expansion_tile.dart';
 import 'package:hethongchamcong_mobile/screen/widget/marquee_widget.dart';
@@ -91,128 +92,10 @@ class LeavingRequestListState extends State<LeavingRequestList>
     });
   }
   openAlertCancelRequest(Function onContinue) {
-    String content = "";
-    content = "Bạn muốn hủy đơn xin nghỉ phép ?";
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(24.0))),
-            contentPadding: EdgeInsets.all(12.0),
-            backgroundColor: Colors.white,
-            content: Container(
-              color: Colors.transparent,
-              width: 300.0,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      "Xác nhận",
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-                    ),
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        content,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300, fontSize: 18),
-                      ),
-                    ),
-                    Divider(
-                      color: Colors.grey,
-                      height: 4.0,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Expanded(
-                          child: InkWell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Hủy",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            onTap: () {
-                              Navigator.of(context, rootNavigator: true)
-                                  .pop('dialog');
-                            },
-                            hoverColor: Colors.transparent,
-                            splashColor: Colors.transparent,
-                            focusColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                          ),
-                        ),
-                        Container(
-                          color: Colors.grey,
-                          height: 30,
-                          width: 0.5,
-                        ),
-                        Expanded(
-                          child: InkWell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Tiếp tục",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            onTap: () {
-                              onContinue();
-                              Navigator.of(context, rootNavigator: true)
-                                  .pop('dialog');
-                            },
-                            hoverColor: Colors.transparent,
-                            splashColor: Colors.transparent,
-                            focusColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                          ),
-                        )
-                      ],
-                    )
-                  ]),
-            ),
-          );
-        });
+    AppDialog.showDialogYN(context, "Bạn muốn hủy đơn xin nghỉ phép ?", (){
+      onContinue();
+    }, (){});
   }
-
-  void _showDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: Text(""),
-          content: Text(message),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            FlatButton(
-              child: Text("Ok"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
 
 
   @override

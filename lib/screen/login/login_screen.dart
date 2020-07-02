@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hethongchamcong_mobile/config/constant.dart';
+import 'package:hethongchamcong_mobile/screen/dialog/app_dialog.dart';
 import 'package:hethongchamcong_mobile/screen/forgot_password/forgot_password.dart';
 import 'package:hethongchamcong_mobile/screen/login/login_screen_store.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
@@ -52,8 +53,11 @@ class _LoginScreenState extends State<LoginScreen> {
         SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
         sharedPreferences.setBool(Constants.IS_LOGIN, true);
         Navigator.pushNamedAndRemoveUntil(context, Constants.home_screen, (Route<dynamic> route) => false);
-      } else if (loginScreenStore.errorMessage != null && loginScreenStore.errorMessage.isNotEmpty)
-        _showErrorDialog(loginScreenStore.errorMessage);
+      } else if (loginScreenStore.errorMessage != null && loginScreenStore.errorMessage.isNotEmpty){
+        AppDialog.showDialogNotify(context,loginScreenStore.errorMessage , (){
+          shouldNotFocus = true;
+        });
+      }
     });
   }
 
@@ -65,29 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _login() async {
     loginScreenStore.login(userNameController.text, passwordController.text, companyIdController.text);
   }
-
-  void _showErrorDialog(String errorMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: Text(Constants.titleErrorDialog),
-          content: Text(errorMessage),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            FlatButton(
-              child: Text(Constants.buttonErrorDialog),
-              onPressed: () {
-                shouldNotFocus = true;
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  
 
   @override
   Widget build(BuildContext context) {

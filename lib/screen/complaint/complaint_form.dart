@@ -11,6 +11,7 @@ import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/model/complaint.dart';
 import 'package:hethongchamcong_mobile/data/model/user.dart';
 import 'package:hethongchamcong_mobile/screen/complaint/complaint_store.dart';
+import 'package:hethongchamcong_mobile/screen/dialog/app_dialog.dart';
 import 'package:hethongchamcong_mobile/screen/widget/image_picker.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -62,58 +63,17 @@ class _ComplaintFormState extends State<ComplaintForm> {
     });
     reaction((_) => store.postComplaintSuccess, (isSuccess) async {
       if (isSuccess == true) {
-        _showMessage("Gửi góp ý/ khiếu nại thành công.");
+        AppDialog.showDialogNotify(context, "Gửi góp ý/ khiếu nại thành công.", (){
+          Navigator.pop(context,'Success');
+        });
       } else if (isSuccess != null){
-        _showErrorDialog(store.errorAuth);
+        AppDialog.showDialogNotify(context, store.errorMsg, (){
+          if (store.errorAuth)
+            Navigator.pushReplacementNamed(
+                context, Constants.login_screen);
+        });
       }
     });
-  }
-  void _showMessage(String msg) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(Constants.titleErrorDialog),
-          content: new Text(msg),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text(Constants.buttonErrorDialog),
-              onPressed: () {
-                Navigator.of(context).pop('Success');
-                if(store.postComplaintSuccess)  Navigator.pop(context,'Success');
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showErrorDialog(bool isAuthErr) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(Constants.titleErrorDialog),
-          content: new Text(store.errorMsg),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text(Constants.buttonErrorDialog),
-              onPressed: () {
-                Navigator.of(context).pop();
-                if (isAuthErr)
-                  Navigator.pushReplacementNamed(
-                      context, Constants.login_screen);
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -423,7 +383,7 @@ class _ComplaintFormState extends State<ComplaintForm> {
                             });
                           }
                           else{
-                            _showMessage("Nội dung góp ý/ khiếu nại không được để trống.");
+                            AppDialog.showDialogNotify(context,"Nội dung góp ý/ khiếu nại không được để trống.", (){});
                           }
 
                         },

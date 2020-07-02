@@ -80,16 +80,12 @@ class _AccountScreenState extends State<AccountScreen> {
 
     reaction((_) => accountScreenStore.errorUpdate, (bool error) {
       if (error == null) return;
-      if (error) {
-        _showErrorDialog();
-        accountScreenStore.errorUpdate = null;
-      } else {
-        _showErrorDialog();
-        accountScreenStore.errorUpdate = null;
-      }
+      _showErrorDialog();
+      accountScreenStore.errorUpdate = null;
     });
 
-    reaction((_) => accountScreenStore.errorAuthenticate, (bool errorAuthenticate) {
+    reaction((_) => accountScreenStore.errorAuthenticate,
+        (bool errorAuthenticate) {
       if (errorAuthenticate) {
         _showErrorDialog();
         Navigator.pushReplacementNamed(context, Constants.login_screen);
@@ -118,7 +114,8 @@ class _AccountScreenState extends State<AccountScreen> {
           actions: <Widget>[
             Observer(
               builder: (BuildContext context) {
-                if (accountScreenStore.isConfig && accountScreenStore.isLoading == false)
+                if (accountScreenStore.isConfig &&
+                    accountScreenStore.isLoading == false)
                   return IconButton(
                     icon: Icon(Icons.check),
                     onPressed: () {
@@ -148,7 +145,9 @@ class _AccountScreenState extends State<AccountScreen> {
                     showModalBottomSheet(
                       backgroundColor: Colors.transparent,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20)),
                       ),
                       context: context,
                       builder: (BuildContext context) {
@@ -158,8 +157,9 @@ class _AccountScreenState extends State<AccountScreen> {
                             height: 150,
                             decoration: BoxDecoration(
                               color: Colors.black54,
-                              borderRadius:
-                                  BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20)),
                             ),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -168,19 +168,23 @@ class _AccountScreenState extends State<AccountScreen> {
                                 Expanded(
                                   child: Center(
                                     child: Container(
-                                      margin: EdgeInsets.symmetric(vertical: 20),
+                                      margin:
+                                          EdgeInsets.symmetric(vertical: 20),
                                       child: Material(
                                         color: Colors.transparent,
                                         child: InkWell(
-                                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)),
                                           onTap: () async {
                                             Navigator.pop(context);
                                             await getAvatar(ImageSource.camera);
                                           },
                                           child: Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 25),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 25),
                                             child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: <Widget>[
                                                 Icon(
                                                   Icons.camera_enhance,
@@ -192,7 +196,9 @@ class _AccountScreenState extends State<AccountScreen> {
                                                 ),
                                                 Text(
                                                   "Camera",
-                                                  style: TextStyle(color: Colors.white, fontSize: 20),
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 20),
                                                 )
                                               ],
                                             ),
@@ -210,19 +216,24 @@ class _AccountScreenState extends State<AccountScreen> {
                                 Expanded(
                                   child: Center(
                                     child: Container(
-                                      margin: EdgeInsets.symmetric(vertical: 20),
+                                      margin:
+                                          EdgeInsets.symmetric(vertical: 20),
                                       child: Material(
                                         color: Colors.transparent,
                                         child: InkWell(
-                                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)),
                                           onTap: () async {
                                             Navigator.pop(context);
-                                            await getAvatar(ImageSource.gallery);
+                                            await getAvatar(
+                                                ImageSource.gallery);
                                           },
                                           child: Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 25),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 25),
                                             child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: <Widget>[
                                                 Icon(
                                                   Icons.photo_album,
@@ -234,7 +245,9 @@ class _AccountScreenState extends State<AccountScreen> {
                                                 ),
                                                 Text(
                                                   "Kho ảnh",
-                                                  style: TextStyle(color: Colors.white, fontSize: 20),
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 20),
                                                 )
                                               ],
                                             ),
@@ -335,9 +348,13 @@ class _AccountScreenState extends State<AccountScreen> {
             Padding(
               child: Text(
                 "Thông tin cá nhân",
-                style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
               ),
-              padding: const EdgeInsets.only(top: 8, bottom: 15, left: 8, right: 8),
+              padding:
+                  const EdgeInsets.only(top: 8, bottom: 15, left: 8, right: 8),
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -346,11 +363,16 @@ class _AccountScreenState extends State<AccountScreen> {
                     CustomTextField(
                       boxDecoration: BoxDecoration(
                           border: Border.all(color: Colors.black45),
-                          borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10)),
                           color: Colors.white),
                       controller: _controllerId,
                       labelText: "Mã số nhân viên",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
                     ),
                     SizedBox(
                       height: 10,
@@ -359,7 +381,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       validateCallBack: Validation.validateEmpty,
                       controller: _controllerFullName,
                       labelText: "Họ và tên",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
                       callbackUpdateStore: (String text) {
                         accountScreenStore.isConfig = true;
                         accountScreenStore.account.fullName = text;
@@ -373,10 +398,14 @@ class _AccountScreenState extends State<AccountScreen> {
                       validateCallBack: Validation.validateEmpty,
                       controller: _controllerGender,
                       labelText: "Giới tính",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
                       callbackUpdateStore: (String text) {
                         accountScreenStore.isConfig = true;
-                        accountScreenStore.account.gender = (text == '1') ? 1 : 0;
+                        accountScreenStore.account.gender =
+                            (text == '1') ? 1 : 0;
                       },
                       isGender: true,
                     ),
@@ -387,7 +416,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       validateCallBack: (String text) => true,
                       controller: _controllerBirthDay,
                       labelText: "Ngày sinh",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
                       callbackUpdateStore: (String text) {
                         accountScreenStore.isConfig = true;
                         accountScreenStore.account.birthDate = text;
@@ -403,7 +435,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       textInputType: TextInputType.number,
                       controller: _controllerCMND,
                       labelText: "CMND",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
                       callbackUpdateStore: (String text) {
                         accountScreenStore.isConfig = true;
                         accountScreenStore.account.identityCardNo = text;
@@ -418,7 +453,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       controller: _controllerPhone,
                       labelText: "Số điện thoại",
                       errorText: "Tối thiểu 9 chữ số",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
                       callbackUpdateStore: (String text) {
                         accountScreenStore.isConfig = true;
                         accountScreenStore.account.phoneNumber = text;
@@ -433,7 +471,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       validateCallBack: Validation.validateEmail,
                       controller: _controllerEmail,
                       labelText: "Email",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
                       callbackUpdateStore: (String text) {
                         accountScreenStore.isConfig = true;
                         accountScreenStore.account.email = text;
@@ -447,15 +488,19 @@ class _AccountScreenState extends State<AccountScreen> {
                       controller: _controllerAddress,
                       labelText: "Địa chỉ",
                       errorText: "Địa chỉ không được rỗng",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
                       callbackUpdateStore: (String text) {
                         accountScreenStore.isConfig = true;
                         accountScreenStore.account.address = text;
                       },
                       boxDecoration: BoxDecoration(
                           border: Border.all(color: Colors.black45),
-                          borderRadius:
-                              BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10)),
                           color: Colors.white),
                     ),
                     SizedBox(
@@ -464,28 +509,28 @@ class _AccountScreenState extends State<AccountScreen> {
                     Padding(
                       child: Text(
                         "Nơi làm việc",
-                        style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
                       ),
-                      padding: const EdgeInsets.only(top: 8, bottom: 15, left: 8, right: 8),
+                      padding: const EdgeInsets.only(
+                          top: 8, bottom: 15, left: 8, right: 8),
                     ),
                     CustomTextField(
                       boxDecoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
                         border: Border.all(color: Colors.black45),
                       ),
                       controller: _controllerOfficeId,
                       labelText: "Chi nhánh",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    CustomTextField(
-                      boxDecoration: BoxDecoration(border: Border.all(color: Colors.black45), color: Colors.white),
-                      controller: _controllerDepartment,
-                      labelText: "Phòng ban",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
                     ),
                     SizedBox(
                       height: 10,
@@ -493,12 +538,30 @@ class _AccountScreenState extends State<AccountScreen> {
                     CustomTextField(
                       boxDecoration: BoxDecoration(
                           border: Border.all(color: Colors.black45),
-                          borderRadius:
-                              BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                          color: Colors.white),
+                      controller: _controllerDepartment,
+                      labelText: "Phòng ban",
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CustomTextField(
+                      boxDecoration: BoxDecoration(
+                          border: Border.all(color: Colors.black45),
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10)),
                           color: Colors.white),
                       controller: _controllerTitle,
                       labelText: "Chức danh",
-                      textStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
                     ),
                   ],
                 ),
@@ -627,7 +690,9 @@ class _CustomSuffixTextFieldState extends State<CustomSuffixTextField> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: Colors.black26))),
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(width: 1, color: Colors.black26))),
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -638,7 +703,8 @@ class _CustomSuffixTextFieldState extends State<CustomSuffixTextField> {
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.only(top: 5),
                         labelText: widget.labelText,
-                        labelStyle: TextStyle(color: Colors.black45, fontSize: 16),
+                        labelStyle:
+                            TextStyle(color: Colors.black45, fontSize: 16),
                         disabledBorder: InputBorder.none),
                   ),
                 ),
@@ -647,12 +713,15 @@ class _CustomSuffixTextFieldState extends State<CustomSuffixTextField> {
                         color: Colors.black,
                         icon: Icon(Icons.date_range),
                         onPressed: () {
-                          DatePicker.showDatePicker(context, showTitleActions: true, onChanged: (date) {},
-                              onConfirm: (date) {
-                            widget.controller.text = DateFormat('yyyy-MM-dd').format(date);
+                          DatePicker.showDatePicker(context,
+                              showTitleActions: true,
+                              onChanged: (date) {}, onConfirm: (date) {
+                            widget.controller.text =
+                                DateFormat('yyyy-MM-dd').format(date);
                             widget.callbackUpdateStore(widget.controller.text);
                           },
-                              currentTime: DateFormat('yyyy-MM-dd').parse(widget.controller.text),
+                              currentTime: DateFormat('yyyy-MM-dd')
+                                  .parse(widget.controller.text),
                               locale: LocaleType.vi);
                         })
                     : ((!widget.isGender)
@@ -671,7 +740,8 @@ class _CustomSuffixTextFieldState extends State<CustomSuffixTextField> {
                                       labelText: widget.labelText,
                                       controller: widget.controller,
                                       textInputType: widget.textInputType,
-                                      callbackUpdateStore: widget.callbackUpdateStore,
+                                      callbackUpdateStore:
+                                          widget.callbackUpdateStore,
                                     ),
                                   ));
                             },
@@ -688,7 +758,8 @@ class _CustomSuffixTextFieldState extends State<CustomSuffixTextField> {
                                     FormRadio(
                                       controller: widget.controller,
                                       textInputType: widget.textInputType,
-                                      callbackUpdateStore: widget.callbackUpdateStore,
+                                      callbackUpdateStore:
+                                          widget.callbackUpdateStore,
                                     ),
                                   ));
                             },
@@ -781,7 +852,8 @@ class _FormOneTextFieldState extends State<FormOneTextField> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     "Hủy",
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.red),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -805,7 +877,8 @@ class _FormOneTextFieldState extends State<FormOneTextField> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     "Đồng ý",
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.blue),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -835,7 +908,11 @@ class _FormOneTextFieldState extends State<FormOneTextField> {
 }
 
 class FormRadio extends StatefulWidget {
-  FormRadio({this.controller, this.textStyle, this.textInputType, this.callbackUpdateStore});
+  FormRadio(
+      {this.controller,
+      this.textStyle,
+      this.textInputType,
+      this.callbackUpdateStore});
 
   final TextEditingController controller;
 
@@ -917,7 +994,8 @@ class _FormRadioState extends State<FormRadio> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     "Hủy",
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.red),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -941,7 +1019,8 @@ class _FormRadioState extends State<FormRadio> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     "Đồng ý",
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.blue),
                     textAlign: TextAlign.center,
                   ),
                 ),
