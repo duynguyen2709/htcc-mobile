@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/screen/complaint/complaint_form.dart';
 import 'package:hethongchamcong_mobile/screen/complaint/complaint_list.dart';
 import 'package:hethongchamcong_mobile/screen/complaint/complaint_store.dart';
@@ -13,7 +12,7 @@ class ComplaintScreen extends StatefulWidget {
 class _ComplaintScreenState extends State<ComplaintScreen> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   String month = "";
-  DateTime currentMonth;
+  DateTime currentMonth = DateTime(DateTime.now().year, DateTime.now().month, 1);
   ComplaintStore store;
 
   @override
@@ -21,10 +20,8 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
     // TODO: implement initState
     super.initState();
     store = ComplaintStore();
-    DateTime now = DateTime.now();
-    currentMonth = now;
     setState(() {
-      month = DateFormat('TM/yyyy').format(now);
+      month = DateFormat('TM/yyyy').format(currentMonth);
     });
     store.getComplaint(currentMonth);
   }
@@ -50,8 +47,8 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                         size: 24,
                       ),
                       onPressed: () {
-                        currentMonth =
-                            currentMonth.subtract(Duration(days: 30));
+                        currentMonth = DateTime(currentMonth.year, currentMonth.month, 1);
+                        currentMonth = currentMonth.subtract(Duration(days: 20));
                         setState(() {
                           month = DateFormat('TM/yyyy').format(currentMonth);
                         });
@@ -61,8 +58,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: Text(
                         month,
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ),
                     IconButton(
@@ -72,6 +68,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                         size: 24,
                       ),
                       onPressed: () {
+                        currentMonth = DateTime(currentMonth.year, currentMonth.month, 10);
                         currentMonth = currentMonth.add(Duration(days: 30));
                         setState(() {
                           month = DateFormat('TM/yyyy').format(currentMonth);
@@ -85,10 +82,16 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                 Icons.note_add,
                 color: Colors.white,
               ),
-              onPressed: () async  {
-                final res= await Navigator.push(context,  MaterialPageRoute(builder: (context) => ComplaintForm(store: store,)),);
+              onPressed: () async {
+                final res = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ComplaintForm(
+                            store: store,
+                          )),
+                );
 
-                if(res.toString().compareTo('Success')==0){
+                if (res.toString().compareTo('Success') == 0) {
                   store.getComplaint(currentMonth);
                 }
               },

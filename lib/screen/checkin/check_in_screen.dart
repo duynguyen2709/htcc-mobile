@@ -170,7 +170,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
           Navigator.pushReplacementNamed(context, Constants.login_screen);
         });
       else
-        AppDialog.showDialogNotify(context, _checkInStore.errorMsg, () { Navigator.of(context).pop();});
+        AppDialog.showDialogNotify(context, _checkInStore.errorMsg, () { });
     });
 
     reaction((_) => _checkInStore.errorAuth, (errorAuthenticate) async {

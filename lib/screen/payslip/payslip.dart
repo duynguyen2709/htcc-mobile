@@ -253,9 +253,7 @@ class _ItemPaySplitState extends State<ItemPaySplit> with AutomaticKeepAliveClie
                 height: Random().nextInt(100).toDouble() + 40,
                 width: Random().nextInt(100).toDouble() + 40,
                 margin: EdgeInsets.fromLTRB(8, 0, 8, 12),
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.blue.withOpacity(0.4)),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.blue.withOpacity(0.4)),
               ),
             ),
             Positioned(
@@ -266,9 +264,7 @@ class _ItemPaySplitState extends State<ItemPaySplit> with AutomaticKeepAliveClie
                 height: Random().nextInt(100).toDouble() + 40,
                 width: Random().nextInt(100).toDouble() + 40,
                 margin: EdgeInsets.fromLTRB(8, 0, 8, 12),
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.blueAccent.withOpacity(0.3)),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.blueAccent.withOpacity(0.3)),
               ),
             ),
             Column(
@@ -311,19 +307,20 @@ class _ItemPaySplitState extends State<ItemPaySplit> with AutomaticKeepAliveClie
                                   children: <Widget>[
                                     Text(
                                       "Tổng cộng: ",
-                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.grey[600],height: 1.5),
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.grey[600],
+                                          height: 1.5),
                                     ),
                                     SizedBox(
                                       height: 10,
                                     ),
-                                    Row(
-                                      children: <Widget>[
-                                        Text(
-                                          widget.payslip.totalNetPay,
-                                          style: TextStyle(
-                                              fontSize: 28, fontWeight: FontWeight.bold, color: Colors.blue),
-                                        )
-                                      ],
+                                    MarqueeWidget(
+                                      child: Text(
+                                        widget.payslip.totalNetPay,
+                                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.blue),
+                                      ),
                                     ),
                                     SizedBox(
                                       height: 10,
@@ -332,11 +329,16 @@ class _ItemPaySplitState extends State<ItemPaySplit> with AutomaticKeepAliveClie
                                       children: <Widget>[
                                         Text(
                                           "Ngày tạo phiếu: ",
-                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.grey[600],height: 1.5),
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.grey[600],
+                                              height: 1.5),
                                         ),
                                         Text(
                                           DateFormat('dd-MM-yyyy').format(DateTime.parse(widget.payslip.payDate)),
-                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black),
+                                          style:
+                                              TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black),
                                         )
                                       ],
                                     ),
@@ -367,7 +369,7 @@ class _ItemPaySplitState extends State<ItemPaySplit> with AutomaticKeepAliveClie
                               child: Column(
                                 children: <Widget>[
                                   Column(
-                                    children: widget.payslip.incomeList.map((e) =>  _buildItemInCome(e)).toList(),
+                                    children: widget.payslip.incomeList.map((e) => _buildItemInCome(e)).toList(),
                                   ),
                                   (widget.payslip.deductionList != null && widget.payslip.deductionList.length > 0)
                                       ? Container(
@@ -377,7 +379,8 @@ class _ItemPaySplitState extends State<ItemPaySplit> with AutomaticKeepAliveClie
                                       : Center(),
                                   (widget.payslip.deductionList != null && widget.payslip.deductionList.length > 0)
                                       ? Column(
-                                          children: widget.payslip.deductionList.map((e) => _buildItemDeduction(e)).toList(),
+                                          children:
+                                              widget.payslip.deductionList.map((e) => _buildItemDeduction(e)).toList(),
                                         )
                                       : Center(),
                                 ],
@@ -420,13 +423,13 @@ class _ItemPaySplitState extends State<ItemPaySplit> with AutomaticKeepAliveClie
               ],
             ),
           ),
-          SizedBox( width: 140,child:
+          SizedBox(width: 20),
           Row(
             children: [
-              Expanded(child: Text('+  ', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.green))),
-              Text( item.amount, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.green)),
+              Text('+  ', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.green)),
+              Text(item.amount, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.green)),
             ],
-          ))
+          )
         ],
       ),
     );
@@ -448,20 +451,19 @@ class _ItemPaySplitState extends State<ItemPaySplit> with AutomaticKeepAliveClie
                 ),
                 (item.extraInfo != null && item.extraInfo.isNotEmpty)
                     ? Text(
-                  '(${item.extraInfo})',
-                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12),
-                )
+                        '(${item.extraInfo})',
+                        style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12),
+                      )
                     : Center(),
               ],
-            )
+            ),
           ),
-          SizedBox( width: 140,child:
           Row(
             children: [
-              Expanded(child: Text('-  ', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.redAccent))),
-              Text( item.amount, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.redAccent)),
+              Text('-  ', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.redAccent)),
+              Text(item.amount, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.redAccent)),
             ],
-          ))
+          )
         ],
       ),
     );
