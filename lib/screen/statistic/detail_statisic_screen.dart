@@ -39,7 +39,7 @@ class _DetailStatisticScreenState extends State<DetailStatisticScreen> {
           events[date].addAll(dateInfo.listCheckInTime);
         }
       }
-      data = listDetail.first.listCheckInTime;
+      data = listDetail.first?.listCheckInTime;
     }
   }
 
@@ -50,55 +50,40 @@ class _DetailStatisticScreenState extends State<DetailStatisticScreen> {
           title: Text('Chi tiết'),
           elevation: 0,
         ),
-        body: (data.isNotEmpty)
-            ? Column(
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(bottom: 8),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.blue, Colors.blue, Colors.lightBlue, Colors.lightBlueAccent]),
-                    ),
-                    child: WeekCalendar(
-                      key: _calendarKey,
-                      minDate: DateFormat('dd/MM/yyyy').parse(date.first),
-                      maxDate: DateFormat('dd/MM/yyyy').parse(date.last),
-                      events: events,
-                      onDaySelected: (events, date) {
-                        data = events;
-                        setState(() {});
-                      },
+        body: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.blue, Colors.blue, Colors.lightBlue, Colors.lightBlueAccent]),
+              ),
+              child: WeekCalendar(
+                key: _calendarKey,
+                minDate: DateFormat('dd/MM/yyyy').parse(date.first),
+                maxDate: DateFormat('dd/MM/yyyy').parse(date.last),
+                events: events,
+                onDaySelected: (events, date) {
+                  data = events;
+                  setState(() {});
+                },
+              ),
+            ),
+            data.isEmpty
+                ? emptyPage
+                : Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      child: ListView.builder(
+                        itemBuilder: (context, index) => buildCheckDetailItem(data[index]),
+                        itemCount: data.length,
+                      ),
                     ),
                   ),
-                  data.isEmpty
-                      ? emptyPage
-                      : Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                            child: ListView.builder(
-                              itemBuilder: (context, index) => buildCheckDetailItem(data[index]),
-                              itemCount: data.length,
-                            ),
-                          ),
-                        ),
-                ],
-              )
-            : Container(
-                height: 2 * MediaQuery.of(context).size.height / 3,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "Không có dữ liệu",
-                        style: TextStyle(color: Colors.lightBlue, fontSize: 22, fontWeight: FontWeight.w500),
-                      )
-                    ],
-                  ),
-                ),
-              ));
+          ],
+        ));
   }
 
   Widget buildCheckDetailItem(DetailCheckInTime model) {
@@ -249,7 +234,7 @@ class _DetailStatisticScreenState extends State<DetailStatisticScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Image.asset("assets/empty_icon.PNG"),
+              Expanded(child: Image.asset("assets/empty_icon.PNG")),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(

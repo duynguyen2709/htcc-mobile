@@ -42,6 +42,7 @@ abstract class _StatisticStore with Store {
           }
         case Error:
           {
+            isLoading= false;
             isSuccess=false;
             switch ((response as Error).status) {
               case Status.LOGIN_FAIL:

@@ -26,7 +26,8 @@ class _StatisticScreenState extends State<StatisticScreen> {
   List<String> date = [];
   List<BarChartGroupData> data = [];
   String _fromDate = DateFormat('dd/MM/yyyy').format(DateTime(DateTime.now().year, DateTime.now().month - 1, 1));
-  String _toDate = DateFormat('dd/MM/yyyy').format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day));
+  String _toDate =
+      DateFormat('dd/MM/yyyy').format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day));
   StatisticStore store;
   User user;
   var heightScreen = Size.zero;
@@ -188,7 +189,8 @@ class _StatisticScreenState extends State<StatisticScreen> {
                                                 });
                                               },
                                                   minTime: DateTime.now().subtract(Duration(days: 365)),
-                                                  currentTime: DateTime.now(),
+                                                  maxTime: DateFormat('dd/MM/yyyy').parse(_toDate),
+                                                  currentTime: DateFormat('dd/MM/yyyy').parse(_fromDate),
                                                   locale: LocaleType.vi);
                                             },
                                           )
@@ -229,7 +231,7 @@ class _StatisticScreenState extends State<StatisticScreen> {
                                                       user.username));
                                                 });
                                               },
-                                                  currentTime: DateTime.now(),
+                                                  currentTime: DateFormat('dd/MM/yyyy').parse(_toDate),
                                                   minTime: DateFormat('dd/MM/yyyy').parse(_fromDate),
                                                   maxTime: DateTime.now(),
                                                   locale: LocaleType.vi);
@@ -304,7 +306,12 @@ class _StatisticScreenState extends State<StatisticScreen> {
                                             radius: 110,
                                             lineWidth: 10.0,
                                             animation: true,
-                                            percent: store.result == null
+                                            percent: (store.result == null ||
+                                                    (DateFormat('dd/MM/yyyy')
+                                                                .parse(_toDate)
+                                                                .difference(DateFormat('dd/MM/yyyy').parse(_fromDate)))
+                                                            .inHours >
+                                                        24)
                                                 ? 0
                                                 : store.result.workingDays /
                                                     (DateFormat('dd/MM/yyyy')
@@ -318,7 +325,11 @@ class _StatisticScreenState extends State<StatisticScreen> {
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: <Widget>[
                                                   Text(
-                                                    store.result == null
+                                                    (store.result == null ||
+                                                            (DateFormat('dd/MM/yyyy').parse(_toDate).difference(
+                                                                        DateFormat('dd/MM/yyyy').parse(_fromDate)))
+                                                                    .inHours >
+                                                                24)
                                                         ? '0'
                                                         : ((store.result.workingDays /
                                                                     (DateFormat('dd/MM/yyyy').parse(_toDate).difference(
