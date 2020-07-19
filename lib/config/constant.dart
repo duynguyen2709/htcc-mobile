@@ -52,6 +52,7 @@ class Constants {
   static const int contactScreen = 5;
   static const int salaryScreen = 6;
   static const int complaintScreen = 7;
+  static const int workingCalendarScreen = 12;
 
   //UI
   static String userName = "";

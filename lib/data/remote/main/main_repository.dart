@@ -18,7 +18,7 @@ class MainRepository extends BaseRepository {
 
       var realPath = DioManager.PATH_COUNT_NOTIFICATION + "/${account.companyId}/${account.username}";
 
-      var response = await dio.get(realPath, queryParameters: {'screens': '1,2,3,4,5,6,7,8,9,12'});
+      var response = await dio.get(realPath, queryParameters: {'screens': '1,2,3,4,5,6,7,8,9,11'});
 
       if (response.data['returnCode'] == 1) {
         var screen = ScreenResponse.fromJson(response.data);

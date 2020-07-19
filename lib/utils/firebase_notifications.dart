@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:rxdart/rxdart.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +10,8 @@ import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/local/receive_push_model.dart';
 import 'package:hethongchamcong_mobile/data/local/shared_preference.dart';
 import 'package:hethongchamcong_mobile/injector/injector.dart';
+import 'package:hethongchamcong_mobile/screen/payslip/payslip.dart';
+import 'package:hethongchamcong_mobile/screen/shift/shift_screen.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -185,11 +186,17 @@ class FireBaseNotifications {
           }
         case Constants.salaryScreen:
           {
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => PaySlipScreen()));
             break;
           }
         case Constants.complaintScreen:
           {
             Navigator.pushNamed(context, Constants.complaint_screen);
+            break;
+          }
+        case Constants.workingCalendarScreen:
+          {
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ShiftScreen()));
             break;
           }
         default:

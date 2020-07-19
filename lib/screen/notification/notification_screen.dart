@@ -6,7 +6,8 @@ import 'package:hethongchamcong_mobile/config/constant.dart';
 import 'package:hethongchamcong_mobile/data/model/notification.dart';
 import 'package:hethongchamcong_mobile/screen/dialog/app_dialog.dart';
 import 'package:hethongchamcong_mobile/screen/main_screen.dart';
-import 'package:hethongchamcong_mobile/screen/widget/custom_app_bar.dart';
+import 'package:hethongchamcong_mobile/screen/payslip/payslip.dart';
+import 'package:hethongchamcong_mobile/screen/shift/shift_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/empty_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/loading_screen.dart';
 import 'package:hethongchamcong_mobile/screen/widget/paged_list_view.dart';
@@ -26,8 +27,7 @@ class NotificationScreen extends StatefulWidget {
   _NotificationScreenState createState() => _NotificationScreenState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen>
-    with WidgetsBindingObserver {
+class _NotificationScreenState extends State<NotificationScreen> with WidgetsBindingObserver {
   NotificationScreenStore notificationScreenStore;
 
   GlobalKey<PagedListViewState> globalKey = GlobalKey();
@@ -56,7 +56,7 @@ class _NotificationScreenState extends State<NotificationScreen>
 
     reaction((_) => notificationScreenStore.msgLoadMore, (String msg) {
       if (msg != null && msg.isNotEmpty) {
-        AppDialog.showDialogNotify(context, msg, (){});
+        AppDialog.showDialogNotify(context, msg, () {});
       }
     });
   }
@@ -76,8 +76,7 @@ class _NotificationScreenState extends State<NotificationScreen>
   }
 
   _scrollListener() {
-    if (controller.offset >= controller.position.maxScrollExtent &&
-        !controller.position.outOfRange) {
+    if (controller.offset >= controller.position.maxScrollExtent && !controller.position.outOfRange) {
       loadMore();
     }
   }
@@ -115,11 +114,17 @@ class _NotificationScreenState extends State<NotificationScreen>
         }
       case Constants.salaryScreen:
         {
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => PaySlipScreen()));
           break;
         }
       case Constants.complaintScreen:
         {
           Navigator.pushNamed(context, Constants.complaint_screen);
+          break;
+        }
+      case Constants.workingCalendarScreen:
+        {
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ShiftScreen()));
           break;
         }
       default:
@@ -134,7 +139,8 @@ class _NotificationScreenState extends State<NotificationScreen>
             padding: EdgeInsets.fromLTRB(8, 0, 8, 2),
             child: Card(
               shape: RoundedRectangleBorder(
-                borderRadius:  BorderRadius.only(topLeft: Radius.circular(15), topRight:Radius.circular(24), bottomLeft:Radius.circular(15) ),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(15), topRight: Radius.circular(24), bottomLeft: Radius.circular(15)),
               ),
               child: InkWell(
                 onTap: () {
@@ -157,8 +163,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                       ),
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 8, left: 8, bottom: 8, right: 15),
+                          padding: const EdgeInsets.only(top: 8, left: 8, bottom: 8, right: 15),
                           child: Container(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,9 +174,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                                     model.title,
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,color: Colors.grey),
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey),
                                   ),
                                 ),
                                 Padding(
@@ -213,8 +216,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                   elevation: 8,
                   child: InkWell(
                     onTap: () {
-                      notificationScreenStore.updateStatusNotification(
-                          model.notiId, 1);
+                      notificationScreenStore.updateStatusNotification(model.notiId, 1);
                       widget.mainScreenState.mainScreenStore.setNumber(1);
                       routeHandling(model.screenId);
                     },
@@ -235,27 +237,22 @@ class _NotificationScreenState extends State<NotificationScreen>
                           ),
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 8, left: 8, bottom: 8, right: 15),
+                              padding: const EdgeInsets.only(top: 8, left: 8, bottom: 8, right: 15),
                               child: Container(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 2.0),
+                                      padding: const EdgeInsets.only(bottom: 2.0),
                                       child: Text(
                                         model.title,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16),
+                                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                       ),
                                     ),
                                     Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 4.0),
+                                      padding: const EdgeInsets.only(bottom: 4.0),
                                       child: Text(
                                         model.content,
                                         maxLines: 3,
@@ -263,8 +260,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                                       ),
                                     ),
                                     Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 2.0, top: 4),
+                                      padding: const EdgeInsets.only(bottom: 2.0, top: 4),
                                       child: Text(
                                         '${model.date} - ${model.time}',
                                       ),
@@ -280,27 +276,26 @@ class _NotificationScreenState extends State<NotificationScreen>
                   ),
                 ),
                 Positioned(
-                  top:0,right: 0,
+                  top: 0,
+                  right: 0,
                   child: Container(
-                    height: 24.0,
-                    width: 24.0,
-                    decoration:
-                    new BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                    child: Center(
-                      child: new Container(
-                        margin: new EdgeInsets
-                            .all(5.0),
-                        height: 12.0,
-                        width: 12.0,
-                        decoration: new BoxDecoration(
+                      height: 24.0,
+                      width: 24.0,
+                      decoration: new BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      child: Center(
+                        child: new Container(
+                          margin: new EdgeInsets.all(5.0),
+                          height: 12.0,
+                          width: 12.0,
+                          decoration: new BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.red,
-                      ),
-                    ),
-                  )),
+                          ),
+                        ),
+                      )),
                 ),
               ],
             ));
@@ -308,10 +303,8 @@ class _NotificationScreenState extends State<NotificationScreen>
 
   Widget buildHeaderItem(DateTime datetime, int position) {
     DateTime tmpDateBefore;
-    if (position - 1 >= 0 &&
-        notificationScreenStore.list[position - 1] != null) {
-      tmpDateBefore = Convert.convertStringToDate(
-          notificationScreenStore.list[position - 1].date);
+    if (position - 1 >= 0 && notificationScreenStore.list[position - 1] != null) {
+      tmpDateBefore = Convert.convertStringToDate(notificationScreenStore.list[position - 1].date);
     }
     if (tmpDateBefore == null) {
       return Align(
@@ -323,8 +316,7 @@ class _NotificationScreenState extends State<NotificationScreen>
         ),
       );
     } else {
-      if (tmpDateBefore.month == datetime.month &&
-          tmpDateBefore.year == datetime.year) {
+      if (tmpDateBefore.month == datetime.month && tmpDateBefore.year == datetime.year) {
         return SizedBox();
       } else {
         return Align(
@@ -332,13 +324,12 @@ class _NotificationScreenState extends State<NotificationScreen>
           child: Padding(
             padding: const EdgeInsets.only(top: 10, bottom: 10, left: 15),
             child: Text("Tháng ${datetime.month} Năm ${datetime.year}",
-                style: TextStyle(fontWeight: FontWeight.w500,fontSize: 15)),
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15)),
           ),
         );
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -357,8 +348,7 @@ class _NotificationScreenState extends State<NotificationScreen>
               color: Colors.white,
             ),
             iconSize: 32,
-            onPressed: () => AppDialog.showDialogYN(
-                context, "Bạn có muốn đánh dấu đã đọc tất cả thông báo ?", () {
+            onPressed: () => AppDialog.showDialogYN(context, "Bạn có muốn đánh dấu đã đọc tất cả thông báo ?", () {
               notificationScreenStore.updateStatusNotification("", 0);
               widget.mainScreenState.mainScreenStore.setNumber(0);
             }, () {}),
@@ -369,17 +359,14 @@ class _NotificationScreenState extends State<NotificationScreen>
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.blue,
-                    Colors.blue.withOpacity(0.8),
-                    Colors.lightBlueAccent,
-                    Colors.lightBlueAccent.withOpacity(0.8),
-                    Colors.lightBlueAccent.withOpacity(0.5),
-                    Colors.white
-                  ]),
+              gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
+                Colors.blue,
+                Colors.blue.withOpacity(0.8),
+                Colors.lightBlueAccent,
+                Colors.lightBlueAccent.withOpacity(0.8),
+                Colors.lightBlueAccent.withOpacity(0.5),
+                Colors.white
+              ]),
             ),
           ),
           Observer(
@@ -390,8 +377,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                   msg: notificationScreenStore.msg,
                 );
               else {
-                if (notificationScreenStore.list == null ||
-                    notificationScreenStore.list.isEmpty) {
+                if (notificationScreenStore.list == null || notificationScreenStore.list.isEmpty) {
                   return EmptyScreen(
                     refresh: refresh,
                   );
@@ -408,12 +394,9 @@ class _NotificationScreenState extends State<NotificationScreen>
                               return Column(
                                 children: <Widget>[
                                   buildHeaderItem(
-                                      Convert.convertStringToDate(
-                                          notificationScreenStore
-                                              .list[position].date),
+                                      Convert.convertStringToDate(notificationScreenStore.list[position].date),
                                       position),
-                                  buildNotificationItem(
-                                      notificationScreenStore.list[position]),
+                                  buildNotificationItem(notificationScreenStore.list[position]),
                                 ],
                               );
                             },

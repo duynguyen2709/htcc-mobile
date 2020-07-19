@@ -150,7 +150,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                                       color: Colors.red,
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.start,
+                                  textAlign: TextAlign.center,
                                 )
                               : Container(),
                           Container(
@@ -197,7 +197,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                                       color: Colors.red,
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.start,
+                                  textAlign: TextAlign.center,
                                 )
                               : Container(),
                           Container(
@@ -244,7 +244,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                                       color: Colors.red,
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.start,
+                                  textAlign: TextAlign.center,
                                 )
                               : Container(),
                           SizedBox(
