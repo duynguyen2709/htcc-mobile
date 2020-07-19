@@ -307,7 +307,7 @@ class WeekCalendarState extends State<WeekCalendar>
         initialCalendarFormat: CalendarFormat.month,
         formatAnimation: FormatAnimation.slide,
         startingDayOfWeek: StartingDayOfWeek.sunday,
-        availableGestures: AvailableGestures.horizontalSwipe,
+        availableGestures: AvailableGestures.none,
         calendarStyle: CalendarStyle(
           outsideDaysVisible: false,
         ),

@@ -151,7 +151,6 @@ class _InfoLeavingScreenState extends State<InfoLeavingScreen> {
 
   openAlertCancelRequest(Function onContinue) {
     AppDialog.showDialogYN(context, "Bạn muốn hủy đơn xin nghỉ phép ?", (){
-      Navigator.of(context).pop();
       onContinue();
     }, (){});
   }
