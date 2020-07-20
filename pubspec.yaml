@@ -62,7 +62,7 @@ dependencies:
   firebase_messaging: ^6.0.13
   flutter_local_notifications: ^1.4.2
   badges: ^1.1.1
-  flutter_barcode_scanner: 1.0.1
+  flutter_barcode_scanner: 0.0.9
   month_picker_dialog: ^0.3.2
 dev_dependencies:
   flutter_test:

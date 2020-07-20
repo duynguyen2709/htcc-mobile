@@ -64,8 +64,8 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     [Colors.lightBlueAccent, Colors.blue],
   ];
   var _checkOutGradient = [
-    [Color(0xeefda101), Color(0xeeff5a00)],
-    [Color(0xeeefff00), Color(0xeeff9a00)],
+    [Colors.blueAccent, Colors.lightBlue],
+    [Colors.lightBlueAccent, Colors.blue],
   ];
   var _disableGradient = [
     [Color(0xEEd0d0d0), Color(0xEEd0d0d0)],
@@ -243,7 +243,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
         }
         if (time.hour > 12) {
           time = time.replacing(hour: time.hourOfPeriod);
-          _color = _checkOutColor;
+          _color = _checkInColor;
           _colorGradient = _checkOutGradient;
         } else {
           _color = _checkInColor;
@@ -259,11 +259,14 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
   @override
   Widget build(BuildContext context) {
     _getTime();
-    if (parent.getSelectedIndex() == 0)
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: _color));
-
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar:PreferredSize(
+          preferredSize: Size.fromHeight(0),
+          child: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.blue,
+          )),
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: ListView(
@@ -771,7 +774,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
     String barcodeScanRes;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancel", true,ScanMode.QR);
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancel", true);
       print(barcodeScanRes);
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
@@ -801,7 +804,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
       child: Container(
         decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: (isCompanyZone && !isOffDay) ? _color : _disableColor, width: 2)),
+            border: Border.all(color: (isCompanyZone && !isOffDay) ? Colors.blue : _disableColor, width: 2)),
         child: Padding(
           padding: EdgeInsets.all(3),
           child: Stack(
