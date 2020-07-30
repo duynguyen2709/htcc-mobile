@@ -244,7 +244,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
         if (time.hour > 12) {
           time = time.replacing(hour: time.hourOfPeriod);
           _color = _checkInColor;
-          _colorGradient = _checkOutGradient;
+          _colorGradient = _checkInGradient;
         } else {
           _color = _checkInColor;
           _colorGradient = _checkInGradient;
@@ -259,6 +259,7 @@ class _CheckInLocationPageState extends State<CheckInLocationPage> {
   @override
   Widget build(BuildContext context) {
     _getTime();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.blue));
     return Scaffold(
       backgroundColor: Colors.white,
       appBar:PreferredSize(

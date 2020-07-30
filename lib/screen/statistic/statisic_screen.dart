@@ -307,18 +307,7 @@ class _StatisticScreenState extends State<StatisticScreen> {
                                             radius: 110,
                                             lineWidth: 10.0,
                                             animation: true,
-                                            percent: (store.result == null ||
-                                                    (DateFormat('dd/MM/yyyy')
-                                                                .parse(_toDate)
-                                                                .difference(DateFormat('dd/MM/yyyy').parse(_fromDate)))
-                                                            .inHours >
-                                                        24)
-                                                ? 0
-                                                : store.result.workingDays /
-                                                    (DateFormat('dd/MM/yyyy')
-                                                            .parse(_toDate)
-                                                            .difference(DateFormat('dd/MM/yyyy').parse(_fromDate)))
-                                                        .inDays,
+                                            percent: store.result==null ? 0 : store.result.workingDays/ store.result.totalDays,
                                             center: Container(
                                               margin: EdgeInsets.only(left: 9),
                                               child: Row(
@@ -326,19 +315,11 @@ class _StatisticScreenState extends State<StatisticScreen> {
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: <Widget>[
                                                   Text(
-                                                    (store.result == null ||
-                                                            (DateFormat('dd/MM/yyyy').parse(_toDate).difference(
-                                                                        DateFormat('dd/MM/yyyy').parse(_fromDate)))
-                                                                    .inHours >
-                                                                24)
-                                                        ? '0'
-                                                        : ((store.result.workingDays /
-                                                                    (DateFormat('dd/MM/yyyy').parse(_toDate).difference(
-                                                                            DateFormat('dd/MM/yyyy').parse(_fromDate)))
-                                                                        .inDays) *
-                                                                100)
-                                                            .toStringAsFixed(0),
-                                                    style: TextStyle(fontSize: 34, fontWeight: FontWeight.w600),
+                                                    store.result==null ? '0' : ((store.result.workingDays/store.result.totalDays)*100).toStringAsFixed(0),
+                                                    style: TextStyle(
+                                                        fontSize: 34,
+                                                        fontWeight:
+                                                        FontWeight.w600),
                                                   ),
                                                   Text("%", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600))
                                                 ],
